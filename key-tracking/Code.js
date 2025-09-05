@@ -606,7 +606,7 @@ function submitSelectedData(){
   var sheetEntries_raw = unverifiedSheet.getRange("A2:J")
   var sheetEntries     = sheetEntries_raw.getValues()
   var allEntries = new Map()
-
+  var deletedEntires = new Map()
   for(var i = 0; i < data.length; i++){
 
     //loop through specific range, not data value!!!!!
@@ -615,22 +615,23 @@ function submitSelectedData(){
     var entry = sheetEntries[i]
     var approval = entry[0]
     
-
+    var andrewID  = entry[1]
+    var lastName  = entry[2]
+    var firstName = entry[3]
+    var advisor   = entry[4]
+    var dept      = entry[5]
+    var key       = entry[6]
+    var room      = entry[7]
+    var expDate   = entry[8]
+    var givenDate = entry[9]
+    var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
     if(approval == "Approve"){
-      var andrewID  = entry[1]
-      var lastName  = entry[2]
-      var firstName = entry[3]
-      var advisor   = entry[4]
-      var dept      = entry[5]
-      var key       = entry[6]
-      var room      = entry[7]
-      var expDate   = entry[8]
-      var givenDate = entry[9]
-      var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expData);
       allEntries.set(andrewID,keyRec)
+      //Clear and update the log
     } 
     if(approval == "Denied"){
-      //Clear the specifc row
+      deletedEntires.set(andrewID,keyRec)
+      //clear and update the low
     }
     ///Ignore the 'Selected' option
 
@@ -651,7 +652,12 @@ function approveAllData(){
   //var sheetEntries = sheetEntries_raw.getValues()
   var allEntries   = new Map(); 
 
-  for(var i = 0; i < data.length; i++){
+  //next row is not empty
+  //for(var i = 0; i < data.length; i++){
+
+  var val = true // this needs to be updated!!!!!!
+
+  while(val){
     var entries_raw = unverfiedSheet.getRange(2+i,1,1,10);
     var entries = entries_raw.getValues()
     //var entry = sheetEntries[i]
@@ -670,10 +676,8 @@ function approveAllData(){
     var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
     allEntries.set(andrewID,keyRec)
     entries_raw.clear()
-    ////////////////////
-    //UPDATE THE LOG!!!!!
-    ////////////////////
   }
+  //UPDATE THE LOG!!!!!
   var logSheet = keySS.getSheetByName('Log');
   var logEntries_raw = logSheet.getRange("A2:J");
   var logEntries = logEntries_raw.getValues();
