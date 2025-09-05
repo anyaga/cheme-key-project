@@ -600,10 +600,42 @@ function entryToUnverifiedInput(){
 
 //Approve Selected - Button
 function submitSelectedData(){
-  /////
   //clear values that are selected
   var keySS           = SpreadsheetApp.getActiveSpreadsheet();
   var unverifiedSheet = keySS.getSheetByName('Unverified Input');
+  var sheetEntries_raw = unverifiedSheet.getRange("A2:J")
+  var sheetEntries     = sheetEntries_raw.getValues()
+  var allEntries = new Map()
+
+  for(var i = 0; i < data.length; i++){
+
+    //loop through specific range, not data value!!!!!
+
+    //Changes to Approve,Denied, --keep selected
+    var entry = sheetEntries[i]
+    var approval = entry[0]
+    
+
+    if(approval == "Approve"){
+      var andrewID  = entry[1]
+      var lastName  = entry[2]
+      var firstName = entry[3]
+      var advisor   = entry[4]
+      var dept      = entry[5]
+      var key       = entry[6]
+      var room      = entry[7]
+      var expDate   = entry[8]
+      var givenDate = entry[9]
+      var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expData);
+      allEntries.set(andrewID,keyRec)
+    } 
+    if(approval == "Denied"){
+      //Clear the specifc row
+    }
+    ///Ignore the 'Selected' option
+
+    return allEntries
+  }
 
 
   //return the entries value. call this in analysis
@@ -612,15 +644,52 @@ function submitSelectedData(){
 
 //Approve All - Button
 function approveAllData(){
-  ////
   //clear all the data in the unverifeid
+  var keySS = SpreadsheetApp.getActiveSpreadsheet();
+  var unverfiedSheet = keySS.getSheetByName('Unverified Input');
+  //var sheetEntries_raw = unverfiedSheet.getRange("A2:J")
+  //var sheetEntries = sheetEntries_raw.getValues()
+  var allEntries   = new Map(); 
 
-  //1. Turn all into entries
-  //2. 
+  for(var i = 0; i < data.length; i++){
+    var entries_raw = unverfiedSheet.getRange(2+i,1,1,10);
+    var entries = entries_raw.getValues()
+    //var entry = sheetEntries[i]
+    var entry = entries[i]
+    var entry_len = entry.length
+    //var approval  = entry[0]
+    var andrewID  = entry[1]
+    var lastName  = entry[2]
+    var firstName = entry[3]
+    var advisor   = entry[4]
+    var dept      = entry[5]
+    var key       = entry[6]
+    var room      = entry[7]
+    var expDate   = entry[8]
+    var givenDate = entry[9]
+    var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
+    allEntries.set(andrewID,keyRec)
+    entries_raw.clear()
+    ////////////////////
+    //UPDATE THE LOG!!!!!
+    ////////////////////
+  }
+  var logSheet = keySS.getSheetByName('Log');
+  var logEntries_raw = logSheet.getRange("A2:J");
+  var logEntries = logEntries_raw.getValues();
+  
+  for(var i = 0; i < logEntries.length; i++){
+    var entry = logEntries[i]
+    var andrewID = entry[1]
+    var key      = entry[6]
+
+    var t = allEntries.find(entry => entry.andrewid)
+  }
 
 
+  sheetEntries_raw.clear()
   //return the entries value. call this in analysis
-  return null //CHange
+  return allEntries
 }
 
 function fillSheets(allEntries){
