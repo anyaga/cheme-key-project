@@ -679,11 +679,21 @@ function approveAllData(){
   var logEntries = logEntries_raw.getValues();
   
   for(var i = 0; i < logEntries.length; i++){
-    var entry = logEntries[i]
-    var andrewID = entry[1]
-    var key      = entry[6]
+    var entry_row    = logEntries[i]
+    var andrewID1 = entry_row[1]
+    var key      = entry_row[6]
 
-    var t = allEntries.find(entry => entry.andrewid)
+    var found_entry = allEntries.get(andrewID1) //undefined if not there
+    if(found_entry != undefined){
+      var keys = found_entry.getKeys()
+      if(keys.includes(key)){
+        //update the log to have the proper approval value
+        //????????????
+        //how do I find the specifice value there are at??????????????
+      }
+    }
+
+
   }
 
 
