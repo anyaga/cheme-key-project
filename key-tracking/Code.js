@@ -627,7 +627,6 @@ function entryToUnverifiedInput(){
   unverifiedSheet.setConditionalFormatRules(newRules);
 }
 
-
 //Approve Selected - Button
 function submitSelectedData(){
   //clear values that are selected
@@ -638,16 +637,15 @@ function submitSelectedData(){
   var allEntries     = new Map()
   var deletedEntires = new Map()
 
-
-  var val = true ////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  var val = true ////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   var i = 0;
+  var entries_raw = unverifiedSheet.getRange(2+i,1,1,10)  
+  var entries = entries_raw.getValues()
+
   //for(var i = 0; i < data.length; i++){
   while(val){
-    var entries_raw = unverifiedSheet.getRange(2+i,1,1,10)
-    var entries = entries_raw.getValues()
-
     //Changes to Approve,Denied, --keep selected
-    var entry = sheetEntries[i]
+    var entry = entries[i]
     var approval  = entry[0]    
     var andrewID  = entry[1]
     var lastName  = entry[2]
@@ -659,17 +657,23 @@ function submitSelectedData(){
     var expDate   = entry[8]
     var givenDate = entry[9]
     var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
+
     if(approval == "Approve"){
       allEntries.set(andrewID,keyRec)
-      //Clear and update the log
+      entries_raw.clear()
     } 
     if(approval == "Denied"){
       deletedEntires.set(andrewID,keyRec)
-      //clear and update the low
+      entries_raw.clear()
     }
     ///Ignore the 'Selected' option
 
-    return allEntries
+    //Update loop conditions 
+    i = i + 1
+    entries_raw = unverifiedSheet.getRange(2+i,1,1,10)  
+    entries = entries_raw.getValues()[0]
+    //check if next row is empty
+    val = entries.every(cell => cell === "" || cell === null)
   }
   //Update the log
 
@@ -715,12 +719,11 @@ function approveAllData(){
   //next row is not empty
   //for(var i = 0; i < data.length; i++){
 
-  var val = true // this needs to be updated!!!!!!!!!!!!!!!!!1!!!!
+  var val = true // this needs to be updated!!!!!!!!!!!!!!!!!1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
   var i = 0;
+  var entries_raw = unverfiedSheet.getRange(2+i,1,1,10);
+  var entries = entries_raw.getValues()  
   while(val){
-    var entries_raw = unverfiedSheet.getRange(2+i,1,1,10);
-    var entries = entries_raw.getValues()
-    //var entry = sheetEntries[i]
     var entry = entries[i]
     var entry_len = entry.length
     //var approval  = entry[0]
@@ -734,9 +737,15 @@ function approveAllData(){
     var expDate   = entry[8]
     var givenDate = entry[9]
     var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
+    
     allEntries.set(andrewID,keyRec)
     entries_raw.clear()
+    //Uppdate loop conditions
     i = i + 1
+    entries_raw = unverfiedSheet.getRange(2+i,1,1,10)
+    entries = entries_raw.getValues()[0]
+    //Check if next row is empty
+    val = entries.every(cell => cell === "" || cell === null)
   }
   //UPDATE THE LOG!!!!!
   var logSheet = keySS.getSheetByName('Log');
@@ -1040,8 +1049,6 @@ function setEntry(andrewID){
   } 
   else {return null}
 }
-
-
 
 function processInputs(fname, lname, advisor, andrewID, 
                       keyNum, roomNum, givenDate, loseDate) {
