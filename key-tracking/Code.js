@@ -400,6 +400,23 @@ function addToLog(){
 
 }
 
+
+function updateLog(andrewID,key){
+  const keySS    = SpreadsheetApp.getActiveSpreadsheet()
+  const logSheet = keySS.getSheetByName('Log')
+
+  var andrew_found = logSheet.createTextFinder(andrewID).findAll() //???
+  var key_found    = logSheet.createTextFinder(key).findAll()
+
+
+  //find a value in andrew and key where row matches
+  
+  if(found){
+    ///////
+  }
+
+
+}
 // function searchLog(){
 //   var keySS = SpreadsheetApp.getActiveSpreadsheet();
 //   var logSheet = keySS.getSheetName('Log');
@@ -637,8 +654,6 @@ function submitSelectedData(){
 
     return allEntries
   }
-
-
   //return the entries value. call this in analysis
   return null //CHange
 }
@@ -696,8 +711,6 @@ function approveAllData(){
         //how do I find the specifice value there are at??????????????
       }
     }
-
-
   }
 
 
@@ -940,16 +953,7 @@ function analysis(){
       mainSheet.getRange(8+i,8).setValue(unknown_list[i])
     }
   }
-
-
-
-
-
   //If it is within 6 months of expiration
-
-
-
-
 
 
   //Sort through all the sections
@@ -962,8 +966,6 @@ function analysis(){
    * is being approachd **/
 
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 function onOpen() {
