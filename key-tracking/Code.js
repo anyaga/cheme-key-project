@@ -1,6 +1,4 @@
 /*
-Fix 1969 Dates tab!
-
 Object Oriented Design
 Goals:
 -Alumni/Peoples who have reached expiration date
@@ -154,7 +152,8 @@ function inactiveEntries(entries) {
   });
   return inactive
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////Helper Functions used for safety checks
 function validKey(key) {
   //Some error with Key formating
   if(!key.includes("4501-")){
@@ -209,14 +208,34 @@ function validRoom(room){
   else return "invalid room"
 }
 
-//Valid date!!!!!
+
+
+
+
 function validDate(){
 /////////////////////////////////////
   return
 }
+//Safety check
+function confirmUser(first,last,advisor,andrew,key,room,entry){
+  if((first != entry.getFirstName()) 
+    || (last != entry.getLastName()) 
+    || (advisor != entry.getAdvisor())
+    || (andrew != entry.getAndrewID())) {
+      return true
+    } return false
+}
 
 
-//Parsing the code sheets
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////Parsing entry data
+/**
+ * Parsing the sheets for entries 
+ * */
 function parseKeySheet(allEntries,id){
   var newSS = SpreadsheetApp.openById(id)
   var sheets = newSS.getSheets()
@@ -225,13 +244,13 @@ function parseKeySheet(allEntries,id){
   for(var i = 0; i < sheets.length; i++){
     //Figure out the end range <--or how to avoid going over empty setion
     var sheet = sheets[i];
-    var firstNameArr = sheet.getRange('D2:D').getValues(); //sheet.getRange('D2:D113').getValues(); ////////Standardize!!!!
-    var lastNameArr  = sheet.getRange('C2:C').getValues();//sheet.getRange('C2:C113').getValues();
-    var andrewIDArr  = sheet.getRange('F2:F').getValues();//sheet.getRange('F2:F113').getValues();
-    var advisorArr   = sheet.getRange('G2:G').getValues();//sheet.getRange('G2:G113').getValues();
-    var deptArr      = sheet.getRange('I2:I').getValues();//sheet.getRange('I2:I113').getValues();
-    var keysArr      = sheet.getRange('J2:J').getValues();//sheet.getRange('J2:J113').getValues();
-    var roomArr      = sheet.getRange('K2:K').getValues();//sheet.getRange('K2:K113').getValues();
+    var firstNameArr = sheet.getRange('D2:D').getValues(); 
+    var lastNameArr  = sheet.getRange('C2:C').getValues();
+    var andrewIDArr  = sheet.getRange('F2:F').getValues();
+    var advisorArr   = sheet.getRange('G2:G').getValues();
+    var deptArr      = sheet.getRange('I2:I').getValues();
+    var keysArr      = sheet.getRange('J2:J').getValues();
+    var roomArr      = sheet.getRange('K2:K').getValues();
     var givenArr     = sheet.getRange('M2:M').getValues();
     var expArr       = sheet.getRange('N2:N').getValues();
 
@@ -269,10 +288,10 @@ function parseKeySheet(allEntries,id){
   return allEntries;
 }
 
-/*
-Translate form response to spreadsheet format (with keyReponse class) )
-*/
-function checkoutFormToEntries(allEntries){//function currentFormToClass(allEntries) { 
+/**
+ * Translate form response to entries (with keyReponse class) )
+ * */
+function checkoutFormToEntries(allEntries){
   //Array of form responses
   var firstName,lastName, advisor,andrewID, key,room,givenDate,expDate,ques,answ,dept;
   const form1 = FormApp.openByUrl(
@@ -325,145 +344,6 @@ function checkoutFormToEntries(allEntries){//function currentFormToClass(allEntr
   return allEntries
 }
 
-//Safety check
-function confirmUser(first,last,advisor,andrew,key,room,entry){
-  if((first != entry.getFirstName()) 
-    || (last != entry.getLastName()) 
-    || (advisor != entry.getAdvisor())
-    || (andrew != entry.getAndrewID())) {
-      return true
-    } return false
-}
-
-//Read log data and turn them into entries
-function logToEntries(){
-  var keySS = SpreadsheetApp.getActiveSpreadsheet();
-  var logSheet = keySS.getSheetByName('Log');
-  var allEntries = new Map();
-
-  var logRange = logSheet.getRange('A:J');
-  var logValues = logRange.getValues();
-
-  for(var i = 1; i < logValues.length; i++){
-    var row = logValues[i];
-    if(row.length == 0 || row.length < 10) break;
-    //var approval  = row[0];
-    var andrewID  = row[1];
-    var lastName  = row[2];
-    var firstName = row[3];
-    var advisor   = row[4];
-    var dept      = row[5];
-    var key       = row[6];
-    var room      = row[7];
-    var expDate   = row[8];
-    var givenDate = row[9];
-    if((andrewID == '') && (lastName =='') && (firstName == '') && 
-       (advisor == '') && (dept == '') && (key == '') && (room == '') &&
-       (expDate == '') && (givenDate == '')){break;}
-
-    var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
-    allEntries.set(andrewID,newKeyRec);
-  }
-  return allEntries;
-}
-
-function addToLog(){
-  var keySS    = SpreadsheetApp.getActiveSpreadsheet();
-  var logSheet = keySS.getSheetByName('Log');
-  
-  var logEntries = logToEntries();
-  var allEntries = new Map();
-  allEntries = checkoutFormToEntries(allEntries);
-  allEntries = checkInForm(allEntries);
-
-  for(const [andrewID, keyRecord] of allEntries){
-    var keys = keyRecord.getKeys()
-    for(i = 0; i < keys.length; i++){
-      var key = keys[i];
-      //
-      if(!logEntries.has(andrewID)){
-        logSheet.appendRow([
-          'Unverified',
-          keyRecord.getAndrewID(),
-          keyRecord.getLastName(),
-          keyRecord.getFirstName(),
-          keyRecord.getAdvisor(),
-          keyRecord.getDepartment(),
-          key.getKey(),
-          key.getRoom(),
-          key.getExpirationDate(),
-          key.getGivenDate()
-        ])
-      }
-    }
-  }
-
-}
-
-//Shouldnt reutrn a value
-function updateLog(andrewID,key,approval){
-  const keySS    = SpreadsheetApp.getActiveSpreadsheet()
-  const logSheet = keySS.getSheetByName('Log')
-
-  var andrew_found = logSheet.createTextFinder(andrewID).findAll() //???
-  var key_found    = logSheet.createTextFinder(key).findAll()  
-  if(andrew_found && key_found){
-    var andrew = andrew_found.getValues()
-    var andrew_rows = []
-    for(var i = 0; i < andrew.length;i++){
-      andrew_rows.append(andrew[i].getRow())
-    } 
-    var key = key_found.getValues()
-    var key_rows = [] 
-    for(var j = 0; j < key.length; j++){
-      key_rows.append(key[j].getRow())
-    }
-
-    //1.Now that the value is found, get the full range
-    //var found = andrew_rows.filter(a => key_rows.includes(a)) //filter == all the values
-    //find   == the first value
-    var found = andrew_rows.find(a => key_rows.includes(a)) //column value is found
-    var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
-    var row1 = fullRow.getValues()[0]
-    //2.replace the approval values I was looking for
-    row1[0] = approval
-    fullRow.setValues(row1) //debug these values
-  } 
-}
-// function searchLog(){
-//   var keySS = SpreadsheetApp.getActiveSpreadsheet();
-//   var logSheet = keySS.getSheetName('Log');
-//   var andrewIDList = logSheet.getRange('A2:A').getValues();  
-// }
-
-function unverifiedValueCollection(){
-  var keySS = SpreadsheetApp.getActiveSpreadsheet();
-  var logSheet = keySS.getSheetByName('Log');
-  var approvalAndAndrew = logSheet.getRange('A2:B').getValues();
-  
-  var logEntries = logToEntries()
-
-  var allEntries = new Map();
-  allEntries = checkoutFormToEntries(allEntries);
-  allEntries = checkInForm(allEntries);
-  var unverifiedEntries = new Map();
-
-
-  //if not in log, unverified list. add to log as unverified
-  for(const [andrewID,keyRecord] of allEntries){
-
-    //check if in log or if unverifed in log
-    var arr = ["Unverified",andrewID]
-    var value = approvalAndAndrew.includes(arr);
-    if(!logEntries.has(andrewID) || approvalAndAndrew.includes(arr)) {
-      unverifiedEntries.set(andrewID,keyRecord);
-    }
-    //add to the log! specifiy it is unverfied
-  }
-  return unverifiedEntries;
-}
-
-//Check if in the log. If not, add to the entry
 function checkInForm(allEntries){
   var firstName,lastName, advisor,andrewID, key,room;
   const checkInForm = FormApp.openByUrl("https://docs.google.com/forms/d/1t6IxYbw-evVopJd3XGKHRxb9HfWWke0ozHA39XT-1z8/")
@@ -510,27 +390,147 @@ function checkInForm(allEntries){
   return allEntries
 }
 
-function correctUnknown(){
-////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////Manipulating the log sheet
+/**
+ * Read log data and turn them into entries
+ **/
+function logToEntries(){
+  var keySS = SpreadsheetApp.getActiveSpreadsheet();
+  var logSheet = keySS.getSheetByName('Log');
+  var allEntries = new Map();
+
+  var logRange = logSheet.getRange('A:J');
+  var logValues = logRange.getValues();
+
+  for(var i = 1; i < logValues.length; i++){
+    var row = logValues[i];
+    if(row.length == 0 || row.length < 10) break;
+    var andrewID  = row[1];
+    var lastName  = row[2];
+    var firstName = row[3];
+    var advisor   = row[4];
+    var dept      = row[5];
+    var key       = row[6];
+    var room      = row[7];
+    var expDate   = row[8];
+    var givenDate = row[9];
+    if((andrewID == '') && (lastName =='') && (firstName == '') && 
+       (advisor == '') && (dept == '') && (key == '') && (room == '') &&
+       (expDate == '') && (givenDate == '')){break;}
+
+    var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
+    allEntries.set(andrewID,newKeyRec);
+  }
+  return allEntries;
 }
 
-function manualCheckIn(){
-///////////???????
+/**
+ * Initially adds a value to the log if it is not already in the log (should be right after initially parsde)
+ **/
+function addToLog(){
+  var keySS    = SpreadsheetApp.getActiveSpreadsheet();
+  var logSheet = keySS.getSheetByName('Log');
+  
+  var logEntries = logToEntries();
+  var allEntries = new Map();
+  allEntries = checkoutFormToEntries(allEntries);
+  allEntries = checkInForm(allEntries);
+
+  for(const [andrewID, keyRecord] of allEntries){
+    var keys = keyRecord.getKeys()
+    for(i = 0; i < keys.length; i++){
+      var key = keys[i];
+      //
+      if(!logEntries.has(andrewID)){
+        logSheet.appendRow([
+          'Unverified',
+          keyRecord.getAndrewID(),
+          keyRecord.getLastName(),
+          keyRecord.getFirstName(),
+          keyRecord.getAdvisor(),
+          keyRecord.getDepartment(),
+          key.getKey(),
+          key.getRoom(),
+          key.getExpirationDate(),
+          key.getGivenDate()
+        ])
+      }
+    }
+  }
+
 }
 
-function scheduleReload(){
-////////////////////////////
+/**
+ * Update approval status of a log (based on what happens in the unverifed sheet)
+ */
+function updateLog(andrewID,key,approval){
+  const keySS    = SpreadsheetApp.getActiveSpreadsheet()
+  const logSheet = keySS.getSheetByName('Log')
+
+  var andrew_found = logSheet.createTextFinder(andrewID).findAll() //???
+  var key_found    = logSheet.createTextFinder(key).findAll()  
+  if(andrew_found && key_found){
+    var andrew = andrew_found.getValues()
+    var andrew_rows = []
+    for(var i = 0; i < andrew.length;i++){
+      andrew_rows.append(andrew[i].getRow())
+    } 
+    var key = key_found.getValues()
+    var key_rows = [] 
+    for(var j = 0; j < key.length; j++){
+      key_rows.append(key[j].getRow())
+    }
+
+    //1.Now that the value is found, get the full range
+    //var found = andrew_rows.filter(a => key_rows.includes(a)) //filter == all the values
+    //find   == the first value
+    var found = andrew_rows.find(a => key_rows.includes(a)) //column value is found
+    var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
+    var row1 = fullRow.getValues()[0]
+    //2.replace the approval values I was looking for
+    row1[0] = approval
+    fullRow.setValues(row1) //debug these values
+  } 
 }
+// function searchLog(){
+//   var keySS = SpreadsheetApp.getActiveSpreadsheet();
+//   var logSheet = keySS.getSheetName('Log');
+//   var andrewIDList = logSheet.getRange('A2:A').getValues();  
+// }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////Manipulating the unverifed sheet
 
-function scheduledDeleteCheck(){
-///????????????
+/**
+ * Take all new input values and add them to the unverifid sheet in 'Key Sheet Main;
+ */
+function unverifiedValueCollection(){
+  var keySS    = SpreadsheetApp.getActiveSpreadsheet();
+  var logSheet = keySS.getSheetByName('Log');
+  var approvalAndAndrew = logSheet.getRange('A2:B').getValues();
+  
+  var logEntries = logToEntries()
+  var allEntries = new Map();
+  allEntries = checkoutFormToEntries(allEntries);
+  allEntries = checkInForm(allEntries);
+  var unverifiedEntries = new Map();
+
+  //if not in log AND unverified list. add to both???????????????????????????
+  for(const [andrewID,keyRecord] of allEntries){
+    //check if in log or if unverifed in log
+    var arr = ["Unverified",andrewID]
+    var value = approvalAndAndrew.includes(arr);
+    if(!logEntries.has(andrewID) || approvalAndAndrew.includes(arr)) {
+      unverifiedEntries.set(andrewID,keyRecord);
+    }
+    //add to the log! specifiy it is unverfied
+  }
+  return unverifiedEntries;
 }
-
-
-function currentKeys(){
-  ///////////////////////////////////////
-}
-
+/**
+ * Create dropdown that determines status of unverified values
+ */
 function createApprovalDropdown() { 
   var keySS = SpreadsheetApp.getActiveSpreadsheet();
   var unverifiedSheet = keySS.getSheetByName('Unverified Input');
@@ -567,7 +567,9 @@ function createApprovalDropdown() {
   );
   unverifiedSheet.setConditionalFormatRules(newRules);
 }
-
+/**
+ * Format unverified sheet to have input entries and the dropdown values
+ */
 function entryToUnverifiedInput(){
   var keySS           = SpreadsheetApp.getActiveSpreadsheet();
   var unverifiedSheet = keySS.getSheetByName('Unverified Input');
@@ -626,7 +628,9 @@ function entryToUnverifiedInput(){
   );
   unverifiedSheet.setConditionalFormatRules(newRules);
 }
-
+/**
+ * Given what is in the approval tab, update what is in the unverifeid tab
+ */
 //Approve Selected - Button
 function submitSelectedData(){
   //clear values that are selected
@@ -706,7 +710,9 @@ function submitSelectedData(){
   //return the entries value. call this in analysis
   return allEntries
 }
-
+/**
+ * Approve all unverified input, regardless of what is in the approval tab
+ */
 //Approve All - Button
 function approveAllData(){
   //clear all the data in the unverifeid
@@ -772,6 +778,30 @@ function approveAllData(){
   //return the entries value. call this in analysis
   return allEntries
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+function manualCheckIn(){
+///////////???????
+}
+
+function scheduleReload(){
+////////////////////////////
+}
+
+function scheduledDeleteCheck(){
+///????????????
+}
+
+function currentKeys(){
+  ///////////////////////////////////////
+}
+
+
+
+
 
 function fillSheets(allEntries){
   //Input SS Files
