@@ -400,22 +400,35 @@ function addToLog(){
 
 }
 
-
-function updateLog(andrewID,key){
+//Does not return a value
+function updateLog(andrewID,key,approval){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
   const logSheet = keySS.getSheetByName('Log')
 
   var andrew_found = logSheet.createTextFinder(andrewID).findAll() //???
-  var key_found    = logSheet.createTextFinder(key).findAll()
+  var key_found    = logSheet.createTextFinder(key).findAll()  
+  if(andrew_found && key_found){
+    var andrew = andrew_found.getValues()
+    var andrew_rows = []
+    for(var i = 0; i < andrew.length;i++){
+      andrew_rows.append(andrew[i].getRow())
+    } 
+    var key = key_found.getValues()
+    var key_rows = [] 
+    for(var j = 0; j < key.length; j++){
+      key_rows.append(key[j].getRow())
+    }
+    //filter == all the values
+    //var t = andrew_rows.filter(a => key_rows.includes(a))
+    //find   == the first value
+    var found = andrew_rows.find(a => key_rows.includes(a)) //column value is found
 
 
-  //find a value in andrew and key where row matches
-  
-  if(found){
-    ///////
-  }
+    //1.Now that the value is found, get the full range
+    //2.replace the approval values I was looking for
 
 
+  } 
 }
 // function searchLog(){
 //   var keySS = SpreadsheetApp.getActiveSpreadsheet();
