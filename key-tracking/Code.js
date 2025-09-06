@@ -400,7 +400,7 @@ function addToLog(){
 
 }
 
-//Does not return a value
+//Shouldnt reutrn a value
 function updateLog(andrewID,key,approval){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
   const logSheet = keySS.getSheetByName('Log')
@@ -418,16 +418,16 @@ function updateLog(andrewID,key,approval){
     for(var j = 0; j < key.length; j++){
       key_rows.append(key[j].getRow())
     }
-    //filter == all the values
-    //var t = andrew_rows.filter(a => key_rows.includes(a))
-    //find   == the first value
-    var found = andrew_rows.find(a => key_rows.includes(a)) //column value is found
-
 
     //1.Now that the value is found, get the full range
+    //var found = andrew_rows.filter(a => key_rows.includes(a)) //filter == all the values
+    //find   == the first value
+    var found = andrew_rows.find(a => key_rows.includes(a)) //column value is found
+    var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
+    var row1 = fullRow.getValues()[0]
     //2.replace the approval values I was looking for
-
-
+    row1[0] = approval
+    fullRow.setValues(row1) //debug these values
   } 
 }
 // function searchLog(){
