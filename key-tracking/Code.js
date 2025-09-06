@@ -633,18 +633,22 @@ function submitSelectedData(){
   //clear values that are selected
   var keySS           = SpreadsheetApp.getActiveSpreadsheet();
   var unverifiedSheet = keySS.getSheetByName('Unverified Input');
-  var sheetEntries_raw = unverifiedSheet.getRange("A2:J")
-  var sheetEntries     = sheetEntries_raw.getValues()
-  var allEntries = new Map()
+  // var sheetEntries_raw = unverifiedSheet.getRange("A2:J")
+  // var sheetEntries     = sheetEntries_raw.getValues()
+  var allEntries     = new Map()
   var deletedEntires = new Map()
-  for(var i = 0; i < data.length; i++){
 
-    //loop through specific range, not data value!!!!!
+
+  var val = true ////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  var i = 0;
+  //for(var i = 0; i < data.length; i++){
+  while(val){
+    var entries_raw = unverifiedSheet.getRange(2+i,1,1,10)
+    var entries = entries_raw.getValues()
 
     //Changes to Approve,Denied, --keep selected
     var entry = sheetEntries[i]
-    var approval = entry[0]
-    
+    var approval  = entry[0]    
     var andrewID  = entry[1]
     var lastName  = entry[2]
     var firstName = entry[3]
@@ -667,8 +671,36 @@ function submitSelectedData(){
 
     return allEntries
   }
+  //Update the log
+
+  var logSheet = keySS.getSheetByName('Log')
+  var logEntries_raw = logSheet("A2:J");
+  var logEntries = logEntries_raw.getValues()
+
+  for(var i = 0; i < logEntries.length; i++){
+    var entry_row = logEntries[i]
+    var andrewID1 = entry_row[1]
+    var key1      = entry_row[6]
+
+    var found_entry = allEntries.get(andrewID1)
+    if(found_entry != undefined){
+      var keys = found_entry.getKeys()
+      if(keys.includes(key1)){
+        updateLog(andrewID1,key1,"Approval")
+      }
+    }
+
+    var found_entry1 = deletedEntires.get(andrewID)
+    if(found_entry1 != undefined){
+      var keys1 = found_entry1.getKeys()
+      if(keys1.includes(key1)){
+        updateLog(andrewID1,key1,"Denied")
+      }
+    }
+  }
+
   //return the entries value. call this in analysis
-  return null //CHange
+  return allEntries
 }
 
 //Approve All - Button
@@ -683,8 +715,8 @@ function approveAllData(){
   //next row is not empty
   //for(var i = 0; i < data.length; i++){
 
-  var val = true // this needs to be updated!!!!!!
-
+  var val = true // this needs to be updated!!!!!!!!!!!!!!!!!1!!!!
+  var i = 0;
   while(val){
     var entries_raw = unverfiedSheet.getRange(2+i,1,1,10);
     var entries = entries_raw.getValues()
@@ -704,6 +736,7 @@ function approveAllData(){
     var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
     allEntries.set(andrewID,keyRec)
     entries_raw.clear()
+    i = i + 1
   }
   //UPDATE THE LOG!!!!!
   var logSheet = keySS.getSheetByName('Log');
@@ -713,20 +746,19 @@ function approveAllData(){
   for(var i = 0; i < logEntries.length; i++){
     var entry_row    = logEntries[i]
     var andrewID1 = entry_row[1]
-    var key      = entry_row[6]
+    var key1      = entry_row[6]
 
     var found_entry = allEntries.get(andrewID1) //undefined if not there
     if(found_entry != undefined){
       var keys = found_entry.getKeys()
-      if(keys.includes(key)){
+      if(keys.includes(key1)){
         //update the log to have the proper approval value
         //????????????
         //how do I find the specifice value there are at??????????????
+        updateLog(andrewID1,key1,'Approval')
       }
     }
   }
-
-
   sheetEntries_raw.clear()
   //return the entries value. call this in analysis
   return allEntries
