@@ -128,7 +128,7 @@ class keyRecord {
   }
 }
 
-/////////////////////////////////////
+/**
 function activeEntries(entries){
   var active = new Map()
   Object.entries(entries).forEach(([andrewID,key]) => {
@@ -140,7 +140,6 @@ function activeEntries(entries){
   });
   return active
 }
-///////////////////////////////////////////////////////////
 function inactiveEntries(entries) {
   var inactive = new Map()
   Object.entries(entries).forEach(([andrewID,key]) => {
@@ -152,6 +151,8 @@ function inactiveEntries(entries) {
   });
   return inactive
 }
+*/
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////Helper Functions used for safety checks
 function validKey(key) {
