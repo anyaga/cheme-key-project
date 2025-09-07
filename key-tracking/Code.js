@@ -173,6 +173,7 @@ function validKey(key) {
     else return "invalid key";
   } return key;
 }
+
 function validRoomNum(num){
   const floorOpt = ["D","C","B","A","1","2","3","4","a","b","c","d"]; //find better way to deal with no Cap
   floor = num[0];
@@ -187,6 +188,7 @@ function validRoomNum(num){
   else if(parseInt(digits) == NaN) return false;
   else return true;
 }
+
 //make sure the second half is actually a number!!!!
 function validRoom(room){
   roomNum = 0
@@ -206,6 +208,7 @@ function validRoom(room){
   } 
   else return "invalid room"
 }
+
 function validDate(date){
   //1. Date object
   if(Object.prototype.toString.call(date) === "[object Date]"){
@@ -243,15 +246,19 @@ function validDate(date){
   return "Invalid Date"
 }
 
-
-
-
-//Safety check
+//Used in checkInForm <--- check if working properly
 function confirmUser(first,last,advisor,andrew,key,room,entry){
-  if((first != entry.getFirstName()) 
-    || (last != entry.getLastName()) 
-    || (advisor != entry.getAdvisor())
-    || (andrew != entry.getAndrewID())) {
+  const key_rooms = entry.getKeys() //???????????????
+  var key_room_status = false
+  for(var pairs in key_rooms){
+    if((pairs.getKey() === key) &&(pairs.getRoom() ===room)){
+      key_room_status = true
+    }
+  }
+  //need a better way to access rooms and keys!!!
+  if((first == entry.getFirstName()) && (last == entry.getLastName()) 
+    && (advisor == entry.getAdvisor())&& (andrew == entry.getAndrewID()) 
+    && key_room_status) {
       return true
     } return false
 }
@@ -367,7 +374,7 @@ function checkoutFormToEntries(allEntries){
   }
   return allEntries
 }
-
+////////////////////////CHeckthis?????????????????
 function checkInForm(allEntries){
   var firstName,lastName, advisor,andrewID, key,room;
   const checkInForm = FormApp.openByUrl("https://docs.google.com/forms/d/1t6IxYbw-evVopJd3XGKHRxb9HfWWke0ozHA39XT-1z8/")
@@ -392,6 +399,8 @@ function checkInForm(allEntries){
         room = validRoom(answ);
       } 
     }
+
+    //Delete it from the entries
     if(allEntries.has(andrewID)){
       var entry = allEntries.get(andrewID)
       var confirmed = confirmUser(firstName,lastName,advisor,andrewID,key,room,entry) //checking keys/rooms??????
@@ -410,16 +419,17 @@ function checkInForm(allEntries){
         allEntries.set(andrewID,entry)        
       }
     }
+
+    //Update the log to show it is inactivE!!!!!
   }
   return allEntries
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////Manipulating the log sheet
 /**
  * Read log data and turn them into entries
- **/
+ */
 function logToEntries(){
   var keySS = SpreadsheetApp.getActiveSpreadsheet();
   var logSheet = keySS.getSheetByName('Log');
@@ -430,16 +440,16 @@ function logToEntries(){
 
   for(var i = 1; i < logValues.length; i++){
     var row = logValues[i];
-    if(row.length == 0 || row.length < 10) break;
-    var andrewID  = row[1];
-    var lastName  = row[2];
-    var firstName = row[3];
-    var advisor   = row[4];
-    var dept      = row[5];
-    var key       = row[6];
-    var room      = row[7];
-    var expDate   = row[8];
-    var givenDate = row[9];
+    if(row.length == 0 || row.length < 11 || row[0] == "Inactive") break;
+    var andrewID  = row[2];
+    var lastName  = row[3];
+    var firstName = row[4];
+    var advisor   = row[5];
+    var dept      = row[6];
+    var key       = row[7];
+    var room      = row[8];
+    var expDate   = row[9];
+    var givenDate = row[10];
     if((andrewID == '') && (lastName =='') && (firstName == '') && 
        (advisor == '') && (dept == '') && (key == '') && (room == '') &&
        (expDate == '') && (givenDate == '')){break;}
@@ -451,8 +461,8 @@ function logToEntries(){
 }
 
 /**
- * Initially adds a value to the log if it is not already in the log (should be right after initially parsde)
- **/
+ * Initially adds a value to the log if it is not already in the log (should be right after initially parsed)
+ */
 function addToLog(){
   var keySS    = SpreadsheetApp.getActiveSpreadsheet();
   var logSheet = keySS.getSheetByName('Log');
@@ -469,6 +479,7 @@ function addToLog(){
       //
       if(!logEntries.has(andrewID)){
         logSheet.appendRow([
+          'Active',
           'Unverified',
           keyRecord.getAndrewID(),
           keyRecord.getLastName(),
@@ -483,7 +494,6 @@ function addToLog(){
       }
     }
   }
-
 }
 
 /**
@@ -514,7 +524,7 @@ function updateLog(andrewID,key,approval){
     var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
     var row1 = fullRow.getValues()[0]
     //2.replace the approval values I was looking for
-    row1[0] = approval
+    row1[1] = approval
     fullRow.setValues(row1) //debug these values
   } 
 }
