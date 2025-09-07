@@ -156,7 +156,6 @@ function activeEntries(){
   return active_entries
 }
 
-
 function inactiveEntries(){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
   const logSheet = keySS.getSheetByName('Log')
@@ -873,34 +872,24 @@ function checkInForm(allEntries){
         var key_count = entry.getKeys().length
         if(key_count == 1){
           /////update the log and remove from the all entries(what is the all entires)
-
           allEntries.delete(andrewID)
         }   ///??should I do this?
         else{
           keys = []
           entry.key.forEach((keyDetails) => {
             if(keyDetails.getKey() == key){
-              keyDetails.deactivate()       //This does not seem to work. deactiveate isnt doing anything but sorting to active and non active fkeys
+              keyDetails.deactivate()       //This does not seem to work. deactiveate isnt doing anything but sorting to active and non active fkeys <--may need to remove this
             } else{
               keys.push(keyDetails)
             }
-
           });
-
-
-
+          entry.setKey(keys)
+          allEntries.set(andrewID,entry)   
         }
-
-        
-
-        //Can be more efficent!!!
-      
-        entry.setKey(keys)
-        allEntries.set(andrewID,entry)        
+        //Update the log here
+        updateLog(andrewID,key,"Inactive")
       }
     }
-
-    //Update the log to show it is inactivE!!!!!
   }
   return allEntries
 }
