@@ -460,10 +460,36 @@ function logToEntries(){
   return allEntries;
 }
 
+
+function addToLog(andrewID,keyRecord,logSheet,logEntries){
+  var keys = keyRecord.getKeys()
+  for(var i = 0; i < keys.length; i++){
+    var key = keys[i]
+    if(!logEntries.has(andrewID)){
+      logSheet.append([
+        'Active',
+        'Unverified',
+        keyRecord.getAndrewID(),
+        keyRecord.getLastName(),
+        keyRecord.getFirstName(),
+        keyRecord.getAdvisor(),
+        keyRecord.getDepartment(),
+        key.getKey(),
+        key.getRoom(),
+        key.getExpirationDate(),
+        key.getGivenDate
+      ])
+    }
+  }
+}
+
 /**
+ * !!!!CHange so it can distingush active and non-active entries
+ * 
+ * 
  * Initially adds a value to the log if it is not already in the log (should be right after initially parsed)
  */
-function addToLog(){
+function addAllToLog(){
   var keySS    = SpreadsheetApp.getActiveSpreadsheet();
   var logSheet = keySS.getSheetByName('Log');
   
@@ -473,28 +499,10 @@ function addToLog(){
   allEntries = checkInForm(allEntries);
 
   for(const [andrewID, keyRecord] of allEntries){
-    var keys = keyRecord.getKeys()
-    for(i = 0; i < keys.length; i++){
-      var key = keys[i];
-      //
-      if(!logEntries.has(andrewID)){
-        logSheet.appendRow([
-          'Active',
-          'Unverified',
-          keyRecord.getAndrewID(),
-          keyRecord.getLastName(),
-          keyRecord.getFirstName(),
-          keyRecord.getAdvisor(),
-          keyRecord.getDepartment(),
-          key.getKey(),
-          key.getRoom(),
-          key.getExpirationDate(),
-          key.getGivenDate()
-        ])
-      }
-    }
+    addToLog(andrewID,keyRecord,logSheet,logEntries)
   }
 }
+
 
 /**
  * Update approval status of a log (based on what happens in the unverifed sheet)
@@ -542,23 +550,31 @@ function updateLog(andrewID,key,approval){
 function unverifiedValueCollection(){
   var keySS    = SpreadsheetApp.getActiveSpreadsheet();
   var logSheet = keySS.getSheetByName('Log');
-  var approvalAndAndrew = logSheet.getRange('A2:B').getValues();
+  var approvalAndAndrew = logSheet.getRange('B2:C').getValues();
   
-  var logEntries = logToEntries()
+  var logEntries = logToEntries() //log values to entry
+  //Need to change to active entries //////////////////////////////////////////////
   var allEntries = new Map();
   allEntries = checkoutFormToEntries(allEntries);
   allEntries = checkInForm(allEntries);
   var unverifiedEntries = new Map();
 
-  //if not in log AND unverified list. add to both???????????????????????????
+
+  ///?????????????????????????
+  //if not in log or unverified in the log
   for(const [andrewID,keyRecord] of allEntries){
     //check if in log or if unverifed in log
     var arr = ["Unverified",andrewID]
-    var value = approvalAndAndrew.includes(arr);
-    if(!logEntries.has(andrewID) || approvalAndAndrew.includes(arr)) {
+
+    //In log sheet as unverified
+    if(approvalAndAndrew.includes(arr)) {
       unverifiedEntries.set(andrewID,keyRecord);
-    }
-    //add to the log! specifiy it is unverfied
+    } 
+    //Not in log (add to unverified and add to log)
+    else if(!logEntries.has(andrewID)){
+      unverifiedEntries.set(andrewID,keyRecord)
+      addToLog(andrewID,keyRecord,logSheet,logEntries)
+    }    
   }
   return unverifiedEntries;
 }
