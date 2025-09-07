@@ -173,7 +173,6 @@ function validKey(key) {
     else return "invalid key";
   } return key;
 }
-
 function validRoomNum(num){
   const floorOpt = ["D","C","B","A","1","2","3","4","a","b","c","d"]; //find better way to deal with no Cap
   floor = num[0];
@@ -188,7 +187,6 @@ function validRoomNum(num){
   else if(parseInt(digits) == NaN) return false;
   else return true;
 }
-
 //make sure the second half is actually a number!!!!
 function validRoom(room){
   roomNum = 0
@@ -208,15 +206,46 @@ function validRoom(room){
   } 
   else return "invalid room"
 }
+function validDate(date){
+  //1. Date object
+  if(Object.prototype.toString.call(date) === "[object Date]"){
+    //if NaN, the date is not possible
+    if(isNaN(date.getTime())){return "Invalid date"}
+    return date 
+  }
+  //String formatted as date (reformat to date object)
+  if(typeof date === "string"){
+    //YYYY-MM-DD
+    var iso_date_regex = /^\d{4}-\d{2}-\d{2}$/; 
+    //MM/DD/YYYY
+    var  us_date_regex = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+    var split;
+    if(iso_date_regex.test(date)){
+      split = date.split("-")
+    }
+    else if(us_date_regex.test(date)){
+      split = date.split("/")
+    } else {return "Invalid date"}
+    var year  = parseInt(split[0],10)
+    var month = parseInt(split[1],10)
+    var day   = parseInt(split[2],10)
 
+    //Note: Month in date option starts at 0 (Jan = 0, Feb = 1,Mar = 2, ...)
+    var full_date = new Date(year,month-1,day)
 
-
-
-
-function validDate(){
-/////////////////////////////////////
-  return
+    const year_valid  = full_date.getFullYear()  === year
+    const month_valid = full_date.getMonth() + 1 === month
+    const day_valid   = full_date.getDate()      === day
+    if(year_valid && month_valid && day_valid){
+      return full_date
+    }  
+  }
+  return "Invalid Date"
 }
+
+
+
+
 //Safety check
 function confirmUser(first,last,advisor,andrew,key,room,entry){
   if((first != entry.getFirstName()) 
@@ -226,12 +255,6 @@ function confirmUser(first,last,advisor,andrew,key,room,entry){
       return true
     } return false
 }
-
-
-
-
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Parsing entry data
 /**
@@ -318,9 +341,9 @@ function checkoutFormToEntries(allEntries){
       } else if(ques == "Room (Include Building and Room Number) Ex: DH 3213A") {
         room = validRoom(answ);
       } else if(ques == "What date were you given the key/key access?") {
-        givenDate = answ;
+        givenDate = validDate(answ);
       } else if(ques == "What date will you lose acess? (Typically expected graduation date)") {
-        expDate = answ;
+        expDate = validDate(answ);
       } else if(ques == "Are you a part of the Chemical Engineering Department?") {
         if(answ == "Yes"){
           dept = "Chemical Engineering";
