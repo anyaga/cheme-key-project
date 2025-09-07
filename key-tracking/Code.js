@@ -137,15 +137,23 @@ function activeEntries(){
   const log_values = range.getValues()
 
   var active_entries = new Map()
-
   for(var log_row in log_values){
-    var status = log_row[0]
+    var status    = log_row[0]
+    var andrewID  = log_row[2]
+    var lastName  = log_row[3]
+    var firstName = log_row[4]
+    var advisor   = log_row[5]
+    var dept      = log_row[6]
+    var key       = log_row[7]
+    var room      = log_row[8]
+    var expDate   = log_row[9]
+    var givenDate = log_row[10]
     if(status == "Active"){
-      //////////////
+      var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
+      active_entries.set(andrewID,newKeyRec)
     }
   }
-  ////////////////////fix this 
-  return null
+  return active_entries
 }
 
 
@@ -155,16 +163,24 @@ function inactiveEntries(){
   const range    = logSheet.getRange(2,1,logSheet.getlastRow(),logSheet.getLastColumn()) 
   const log_values = range.getValues()
 
-
+  var inactive_entries = new Map()
   for(var log_row in log_values){
-    var status = log_row[0]
+    var status    = log_row[0]
+    var andrewID  = log_row[2]
+    var lastName  = log_row[3]
+    var firstName = log_row[4]
+    var advisor   = log_row[5]
+    var dept      = log_row[6]
+    var key       = log_row[7]
+    var room      = log_row[8]
+    var expDate   = log_row[9]
+    var givenDate = log_row[10]
     if(status == "Inactive"){
-      //////////////////////////
-      ////////////////////////
+      var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
+      inactive_entries.set(andrewID,newKeyRec)
     }
   }
-  ////////////////////fix this 
-  return null
+  return inactive_entries
 }
 
 /**
