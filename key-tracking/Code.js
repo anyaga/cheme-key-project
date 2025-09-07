@@ -374,56 +374,6 @@ function checkoutFormToEntries(allEntries){
   }
   return allEntries
 }
-////////////////////////CHeckthis?????????????????
-function checkInForm(allEntries){
-  var firstName,lastName, advisor,andrewID, key,room;
-  const checkInForm = FormApp.openByUrl("https://docs.google.com/forms/d/1t6IxYbw-evVopJd3XGKHRxb9HfWWke0ozHA39XT-1z8/")
-  var allResponses = checkInForm.getResponses()
- 
-  for(const resp of allResponses) {
-    //All the questions and response stores in an item
-    for(item of resp.getItemResponses()){
-      ques = item.getItem().getTitle();
-      answ = item.getResponse();
-      if(ques == "First Name:"){
-        firstName = answ;
-      } else if(ques == "Last Name:") {
-        lastName = answ;
-      } else if(ques == "Advisor:") {
-        advisor = answ;
-      } else if(ques == "andrewID:") {
-        andrewID = answ;
-      } else if(ques == "Key Number:") {
-        key = validKey(answ);
-      } else if(ques == "Room (Include Building and Room Number) Ex: DH 3213A") {
-        room = validRoom(answ);
-      } 
-    }
-
-    //Delete it from the entries
-    if(allEntries.has(andrewID)){
-      var entry = allEntries.get(andrewID)
-      var confirmed = confirmUser(firstName,lastName,advisor,andrewID,key,room,entry) //checking keys/rooms??????
-
-      if(confirmed){
-        allEntries.delete(andrewID)
-        keys = []
-        //Can be more efficent!!!
-        entry.key.forEach((keyDetails) => {
-          if(keyDetails.getKey() == key){
-            keyDetails.deactivate()
-          }
-          keys.push(keyDetails)
-        });
-        entry.setKey(keys)
-        allEntries.set(andrewID,entry)        
-      }
-    }
-
-    //Update the log to show it is inactivE!!!!!
-  }
-  return allEntries
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////Manipulating the log sheet
@@ -579,6 +529,7 @@ function unverifiedValueCollection(){
   }
   return unverifiedEntries;
 }
+
 /**
  * Create dropdown that determines status of unverified values
  */
@@ -682,9 +633,8 @@ function entryToUnverifiedInput(){
 }
 
 /**
- * Given what is in the approval tab, update what is in the unverifeid tab
+ * Given what is in the approval tab, update what is in the unverifeid tab. Approve Selected - Button
  */
-//Approve Selected - Button
 function submitSelectedData(){
   var keySS           = SpreadsheetApp.getActiveSpreadsheet();
   var unverifiedSheet = keySS.getSheetByName('Unverified Input');
@@ -761,10 +711,10 @@ function submitSelectedData(){
   //return the entries value. call this in analysis
   return allEntries
 }
+
 /**
- * Approve all unverified input, regardless of what is in the approval tab
+ * Approve all unverified input, regardless of what is in the approval tab. Approve All - Button
  */
-//Approve All - Button
 function approveAllData(){
   //clear all the data in the unverifeid
   var keySS          = SpreadsheetApp.getActiveSpreadsheet();
@@ -820,22 +770,73 @@ function approveAllData(){
   //return the entries value. call this in analysis
   return allEntries
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////Check in values in the sheets 
 
 
-
+//??assume already verified
 
 function manualCheckIn(){
 ///////////???????
 }
 
-function scheduleReload(){
-////////////////////////////
+function checkInForm(allEntries){
+  var firstName,lastName, advisor,andrewID, key,room;
+  const checkInForm = FormApp.openByUrl("https://docs.google.com/forms/d/1t6IxYbw-evVopJd3XGKHRxb9HfWWke0ozHA39XT-1z8/")
+  var allResponses = checkInForm.getResponses()
+ 
+  for(const resp of allResponses) {
+    //All the questions and response stores in an item
+    for(item of resp.getItemResponses()){
+      ques = item.getItem().getTitle();
+      answ = item.getResponse();
+      if(ques == "First Name:"){
+        firstName = answ;
+      } else if(ques == "Last Name:") {
+        lastName = answ;
+      } else if(ques == "Advisor:") {
+        advisor = answ;
+      } else if(ques == "andrewID:") {
+        andrewID = answ;
+      } else if(ques == "Key Number:") {
+        key = validKey(answ);
+      } else if(ques == "Room (Include Building and Room Number) Ex: DH 3213A") {
+        room = validRoom(answ);
+      } 
+    }
+
+    //Delete it from the entries
+    if(allEntries.has(andrewID)){
+      var entry = allEntries.get(andrewID)
+      var confirmed = confirmUser(firstName,lastName,advisor,andrewID,key,room,entry) //checking keys/rooms??????
+
+      if(confirmed){
+        allEntries.delete(andrewID)
+        keys = []
+        //Can be more efficent!!!
+        entry.key.forEach((keyDetails) => {
+          if(keyDetails.getKey() == key){
+            keyDetails.deactivate()
+          }
+          keys.push(keyDetails)
+        });
+        entry.setKey(keys)
+        allEntries.set(andrewID,entry)        
+      }
+    }
+
+    //Update the log to show it is inactivE!!!!!
+  }
+  return allEntries
 }
 
-function scheduledDeleteCheck(){
-///????????????
+function scheduleReload(){
+////////////////////////////
+
+//Check status ofvalues.remove them if checked in. Email or add to list if expired/near expiration (notification to return the values)
 }
+
 
 function currentKeys(){
   ///////////////////////////////////////
@@ -844,7 +845,7 @@ function currentKeys(){
 
 
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function fillSheets(allEntries){
   //Input SS Files
   var   inputFolder = null
