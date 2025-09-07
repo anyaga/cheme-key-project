@@ -128,6 +128,45 @@ class keyRecord {
   }
 }
 
+function activeEntries(){
+
+
+  const keySS    = SpreadsheetApp.getActiveSpreadsheet()
+  const logSheet = keySS.getSheetByName('Log')
+  const range    = logSheet.getRange(2,1,logSheet.getlastRow(),logSheet.getLastColumn()) 
+  const log_values = range.getValues()
+
+  var active_entries = new Map()
+
+  for(var log_row in log_values){
+    var status = log_row[0]
+    if(status == "Active"){
+      //////////////
+    }
+  }
+  ////////////////////fix this 
+  return null
+}
+
+
+function inactiveEntries(){
+  const keySS    = SpreadsheetApp.getActiveSpreadsheet()
+  const logSheet = keySS.getSheetByName('Log')
+  const range    = logSheet.getRange(2,1,logSheet.getlastRow(),logSheet.getLastColumn()) 
+  const log_values = range.getValues()
+
+
+  for(var log_row in log_values){
+    var status = log_row[0]
+    if(status == "Inactive"){
+      //////////////////////////
+      ////////////////////////
+    }
+  }
+  ////////////////////fix this 
+  return null
+}
+
 /**
 function activeEntries(entries){
   var active = new Map()
@@ -782,6 +821,7 @@ function manualCheckIn(){
 }
 
 function checkInForm(allEntries){
+
   var firstName,lastName, advisor,andrewID, key,room;
   const checkInForm = FormApp.openByUrl("https://docs.google.com/forms/d/1t6IxYbw-evVopJd3XGKHRxb9HfWWke0ozHA39XT-1z8/")
   var allResponses = checkInForm.getResponses()
@@ -808,19 +848,37 @@ function checkInForm(allEntries){
 
     //Delete it from the entries
     if(allEntries.has(andrewID)){
+      //??make sure to only delete the specific key. if this is the only key, remove the full entry
+      
       var entry = allEntries.get(andrewID)
       var confirmed = confirmUser(firstName,lastName,advisor,andrewID,key,room,entry) //checking keys/rooms??????
 
       if(confirmed){
-        allEntries.delete(andrewID)
-        keys = []
+        var key_count = entry.getKeys().length
+        if(key_count == 1){
+          /////update the log and remove from the all entries(what is the all entires)
+
+          allEntries.delete(andrewID)
+        }   ///??should I do this?
+        else{
+          keys = []
+          entry.key.forEach((keyDetails) => {
+            if(keyDetails.getKey() == key){
+              keyDetails.deactivate()       //This does not seem to work. deactiveate isnt doing anything but sorting to active and non active fkeys
+            } else{
+              keys.push(keyDetails)
+            }
+
+          });
+
+
+
+        }
+
+        
+
         //Can be more efficent!!!
-        entry.key.forEach((keyDetails) => {
-          if(keyDetails.getKey() == key){
-            keyDetails.deactivate()
-          }
-          keys.push(keyDetails)
-        });
+      
         entry.setKey(keys)
         allEntries.set(andrewID,entry)        
       }
