@@ -129,8 +129,6 @@ class keyRecord {
 }
 
 function activeEntries(){
-
-
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
   const logSheet = keySS.getSheetByName('Log')
   const range    = logSheet.getRange(2,1,logSheet.getlastRow(),logSheet.getLastColumn()) 
@@ -182,7 +180,6 @@ function inactiveEntries(){
   return inactive_entries
 }
 
-
 function verifiedEntries(){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
   const logSheet = keySS.getSheetByName('Log')
@@ -210,7 +207,6 @@ function verifiedEntries(){
   }
   return verifiedEntries
 
-  
 }
 
 /**
@@ -593,8 +589,27 @@ function unverifiedValueCollection(){
   var logEntries = logToEntries() //log values to entry
   //Need to change to active entries //////////////////////////////////////////////
   var allEntries = new Map();
+
+  //Read spreasheets with data. Should be in 'Key Inputs' folder
+  var inputFolder = null
+  const folders = DriverApp.getFolders()
+  while(folders.hasNext()){
+    inputFolder = folders.next()
+    var name = inputFolder.getName()
+    if(name == "Key Inputs"){
+      break;
+    }
+  }
+  const inputFiles = inputFolder.getFilesByType(MimeType.GOOGLE_SHEETS)
+  while(inputFiles.hasNext()){
+    var file = inputFiles.next()
+    allEntries = parseKeySheet(allEntries,file.getId()) 
+  }
+
   allEntries = checkoutFormToEntries(allEntries);
-  allEntries = checkInForm(allEntries);
+  allEntries = checkInForm(allEntries);         //////////////////////////////////////////////is this necessary??
+
+
   var unverifiedEntries = new Map();
 
   //if not in log or unverified in the log
@@ -935,6 +950,7 @@ function currentKeys(){
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function fillSheets(allEntries){
+  /** 
   //Input SS Files
   var   inputFolder = null
   const folders = DriveApp.getFolders()
@@ -945,26 +961,27 @@ function fillSheets(allEntries){
       break; //leave the loop when folder is found
     }
   }
-
   const inputFiles = inputFolder.getFilesByType(MimeType.GOOGLE_SHEETS)
   while(inputFiles.hasNext()){
     var file = inputFiles.next()
     var id = file.getId() 
     var file_name = file.getName() //////////////////
-    var allEntries = parseKeySheet(allEntries,id)
+    //var allEntries = parseKeySheet(allEntries,id)
   }
 
-  //Form
-  allEntries = checkoutFormToEntries(allEntries) //??MAY not be necessary
-  allEntries = checkInForm(allEntries)               
-
-  const dataSS = SpreadsheetApp.getActiveSpreadsheet() //'Keys Sheet Main'
+  //INSERT !VERIFIED! ENTRIES HERE!!!!
+  // allEntries = checkoutFormToEntries(allEntries) //??MAY not be necessary
+  // allEntries = checkInForm(allEntries)        
+  var allEntries = unverifiedEntries()       
+  */
+  var allEntries = verifiedEntries()
+  
 
   //Recalculate when ever there is a change (change in what?????)
   // const interval = dataSS.setRecalculationInterval(
   //   SpreadsheetApp.RecalculationInterval.ON_CHANGE,
   // )
-
+  const dataSS = SpreadsheetApp.getActiveSpreadsheet() //'Keys Sheet Main'
   const allSheets = dataSS.getSheets()
   const template_sheet = allSheets[allSheets.length - 1]
 
