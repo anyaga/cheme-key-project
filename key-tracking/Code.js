@@ -688,6 +688,10 @@ function entryToUnverifiedInput(){
 
 /**
  * Given what is in the approval tab, update what is in the unverifeid tab. Approve Selected - Button
+ * 
+ * 
+ * Check i values are valid
+ * 
  */
 function submitSelectedData(){
   var keySS           = SpreadsheetApp.getActiveSpreadsheet();
@@ -891,7 +895,6 @@ function scheduleReload(){
 //Check status ofvalues.remove them if checked in. Email or add to list if expired/near expiration (notification to return the values)
 }
 
-
 function currentKeys(){
   ///////////////////////////////////////
 }
@@ -947,7 +950,6 @@ function fillSheets(allEntries){
   //Get the years from all the entries (map) in an array
   const years = []
   allEntries.forEach((entryRecord) => {
-
     var keys = entryRecord.getKeys()
     for(i = 0; i < keys.length; i++){
       var key = keys[i]
@@ -971,6 +973,11 @@ function fillSheets(allEntries){
     else 
       {new_sheet.getRange("A1").setValue((`Expiration: ${years[i]} `))}
   }
+
+  //!!!!!!!Create condition for unknown years
+
+
+  //////////////////////////
 
   //Add entry to the different sheets
   allEntries.forEach((entryRecord) => {
