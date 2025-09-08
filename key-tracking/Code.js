@@ -721,7 +721,7 @@ function submitSelectedData(){
       allEntries.set(andrewID,keyRec)
       entry_raw.clear()
     } 
-    if(approval === "Denied"){
+    else if(approval === "Denied"){
       deletedEntires.set(andrewID,keyRec)
       entry_raw.clear()
     }
@@ -731,11 +731,11 @@ function submitSelectedData(){
     entry_raw = unverifiedSheet.getRange(2+i,1,1,10)  
     entry = entry_raw.getValues()[0]
     //check if next row is empty
-    val = entry.every(cell => (cell === "" || cell === null))  ///????????????????
+    val = entry.every(cell => (cell === "" || cell === null))
   }
   //Update the log
   var logSheet = keySS.getSheetByName('Log')
-  var logEntries_raw = logSheet("A2:J");
+  var logEntries_raw = logSheet("A2:K");
   var logEntries = logEntries_raw.getValues()
 
   for(var i = 0; i < logEntries.length; i++){
@@ -796,9 +796,11 @@ function approveAllData(){
     var expDate   = entry[8]
     var givenDate = entry[9]
     var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
+
     //All 'Approve'. All can be added to the map for entries
     allEntries.set(andrewID,keyRec)
     entry_raw.clear()
+
     //Uppdate loop conditions
     i = i + 1
     entry_raw = unverfiedSheet.getRange(2+i,1,1,10)
@@ -808,7 +810,7 @@ function approveAllData(){
   }
   //Update the log
   var logSheet       = keySS.getSheetByName('Log');
-  var logEntries_raw = logSheet.getRange("A2:J");
+  var logEntries_raw = logSheet.getRange("A2:K");
   var logEntries     = logEntries_raw.getValues();
   
   for(var i = 0; i < logEntries.length; i++){
