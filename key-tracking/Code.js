@@ -829,14 +829,34 @@ function approveAllData(){
 ////////////////////////Check in values in the sheets 
 
 
-//??assume already verified
-
-function manualCheckIn(){
-///////////???????
+function manualCheckIn(allEntries,andrewID,firstName,lastName,advisor,key,room){
+    if(allEntries.has(andrewID)){      
+      var entry     = allEntries.get(andrewID)
+      var confirmed = confirmUser(firstName,lastName,advisor,andrewID,key,room,entry) 
+      if(confirmed){
+        var key_count = entry.getKeys().length
+        //1.Remove specific key
+        if(key_count == 1){allEntries.delete(andrewID)}   
+        else{
+          keys = []
+          entry.key.forEach((keyDetails) => {
+            if(keyDetails.getKey() == key){
+              keyDetails.deactivate()       //This does not seem to work. deactiveate isnt doing anything but sorting to active and non active fkeys <--may need to remove this
+            } else{
+              keys.push(keyDetails)
+            }
+          });
+          entry.setKey(keys)
+          allEntries.set(andrewID,entry)   
+        }
+        //2.Update the log to show key has been removed
+        updateLog(andrewID,key,"Inactive")
+      }
+    }
+  return allEntries
 }
 
 function checkInForm(allEntries){
-
   var firstName,lastName, advisor,andrewID, key,room;
   const checkInForm = FormApp.openByUrl("https://docs.google.com/forms/d/1t6IxYbw-evVopJd3XGKHRxb9HfWWke0ozHA39XT-1z8/")
   var allResponses = checkInForm.getResponses()
@@ -860,36 +880,7 @@ function checkInForm(allEntries){
         room = validRoom(answ);
       } 
     }
-
-    //Delete it from the entries
-    if(allEntries.has(andrewID)){
-      //??make sure to only delete the specific key. if this is the only key, remove the full entry
-      
-      var entry = allEntries.get(andrewID)
-      var confirmed = confirmUser(firstName,lastName,advisor,andrewID,key,room,entry) //checking keys/rooms??????
-
-      if(confirmed){
-        var key_count = entry.getKeys().length
-        if(key_count == 1){
-          /////update the log and remove from the all entries(what is the all entires)
-          allEntries.delete(andrewID)
-        }   ///??should I do this?
-        else{
-          keys = []
-          entry.key.forEach((keyDetails) => {
-            if(keyDetails.getKey() == key){
-              keyDetails.deactivate()       //This does not seem to work. deactiveate isnt doing anything but sorting to active and non active fkeys <--may need to remove this
-            } else{
-              keys.push(keyDetails)
-            }
-          });
-          entry.setKey(keys)
-          allEntries.set(andrewID,entry)   
-        }
-        //Update the log here
-        updateLog(andrewID,key,"Inactive")
-      }
-    }
+    allEntries = manualCheckIn(allEntries,andrewID,firstName,lastName,advisor,key,room)
   }
   return allEntries
 }
@@ -904,8 +895,6 @@ function scheduleReload(){
 function currentKeys(){
   ///////////////////////////////////////
 }
-
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
