@@ -294,7 +294,7 @@ function validDate(date){
   //1. Date object
   if(Object.prototype.toString.call(date) === "[object Date]"){
     //if NaN, the date is not possible
-    if(isNaN(date.getTime())){return "Invalid date"}
+    if(isNaN(date.getTime())){return "invalid date"}
     return date 
   }
   //String formatted as date (reformat to date object)
@@ -309,7 +309,7 @@ function validDate(date){
     }
     else if(us_date_regex.test(date)){
       split = date.split("/")
-    } else {return "Invalid date"}
+    } else {return "invalid date"}
     var year  = parseInt(split[0],10)
     var month = parseInt(split[1],10)
     var day   = parseInt(split[2],10)
@@ -324,7 +324,7 @@ function validDate(date){
       return full_date
     }  
   }
-  return "Invalid Date"
+  return "invalid Date"
 }
 
 //Used in checkInForm <--- check if working properly
@@ -760,16 +760,23 @@ function submitSelectedData(){
     var room      = entry[7]
     var expDate   = entry[8]
     var givenDate = entry[9]
-    var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
 
-    //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
-    if(approval === "Approve"){
-      allEntries.set(andrewID,keyRec)
-      entry_raw.clear()
-    } 
-    else if(approval === "Denied"){
-      deletedEntires.set(andrewID,keyRec)
-      entry_raw.clear()
+    //change the color for the values???
+
+    //Only add values if they are no invalid values
+    if((key != 'invalid room') && (room != 'invalid room') && (date != "invalid date")){
+      var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
+
+      //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
+      if(approval === "Approve"){
+        allEntries.set(andrewID,keyRec)
+        entry_raw.clear()
+      } 
+      else if(approval === "Denied"){
+        deletedEntires.set(andrewID,keyRec)
+        entry_raw.clear()
+      }
+
     }
 
     //Update loop conditions 
