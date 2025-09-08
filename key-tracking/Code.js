@@ -182,6 +182,37 @@ function inactiveEntries(){
   return inactive_entries
 }
 
+
+function verifiedEntries(){
+  const keySS    = SpreadsheetApp.getActiveSpreadsheet()
+  const logSheet = keySS.getSheetByName('Log')
+  const range    = logSheet.getRange(2,1,logSheet.getlastRow(),logSheet.getLastColumn()) 
+  const log_values = range.getValues()
+
+  var verifiedEntries = new Map()
+  for(var log_row in log_values){
+    const status    = log_row[0]
+    const approval  = log_row[1]
+    const andrewID  = log_row[2]
+    const lastName  = log_row[3]
+    const firstName = log_row[4]
+    const advisor   = log_row[5]
+    const dept      = log_row[6]
+    const key       = log_row[7]
+    const room      = log_row[8]
+    const expDate   = log_row[9]
+    const givenDate = log_row[10]
+
+    if((status == "Active") && (approval == "Approval")){
+      var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
+      verifiedEntries.set(andrewID,newKeyRec)
+    }
+  }
+  return verifiedEntries
+
+  
+}
+
 /**
 function activeEntries(entries){
   var active = new Map()
@@ -767,7 +798,7 @@ function submitSelectedData(){
     }
   }
   //return the entries value. call this in analysis
-  return allEntries
+  return allEntries //////////////////////////////////////////////
 }
 
 /**
@@ -828,7 +859,7 @@ function approveAllData(){
     }
   }
   //return the entries value. call this in analysis
-  return allEntries
+  return allEntries /////////////////////////////////?????
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
