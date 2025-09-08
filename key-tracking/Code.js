@@ -764,7 +764,7 @@ function submitSelectedData(){
     //change the color for the values???
 
     //Only add values if they are no invalid values
-    if((key != 'invalid room') && (room != 'invalid room') && (date != "invalid date")){
+    if((key != 'invalid key') && (room != 'invalid room') && (date != "invalid date")){
       var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
 
       //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
@@ -848,12 +848,13 @@ function approveAllData(){
     var room      = entry[7]
     var expDate   = entry[8]
     var givenDate = entry[9]
-    var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
 
-    //All 'Approve'. All can be added to the map for entries
-    allEntries.set(andrewID,keyRec)
-    entry_raw.clear()
-
+    if((key != 'invalid key') && (room != 'invalid room') && (date != 'invalid date')){
+      var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
+      //All 'Approve'. All can be added to the map for entries
+      allEntries.set(andrewID,keyRec)
+      entry_raw.clear()
+    }
     //Uppdate loop conditions
     i = i + 1
     entry_raw = unverfiedSheet.getRange(2+i,1,1,10)
