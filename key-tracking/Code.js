@@ -1057,7 +1057,7 @@ function analysis(){
   //var allEntries = checkoutFormToEntries(null) //CHANGE TO THE ACTUAL ENTRIES
   var allEntries = new Map()
   allEntries = fillSheets(allEntries)
-  E = allEntries
+  var E = allEntries
   //ADD CONDIITON FOR ALL ENTRIES
   var currDate   = new Date()
 
