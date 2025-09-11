@@ -764,12 +764,14 @@ function submitSelectedData(){
     //change the color for the values???
 
     //Only add values if they are no invalid values
-    if((key != 'invalid key') && (room != 'invalid room') && (date != "invalid date")){
+    if((key != 'invalid key') && (room != 'invalid room') && (givenDate != "invalid date") 
+        && (expDate != "invalid date")){
       var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
 
       //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
-      if(approval === "Approve"){
+      if(approval === "Approved"){
         allEntries.set(andrewID,keyRec)
+        console.log(andrewID)
         entry_raw.clear()
       } 
       else if(approval === "Denied"){
@@ -788,7 +790,7 @@ function submitSelectedData(){
   }
   //Update the log
   var logSheet = keySS.getSheetByName('Log')
-  var logEntries_raw = logSheet("A2:K");
+  var logEntries_raw = logSheet.getRange("A2:K");
   var logEntries = logEntries_raw.getValues()
 
   for(var i = 0; i < logEntries.length; i++){
@@ -820,7 +822,7 @@ function submitSelectedData(){
     }
   }
   //return the entries value. call this in analysis
-  return allEntries //////////////////////////////////////////////
+  return allEntries ///////////////////////////////may not need to return a value since log updates
 }
 
 /**
@@ -881,10 +883,8 @@ function approveAllData(){
       }
     }
   }
-  //return the entries value. call this in analysis
-  return allEntries /////////////////////////////////?????
+  return allEntries ////////////////////////may not need to return a value since log updates
 }
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////Check in values in the sheets 
 
