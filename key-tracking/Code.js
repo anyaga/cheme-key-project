@@ -552,15 +552,16 @@ function updateLog(andrewID,key,approval){
   var key_found    = logSheet.createTextFinder(key).findAll()  
   //Key and andrewid both exist somewhere in the sheet
   if(andrew_found && key_found){
-    var andrew = andrew_found.getValues() //1+
+    //var andrew111 = andrew_found[0].getRow() //?????????????????????????
     var andrew_rows = []
-    for(var i = 0; i < andrew.length;i++){
-      andrew_rows.append(andrew[i].getRow())
+    for(var i = 0; i < andrew_found.length;i++){ //?????????????????????????
+      low = andrew_found[i].getRow()
+      andrew_rows.push(low)
     } 
-    var key = key_found.getValues()    //1+
+    //var key = key_found.getValues()    //1+
     var key_rows = [] 
-    for(var j = 0; j < key.length; j++){
-      key_rows.append(key[j].getRow())
+    for(var j = 0; j < key_found.length; j++){
+      key_rows.push(key_found[j].getRow())
     }
     //1.Now that the value is found, get the full range
     //////var found = andrew_rows.filter(a => key_rows.includes(a)) //filter == all the values
