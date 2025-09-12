@@ -748,7 +748,7 @@ function submitSelectedData(){
   var val = true
   var i = 0
   var entry_raw = unverifiedSheet.getRange(2+i,1,1,10)  //One row
-  var entry = entry_raw.getValues()[0] //check if  [0] is necessary
+  var entry     = entry_raw.getValues()[0] //check if  [0] is necessary
   while(val){
     var approval  = entry[0]    
     var andrewID  = entry[1]
@@ -760,33 +760,31 @@ function submitSelectedData(){
     var room      = entry[7]
     var expDate   = entry[8]
     var givenDate = entry[9]
-
-    //change the color for the values???
+    //change the color for the values!!!!!!!!!!!!!!!!!!
 
     //Only add values if they are no invalid values
-    if((key != 'invalid key') && (room != 'invalid room') && (givenDate != "invalid date") 
-        && (expDate != "invalid date")){
+    if((key != 'invalid key') && (room != 'invalid room') && (givenDate != "invalid date") && (expDate != "invalid date")){
       var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
 
       //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
-      if(approval === "Approved"){
+      if(approval == "Approved"){
         allEntries.set(andrewID,keyRec)
-        console.log(andrewID)
         entry_raw.clear()
       } 
-      else if(approval === "Denied"){
+      else if(approval == "Denied"){
         deletedEntires.set(andrewID,keyRec)
         entry_raw.clear()
       }
 
     }
 
+    console.log(entry[1]) 
     //Update loop conditions 
     i = i + 1
     entry_raw = unverifiedSheet.getRange(2+i,1,1,10)  
-    entry = entry_raw.getValues()[0]
+    entry     = entry_raw.getValues()[0]
     //check if next row is empty
-    val = entry.every(cell => (cell === "" || cell === null))
+    val = entry.every(cell => (cell != "" && cell != null))
   }
   //Update the log
   var logSheet = keySS.getSheetByName('Log')
@@ -801,10 +799,17 @@ function submitSelectedData(){
     //For all log values, check if it matches value in allEntries (approved entries)
     var found_entry = allEntries.get(andrewID1)
     if(found_entry != undefined){
-      var keys = found_entry.getKeys()
-      for(var k in keys){
+      console.log(andrewID1 + "ffffff")
+      var keys = found_entry.key//found_entry.getKeys()
+      //for(var k in keys){
+      for(var i in keys.length){
+
+        k = keys[i]
+        keyNum = k.keyNumber
         //If andrew ID(above) and key match, say it is approved in log
-        if(k.getKey() === key1){
+        //if(k.getKey() == key1){
+        if(keyNum == key1){
+          console.log("checking")//check!!!! need ot make sure that  log is updatde
           updateLog(andrewID1,k,"Approval")
         }
       }
@@ -812,10 +817,12 @@ function submitSelectedData(){
     //For all log vales, check if it matches value in deletedEntries (deleted entries)
     var found_entry1 = deletedEntires.get(andrewID1)
     if(found_entry1 != undefined){
-      var keys1 = found_entry1.getKeys() //array of keyInfo values
+      console.log(andrewID1 + "lllllll")
+      var keys1 = found_entry1.key//found_entry1.getKeys() //array of keyInfo values
       for(var k in keys1){
         //If andrewID(above) and key match, say it is denied in log
-        if(k.getKey() === key1){
+        //if(k.getKey() === key1){
+        if(k.keyNumber == key1){
           updateLog(andrewID1,k,"Denied")
         }
       }
