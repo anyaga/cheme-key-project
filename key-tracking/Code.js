@@ -778,8 +778,6 @@ function submitSelectedData(){
       }
 
     }
-
-    console.log(entry[1]) 
     //Update loop conditions 
     i = i + 1
     entry_raw = unverifiedSheet.getRange(2+i,1,1,10)  
@@ -806,16 +804,10 @@ function submitSelectedData(){
         keyNum = k.keyNumber
         //If andrew ID(above) and key match, say it is approved in log
         if(keyNum == key1){
-          console.log("checking")//check!!!! need ot make sure that  log is updatde
           updateLog(andrewID1,key1,"Approved")
         }
       }
     }
-
-
-    //EDIT THESE VALUES BELOW THIS!!!
-
-
 
     //For all log vales, check if it matches value in deletedEntries (deleted entries)
     var found_entry1 = deletedEntires.get(andrewID1)
@@ -849,7 +841,6 @@ function approveAllData(){
   var entry_raw = unverfiedSheet.getRange(2+i,1,1,10); //one row
   var entry = entry_raw.getValues()[0] //check this!!!!! [0]  
   while(val){
-    var entry_len = entry.length
     //var approval  = entry[0]
     var andrewID  = entry[1]
     var lastName  = entry[2]
@@ -861,8 +852,9 @@ function approveAllData(){
     var expDate   = entry[8]
     var givenDate = entry[9]
 
-    if((key != 'invalid key') && (room != 'invalid room') && (date != 'invalid date')){
-      var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
+    if((key != 'invalid key') && (room != 'invalid room') && (expDate != 'invalid date') && (givenDate != 'invalid date')){
+      var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
+
       //All 'Approve'. All can be added to the map for entries
       allEntries.set(andrewID,keyRec)
       entry_raw.clear()
@@ -870,9 +862,9 @@ function approveAllData(){
     //Uppdate loop conditions
     i = i + 1
     entry_raw = unverfiedSheet.getRange(2+i,1,1,10)
-    entry = entry_raw.getValues()[0]
+    entry     = entry_raw.getValues()[0]
     //Check if next row is empty
-    val = entry.every(cell => cell === "" || cell === null)
+    val = entry.every(cell => (cell != "" && cell != null))
   }
   //Update the log
   var logSheet       = keySS.getSheetByName('Log');
@@ -881,12 +873,12 @@ function approveAllData(){
   
   for(var i = 0; i < logEntries.length; i++){
     var entry_row  = logEntries[i]
-    var andrewID1 = entry_row[2]
-    var key1      = entry_row[7]
+    var andrewID1  = entry_row[2]
+    var key1       = entry_row[7]
+    
     var found_entry = allEntries.get(andrewID1) //undefined if not there
     if(found_entry != undefined){
       var keys = found_entry.key
-      //for(k in keys){
       for(var i = 0; i  < keys.length; i++){
         k = keys[i]
         keyNum = k.keyNumber
