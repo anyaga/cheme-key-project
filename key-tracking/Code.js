@@ -128,6 +128,23 @@ class keyRecord {
   }
 }
 
+
+function onEdit(e){
+  const unverifiedSheet = "Unverified Input"
+  const sheet           = e.range.getSheet().getName()
+
+  if (sheet == unverifiedSheet){
+    const button = sheet.getRange("L2")
+    button.setValue("Data Changed")
+    button.setBackground("#ffcccc")
+  } 
+  //else {
+  //}
+}
+
+
+
+
 function activeEntries(){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
   const logSheet = keySS.getSheetByName('Log')
@@ -921,7 +938,6 @@ function approveAllData(){
       }
     }
   }
-
   remainingEntries.forEach((entryRecord) => {
     var keys = entryRecord.key
     for(var i = 0; i < keys.length; i++){
