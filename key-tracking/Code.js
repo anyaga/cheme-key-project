@@ -536,6 +536,10 @@ function addAllToLog(){
   }
 }
 
+function test_update_log(){
+  updateLog("anyaga","4501-000","Approved")
+}
+
 /**
  * Update approval status of a log (based on what happens in the unverifed sheet)
  */
@@ -802,7 +806,7 @@ function submitSelectedData(){
       console.log(andrewID1 + "ffffff")
       var keys = found_entry.key//found_entry.getKeys()
       //for(var k in keys){
-      for(var i in keys.length){
+      for(var i = 0; i < keys.length; i++){
 
         k = keys[i]
         keyNum = k.keyNumber
