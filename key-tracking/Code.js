@@ -885,10 +885,13 @@ function approveAllData(){
     var key1      = entry_row[7]
     var found_entry = allEntries.get(andrewID1) //undefined if not there
     if(found_entry != undefined){
-      var keys = found_entry.getKeys()
-      for(k in keys){
-        if(k.getKey() ===key1){
-          updateLog(andrewID1,k,"Approval")
+      var keys = found_entry.key
+      //for(k in keys){
+      for(var i = 0; i  < keys.length; i++){
+        k = keys[i]
+        keyNum = k.keyNumber
+        if(keyNum == key1){
+          updateLog(andrewID1,key1,"Approved")
         }
       }
     }
