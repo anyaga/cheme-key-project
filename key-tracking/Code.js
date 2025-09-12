@@ -865,6 +865,7 @@ function approveAllData(){
   var keySS          = SpreadsheetApp.getActiveSpreadsheet();
   var unverfiedSheet = keySS.getSheetByName('Unverified Input');
   var allEntries     = new Map(); 
+  var remainingEntries = new Map()
 
   var val = true // this needs to be updated!!!!!!!!!!!!!!!!!1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
   var i = 0;
@@ -881,14 +882,16 @@ function approveAllData(){
     var room      = entry[7]
     var expDate   = entry[8]
     var givenDate = entry[9]
-
+    
+    var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
     if((key != 'invalid key') && (room != 'invalid room') && (expDate != 'invalid date') && (givenDate != 'invalid date')){
-      var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
-
       //All 'Approve'. All can be added to the map for entries
       allEntries.set(andrewID,keyRec)
-      entry_raw.clear()
     }
+    else {
+      remainingEntries.set(andrewID,keyRec)
+    }
+    entry_raw.clear()
     //Uppdate loop conditions
     i = i + 1
     entry_raw = unverfiedSheet.getRange(2+i,1,1,10)
@@ -918,7 +921,24 @@ function approveAllData(){
       }
     }
   }
-  return allEntries ////////////////////////may not need to return a value since log updates
+
+  remainingEntries.forEach((entryRecord) => {
+    var keys = entryRecord.key
+    for(var i = 0; i < keys.length; i++){
+      unverfiedSheet.appendRow([
+        'Select',
+        entryRecord.getAndrewID(),
+        entryRecord.getLastName(),
+        entryRecord.getFirstName(),
+        entryRecord.getAdvisor(),
+        entryRecord.getDepartment(),
+        keys[i].getKey(),
+        keys[i].getRoom(),
+        keys[i].getExpirationDate(),
+        keys[i].getGivenDate()
+      ])
+    }
+  });
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////Check in values in the sheets 
