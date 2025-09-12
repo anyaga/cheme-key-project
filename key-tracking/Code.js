@@ -741,14 +741,15 @@ function entryToUnverifiedInput(){
  * 
  */
 function submitSelectedData(){
-  var keySS           = SpreadsheetApp.getActiveSpreadsheet();
-  var unverifiedSheet = keySS.getSheetByName('Unverified Input');
-  var allEntries      = new Map()
-  var deletedEntires  = new Map()
+  var keySS            = SpreadsheetApp.getActiveSpreadsheet();
+  var unverifiedSheet  = keySS.getSheetByName('Unverified Input');
+  var approveEntries   = new Map()
+  var deletedEntires   = new Map()
+  var remainingEntries = new Map()
 
   var val = true
   var i = 0
-  var entry_raw = unverifiedSheet.getRange(2+i,1,1,10)  //One row
+  var entry_raw = unverifiedSheet.getRange(2+i,1,1,10)
   var entry     = entry_raw.getValues()[0] //check if  [0] is necessary
   while(val){
     var approval  = entry[0]    
@@ -769,14 +770,23 @@ function submitSelectedData(){
 
       //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
       if(approval == "Approved"){
-        allEntries.set(andrewID,keyRec)
+        approveEntries.set(andrewID,keyRec)
         entry_raw.clear()
       } 
       else if(approval == "Denied"){
         deletedEntires.set(andrewID,keyRec)
         entry_raw.clear()
       }
+      else{
+        remainingEntries.set(andrewID,keyRec)
+        entry_raw.clear()
+      }
 
+    } 
+    else{
+      var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
+      remainingEntries.set(andrewID,keyRec)
+      entry_raw.clear()
     }
     //Update loop conditions 
     i = i + 1
@@ -796,7 +806,7 @@ function submitSelectedData(){
     var key1      = entry_row[7]
 
     //For all log values, check if it matches value in allEntries (approved entries)
-    var found_entry = allEntries.get(andrewID1)
+    var found_entry = approveEntries.get(andrewID1)
     if(found_entry != undefined){
       var keys = found_entry.key
       for(var i = 0; i < keys.length; i++){
@@ -823,8 +833,28 @@ function submitSelectedData(){
       }
     }
   }
+
+  //first value is undefined
+
+  remainingEntries.forEach((entryRecord) => {
+    var keys = entryRecord.key
+    for(var i = 0; i < keys.length; i++) {
+      unverifiedSheet.appendRow([
+        'Select',
+        entryRecord.getAndrewID(),
+        entryRecord.getLastName(),
+        entryRecord.getFirstName(),
+        entryRecord.getAdvisor(),
+        entryRecord.getDepartment(),
+        keys[i].getKey(),
+        keys[i].getRoom(),
+        keys[i].getExpirationDate(),
+        keys[i].getGivenDate()
+       ])
+    }
+  });
   //return the entries value. call this in analysis
-  return allEntries ///////////////////////////////may not need to return a value since log updates
+  //return allEntries ///////////////////////////////may not need to return a value since log updates
 }
 
 /**
@@ -875,7 +905,7 @@ function approveAllData(){
     var entry_row  = logEntries[i]
     var andrewID1  = entry_row[2]
     var key1       = entry_row[7]
-    
+
     var found_entry = allEntries.get(andrewID1) //undefined if not there
     if(found_entry != undefined){
       var keys = found_entry.key
