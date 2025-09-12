@@ -537,7 +537,7 @@ function addAllToLog(){
 }
 
 function test_update_log(){
-  updateLog("anyaga","4501-000","Approved")
+  updateLog("bnyaga","4501-000","Approved")
 }
 
 /**
@@ -552,27 +552,23 @@ function updateLog(andrewID,key,approval){
   var key_found    = logSheet.createTextFinder(key).findAll()  
   //Key and andrewid both exist somewhere in the sheet
   if(andrew_found && key_found){
-    //var andrew111 = andrew_found[0].getRow() //?????????????????????????
     var andrew_rows = []
     for(var i = 0; i < andrew_found.length;i++){ //?????????????????????????
-      low = andrew_found[i].getRow()
-      andrew_rows.push(low)
+      andrew_rows.push(andrew_found[i].getRow())
     } 
-    //var key = key_found.getValues()    //1+
     var key_rows = [] 
     for(var j = 0; j < key_found.length; j++){
       key_rows.push(key_found[j].getRow())
     }
     //1.Now that the value is found, get the full range
-    //////var found = andrew_rows.filter(a => key_rows.includes(a)) //filter == all the values
-    //////find   == the first value
-    var found   = andrew_rows.find(a => key_rows.includes(a)) //matching column value is found (andrewid and key are on the same column)  //<----check this!!!
+    //  matching column value is found (andrewid and key are on the same column)  
+    var found   = andrew_rows.find(a => key_rows.includes(a)) 
     //fullRow = location of 'found' column
     var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
     var row1    = fullRow.getValues()[0]
     //2.replace the approval values I was looking for
     row1[1] = approval
-    fullRow.setValues(row1) //debug these values
+    fullRow.setValues([row1]) //debug these values
   } 
 }
 // function searchLog(){
@@ -804,31 +800,33 @@ function submitSelectedData(){
     //For all log values, check if it matches value in allEntries (approved entries)
     var found_entry = allEntries.get(andrewID1)
     if(found_entry != undefined){
-      console.log(andrewID1 + "ffffff")
-      var keys = found_entry.key//found_entry.getKeys()
-      //for(var k in keys){
+      var keys = found_entry.key
       for(var i = 0; i < keys.length; i++){
-
         k = keys[i]
         keyNum = k.keyNumber
         //If andrew ID(above) and key match, say it is approved in log
-        //if(k.getKey() == key1){
         if(keyNum == key1){
           console.log("checking")//check!!!! need ot make sure that  log is updatde
-          updateLog(andrewID1,k,"Approval")
+          updateLog(andrewID1,key1,"Approved")
         }
       }
     }
+
+
+    //EDIT THESE VALUES BELOW THIS!!!
+
+
+
     //For all log vales, check if it matches value in deletedEntries (deleted entries)
     var found_entry1 = deletedEntires.get(andrewID1)
     if(found_entry1 != undefined){
-      console.log(andrewID1 + "lllllll")
-      var keys1 = found_entry1.key//found_entry1.getKeys() //array of keyInfo values
-      for(var k in keys1){
+      var keys1 = found_entry1.key
+      for(var j = 0; j < keys1.length; j++){
+        k1 = keys1[j]
+        keyNum1 = k1.keyNumber
         //If andrewID(above) and key match, say it is denied in log
-        //if(k.getKey() === key1){
-        if(k.keyNumber == key1){
-          updateLog(andrewID1,k,"Denied")
+        if(keyNum1 == key1){
+          updateLog(andrewID1,key1,"Denied")
         }
       }
     }
