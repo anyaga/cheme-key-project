@@ -232,31 +232,6 @@ function verifiedEntries(){
 
 }
 
-/**
-function activeEntries(entries){
-  var active = new Map()
-  Object.entries(entries).forEach(([andrewID,key]) => {
-    //Create new key record w/ only inactive keys
-    var newKeyRec = keyRecord(key.getFirstName(),key.getLastName(),andrewID,null,null,null,null)
-    newKeyRec.setKey(key.getActiveKeys)
-    //Set to active dictionary
-    active.set(andrewID,newKeyRec) //change key record valyues
-  });
-  return active
-}
-function inactiveEntries(entries) {
-  var inactive = new Map()
-  Object.entries(entries).forEach(([andrewID,key]) => {
-    //Create new key record w/ only active keys
-    var newKeyRec = keyRecord(key.getFirstName(),key.getLastName(),andrewID,null,null,null,null)
-    newKeyRec.setKey(key.getInactiveKeys)
-    //Set to inactive dictionary
-    inactive.set(andrewID,newKeyRec)
-  });
-  return inactive
-}
-*/
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////Helper Functions used for safety checks
 function validKey(key) {
