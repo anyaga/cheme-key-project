@@ -137,6 +137,12 @@ function onEdit(e){
     const button = sheet.getRange("L2")
     button.setValue("Data Changed")
     button.setBackground("#ffcccc")
+
+    var val = e.value
+    var row = e.getRow()
+    var col = e.getColumn()
+
+    (value,row,col)
   } 
   //else {
   //}
@@ -748,6 +754,11 @@ function entryToUnverifiedInput(){
       .build()
   );
   unverifiedSheet.setConditionalFormatRules(newRules);
+}
+
+function submitUnverifedData(){
+  const unverfiedSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Unverified Input')
+  var errorUpdate = unverfiedSheet.getRange("L2")
 }
 
 /**
