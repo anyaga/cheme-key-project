@@ -5,6 +5,7 @@ The purpose of this project is to determine who should have key access. Keys are
 The goal of this project is to parse key information to determine keys that are expired and keys that will expire soon. Keys that will expire soon are displayed on a main spreadsheet. With the press of a button, the faculty adminstrator can contact these individuals. The same is true for expired keys. If too many keys to the same room are expired and not collected, a notification will appear to suggest re-keying the room to ensure the security of the space.
 
 # Authorized User Sheet
+This page is used to determine who has access to the 'Key Tracking Sheet'
 ---------------------
 # Key Tracking Sheet
 --------------
