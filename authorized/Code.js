@@ -3,7 +3,6 @@ function onEdit(e){
   const authorizeSS = e.source;
   const button = authorizeSS.getRange(buttonCell);
 
-  //protectButtonCell(); //No, it needs to be constantly running!!!!!
   const edit = e.range;
   const sheet = edit.getSheet();
   const changeCol = edit.getColumn();
