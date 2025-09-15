@@ -15,6 +15,7 @@ function onEdit(e){
     button.setBackground("#ffcccc");
     condenseEmails();
   }
+
   //Do not change the error line
   if((changeCol == button.getColumn()) && (changeRow == button.getRow())){
     //revert to the original value and give a warning
@@ -23,6 +24,9 @@ function onEdit(e){
   }
 }
 
+/**
+ * Strategy to ensure all emails are compact, especially after a value has been deleted.
+ */
 //https://stackoverflow.com/questions/4009085/checking-if-an-email-is-valid-in-google-apps-script
 function condenseEmails(){
   var rule = SpreadsheetApp.newDataValidation()
@@ -102,6 +106,9 @@ function condenseEmails(){
   accessSheet.setConditionalFormatRules(newRules);
 }
 
+/**
+ * Submititng the emails to formally be the authorized used for the key sheet
+ */
 function submitData(){
   const accessSheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();  
   const keySS       = DriveApp.getFileById('1vQtW4KrtQg0T16zBT5GRi9oMe3q009HKhgctaHoyt-E');//('https://docs.google.com/spreadsheets/d/1vQtW4KrtQg0T16zBT5GRi9oMe3q009HKhgctaHoyt-E/edit?gid=0#gid=0');
