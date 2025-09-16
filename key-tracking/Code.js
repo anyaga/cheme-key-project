@@ -600,7 +600,7 @@ function updateLogApproval(andrewID,key,approval){
     fullRow.setValues([row1]) //debug these values
   } 
 }
-
+////////////////////////////////////////////////////////////////////////////////////
 function unverifiedToLogUpdate(andrewID,key,room,givenDate,expDate){
   //can change everything but andrewid
 
@@ -790,8 +790,7 @@ function submitUnverifedData(row,col){
 /**
  * Given what is in the approval tab, update what is in the unverifeid tab. Approve Selected - Button
  * 
- * 
- * Check i values are valid
+ * EDIT DATA THAT YOU WANT TO APPROVE BUT HAS INVALID DATA
  * 
  */
 function submitSelectedData(){
@@ -851,7 +850,6 @@ function submitSelectedData(){
       else{exp_date_msg = ", " + "invalid date"}    
     }
     msg = msg + exp_date_msg
-
 
     //if((key != 'invalid key') && (room != 'invalid room') && (givenDate != "invalid date") && (expDate != "invalid date")){
     if(msg == "" || approval == "Denied"){
@@ -1059,7 +1057,6 @@ function approveAllData(){
   });
 }
 
-
 /************ Check in values in the sheets********/
 function manualCheckIn(allEntries,andrewID,firstName,lastName,advisor,key,room){
     if(allEntries.has(andrewID)){      
@@ -1156,7 +1153,6 @@ function fillSheets(allEntries){
   */
   var allEntries = verifiedEntries()
   
-
   //Recalculate when ever there is a change (change in what?????)
   // const interval = dataSS.setRecalculationInterval(
   //   SpreadsheetApp.RecalculationInterval.ON_CHANGE,
