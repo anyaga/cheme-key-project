@@ -855,7 +855,7 @@ function submitSelectedData(){
 
 
     //if((key != 'invalid key') && (room != 'invalid room') && (givenDate != "invalid date") && (expDate != "invalid date")){
-    if(msg == ""){
+    if(msg == "" || approval == "Denied"){
       var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
       //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
       if(approval == "Approved"){
@@ -878,7 +878,7 @@ function submitSelectedData(){
     }
     //Update loop conditions 
     i = i + 1
-    entry_raw = unverifiedSheet.getRange(2+i,1,1,10)  
+    entry_raw = unverifiedSheet.getRange(2+i,1,1,11)  
     entry     = entry_raw.getValues()[0]
     //check if next row is empty
     val = entry.every(cell => (cell != "" && cell != null))
