@@ -135,14 +135,14 @@ function onEdit(e){
   const sheet           = e.range.getSheet()
 
 
-  
-
-
   if (sheet.getName() == unverifiedSheet){  //Changed this! Must be any cahge outsid eof A
     const edit_range = e.range
     const unverified_range = sheet.getRange("B2:J") //Could be K
 
     //???????????????????????????
+
+    //getRow and getColumn --> top values
+    //getLastRow and getLastColumn --> bottom values
     if(unverified_range.getLastRow() >= edit_range.getRow()
      && unverified_range.getRow() <= edit_range.getlastRow()
      && unverified_range.getLastColumn() >= edit_range.getColumn()
@@ -150,12 +150,13 @@ function onEdit(e){
       //ADD CHANGES TO THE Log!!!!
       ui.alert("Edit to the entries!")
 
+
       //add function to edit the logs here!!!
+
+      //submitUnverifedData(unverified_range.getRow(),unverified_range.getColumn())
     }
 
 
-    const row = e.range.getRow()
-    const col = e.range.gtColumn()
 
     //if statemtn here!!!
   
@@ -565,13 +566,13 @@ function addAllToLog(){
 }
 
 function test_update_log(){
-  updateLog("bnyaga","4501-000","Approved")
+  updateLogApproval("bnyaga","4501-000","Approved")
 }
 
 /**
  * Update approval status of a log (based on what happens in the unverifed sheet)
  */
-function updateLog(andrewID,key,approval){
+function updateLogApproval(andrewID,key,approval){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
   const logSheet = keySS.getSheetByName('Log')
 
@@ -598,6 +599,11 @@ function updateLog(andrewID,key,approval){
     row1[1] = approval
     fullRow.setValues([row1]) //debug these values
   } 
+}
+
+function unverifiedToLogUpdate(andrewID,key,room,givenDate,expDate){
+  //can change everything but andrewid
+
 }
 // function searchLog(){
 //   var keySS = SpreadsheetApp.getActiveSpreadsheet();
@@ -761,10 +767,14 @@ function entryToUnverifiedInput(){
   unverifiedSheet.setConditionalFormatRules(newRules);
 }
 
-function submitUnverifedData(){
+function submitUnverifedData(row,col){
+  //look got column value
   const unverfiedSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Unverified Input')
   var errorUpdate = unverfiedSheet.getRange("L2")
 
+  const andrewId = unverfiedSheet.getRange(row,2).getValue()
+  const key      = unverfiedSheet.getRange(row,7).getValue()
+  const room     = unverfiedSheet.getRange(row,8).getValue()
 
 
 
@@ -892,7 +902,7 @@ function submitSelectedData(){
         keyNum = k.keyNumber
         //If andrew ID(above) and key match, say it is approved in log
         if(keyNum == key1){
-          updateLog(andrewID1,key1,"Approved")
+          updateLogApproval(andrewID1,key1,"Approved")
         }
       }
     }
@@ -906,7 +916,7 @@ function submitSelectedData(){
         keyNum1 = k1.keyNumber
         //If andrewID(above) and key match, say it is denied in log
         if(keyNum1 == key1){
-          updateLog(andrewID1,key1,"Denied")
+          updateLogApproval(andrewID1,key1,"Denied")
         }
       }
     }
@@ -992,7 +1002,7 @@ function approveAllData(){
         k = keys[i]
         keyNum = k.keyNumber
         if(keyNum == key1){
-          updateLog(andrewID1,key1,"Approved")
+          updateLogApproval(andrewID1,key1,"Approved")
         }
       }
     }
@@ -1015,10 +1025,9 @@ function approveAllData(){
     }
   });
 }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////Check in values in the sheets 
 
 
+/************ Check in values in the sheets********/
 function manualCheckIn(allEntries,andrewID,firstName,lastName,advisor,key,room){
     if(allEntries.has(andrewID)){      
       var entry     = allEntries.get(andrewID)
@@ -1040,7 +1049,7 @@ function manualCheckIn(allEntries,andrewID,firstName,lastName,advisor,key,room){
           allEntries.set(andrewID,entry)   
         }
         //2.Update the log to show key has been removed
-        updateLog(andrewID,key,"Inactive")
+        updateLogApproval(andrewID,key,"Inactive")
       }
     }
   return allEntries
