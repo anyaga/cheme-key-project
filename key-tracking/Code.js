@@ -128,7 +128,6 @@ class keyRecord {
   }
 }
 
-
 function onEdit(e){
   const unverifiedSheet = "Unverified Input"
   const sheet           = e.range.getSheet().getName()
@@ -142,15 +141,16 @@ function onEdit(e){
     var row = e.getRow()
     var col = e.getColumn()
 
-    (value,row,col)
+    //FINISH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    (val,row,col)
   } 
   //else {
   //}
 }
 
-
-
-
+/**
+ * Returns all active entries from the log
+ */
 function activeEntries(){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
   const logSheet = keySS.getSheetByName('Log')
@@ -177,6 +177,9 @@ function activeEntries(){
   return active_entries
 }
 
+/**
+ * Returns all inactive entries from the log
+ */
 function inactiveEntries(){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
   const logSheet = keySS.getSheetByName('Log')
@@ -203,6 +206,9 @@ function inactiveEntries(){
   return inactive_entries
 }
 
+/**
+ * Returns all active entries that are verified as valid inputs
+ */
 function verifiedEntries(){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
   const logSheet = keySS.getSheetByName('Log')
@@ -232,8 +238,7 @@ function verifiedEntries(){
 
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////Helper Functions used for safety checks
+/**********Helper Functions used for safety checks********/
 function validKey(key) {
   //Some error with Key formating
   if(!key.includes("4501-")){
@@ -325,7 +330,7 @@ function validDate(date){
   return "invalid Date"
 }
 
-//Used in checkInForm <--- check if working properly
+//----- check if working properly
 function confirmUser(first,last,advisor,andrew,key,room,entry){
   const key_rooms = entry.getKeys() //???????????????
   var key_room_status = false
