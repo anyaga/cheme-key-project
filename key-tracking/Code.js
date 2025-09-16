@@ -129,20 +129,31 @@ class keyRecord {
 }
 
 function onEdit(e){
+  //e = event objct
   const unverifiedSheet = "Unverified Input"
-  const sheet           = e.range.getSheet().getName()
+  const sheet           = e.range.getSheet()
 
-  if (sheet == unverifiedSheet){
+
+  if (sheet.getName() == unverifiedSheet){  //Changed this! Must be any cahge outsid eof A
+    const row = e.range.getRow()
+    const col = e.range.gtColumn()
+
+
+
+    const edit_section = sheet.getRange("B2:J") //Could be K
+
+    //if statemtn here!!!
+  
     const button = sheet.getRange("L2")
     button.setValue("Data Changed")
     button.setBackground("#ffcccc")
 
-    var val = e.value
-    var row = e.getRow()
-    var col = e.getColumn()
+    //var val = e.value
+    //var row = e.getRow()
+    //var col = e.getColumn()
 
     //FINISH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    (val,row,col)
+    //(val,row,col)
   } 
   //else {
   //}
@@ -746,6 +757,8 @@ function submitUnverifedData(){
 
 
 
+
+
   ////////////////////////////////////////////////////////
 }
 
@@ -832,7 +845,6 @@ function submitSelectedData(){
         remainingEntries.set(andrewID,keyRec)
         entry_raw.clear()
       }
-
     } 
     else{
       var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
@@ -886,7 +898,6 @@ function submitSelectedData(){
   }
 
   //first value is undefined
-
   remainingEntries.forEach((entryRecord) => {
     var keys = entryRecord.key
     for(var i = 0; i < keys.length; i++) {
@@ -905,8 +916,6 @@ function submitSelectedData(){
        ])
     }
   });
-  //return the entries value. call this in analysis
-  //return allEntries ///////////////////////////////may not need to return a value since log updates
 }
 
 /**
