@@ -783,35 +783,42 @@ function submitSelectedData(){
     msg = ""
     key_msg = ""
     room_msg = ""
-    give_date_msg = ""
+    given_date_msg = ""
     exp_date_msg  = ""
     //Add to note if there are invalid values (conjoin message values)
 
     //Only add values if they are no invalid values
     //Keys
-    if(key == 'invalid key'){key_msg = "invalid key"}
+    if(key == 'invalid key'){
+      key_msg = "invalid key"
+    }
     msg = msg + key_msg
     
     //Rooms
-    if(room == 'invalid room'){room_msg = "invalid room"}
-    if(msg == ""){msg = msg + room_msg}
-    else{msg = msg +", " + room_msg}
+    if(room == 'invalid room'){
+      if(msg == ""){room_msg = "invalid room"}
+      else{room_msg = ", "+"invalid room"}
+    }
+    msg = msg + room_msg
     
     //Given Date
-    if(givenDate == "invalid date"){give_date_msg = "invalid date"}
-    if(msg == ""){msg = msg + given_date_msg}
-    else{msg = msg + ", " + given_date_msg}
-    
+    if(givenDate == "invalid date"){
+      if(msg == ""){given_date_msg = "invalid date"}
+      else {given_date_msg = ", " + "invalid date"}
+    }
+    msg = msg + given_date_msg
+
     //Expiration Date
-    if(expDate == "invalid date"){exp_date_msg = "invalid date"}
-    if(msg == ""){msg = msg + exp_date_msg}
-    else{msg = msg + ", " + exp_date_msg}
+    if(expDate == "invalid date"){
+      if(msg == ""){exp_date_msg = "invalid date"}
+      else{exp_date_msg = ", " + "invalid date"}    
+    }
+    msg = msg + exp_date_msg
 
 
     //if((key != 'invalid key') && (room != 'invalid room') && (givenDate != "invalid date") && (expDate != "invalid date")){
     if(msg == ""){
       var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
-
       //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
       if(approval == "Approved"){
         approveEntries.set(andrewID,keyRec)
