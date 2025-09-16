@@ -780,11 +780,36 @@ function submitSelectedData(){
     var givenDate = entry[9]
     //change the color for the values!!!!!!!!!!!!!!!!!!
 
-    message = ""
+    msg = ""
+    key_msg = ""
+    room_msg = ""
+    give_date_msg = ""
+    exp_date_msg  = ""
     //Add to note if there are invalid values (conjoin message values)
 
     //Only add values if they are no invalid values
-    if((key != 'invalid key') && (room != 'invalid room') && (givenDate != "invalid date") && (expDate != "invalid date")){
+    //Keys
+    if(key == 'invalid key'){key_msg = "invalid key"}
+    msg = msg + key_msg
+    
+    //Rooms
+    if(room == 'invalid room'){room_msg = "invalid room"}
+    if(msg == ""){msg = msg + room_msg}
+    else{msg = msg +", " + room_msg}
+    
+    //Given Date
+    if(givenDate == "invalid date"){give_date_msg = "invalid date"}
+    if(msg == ""){msg = msg + given_date_msg}
+    else{msg = msg + ", " + given_date_msg}
+    
+    //Expiration Date
+    if(expDate == "invalid date"){exp_date_msg = "invalid date"}
+    if(msg == ""){msg = msg + exp_date_msg}
+    else{msg = msg + ", " + exp_date_msg}
+
+
+    //if((key != 'invalid key') && (room != 'invalid room') && (givenDate != "invalid date") && (expDate != "invalid date")){
+    if(msg == ""){
       var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
 
       //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
@@ -868,7 +893,8 @@ function submitSelectedData(){
         keys[i].getKey(),
         keys[i].getRoom(),
         keys[i].getExpirationDate(),
-        keys[i].getGivenDate()
+        keys[i].getGivenDate(),
+        msg
        ])
     }
   });
