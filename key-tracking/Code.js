@@ -825,7 +825,6 @@ function submitSelectedData(){
     exp_date_msg  = ""
     //Add to note if there are invalid values (conjoin message values)
 
-    //Only add values if they are no invalid values
     //Keys
     if(key == 'invalid key'){
       key_msg = "invalid key"
@@ -921,7 +920,6 @@ function submitSelectedData(){
       }
     }
   }
-
   //first value is undefined
   remainingEntries.forEach((entryRecord) => {
     var keys = entryRecord.key
@@ -955,7 +953,7 @@ function approveAllData(){
 
   var val = true // this needs to be updated!!!!!!!!!!!!!!!!!1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
   var i = 0;
-  var entry_raw = unverfiedSheet.getRange(2+i,1,1,10); //one row
+  var entry_raw = unverfiedSheet.getRange(2+i,1,1,11); //one row
   var entry = entry_raw.getValues()[0] //check this!!!!! [0]  
   while(val){
     //var approval  = entry[0]
@@ -969,6 +967,40 @@ function approveAllData(){
     var expDate   = entry[8]
     var givenDate = entry[9]
     
+    msg = ""
+    key_msg = ""
+    room_msg = ""
+    given_date_msg = ""
+    exp_date_msg  = ""
+    //Add to note if there are invalid values (conjoin message values)
+
+    //Keys
+    if(key == 'invalid key'){
+      key_msg = "invalid key"
+    }
+    msg = msg + key_msg
+    
+    //Rooms
+    if(room == 'invalid room'){
+      if(msg == ""){room_msg = "invalid room"}
+      else{room_msg = ", "+"invalid room"}
+    }
+    msg = msg + room_msg
+    
+    //Given Date
+    if(givenDate == "invalid date"){
+      if(msg == ""){given_date_msg = "invalid date"}
+      else {given_date_msg = ", " + "invalid date"}
+    }
+    msg = msg + given_date_msg
+
+    //Expiration Date
+    if(expDate == "invalid date"){
+      if(msg == ""){exp_date_msg = "invalid date"}
+      else{exp_date_msg = ", " + "invalid date"}    
+    }
+    msg = msg + exp_date_msg
+
     var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
     if((key != 'invalid key') && (room != 'invalid room') && (expDate != 'invalid date') && (givenDate != 'invalid date')){
       //All 'Approve'. All can be added to the map for entries
@@ -980,7 +1012,7 @@ function approveAllData(){
     entry_raw.clear()
     //Uppdate loop conditions
     i = i + 1
-    entry_raw = unverfiedSheet.getRange(2+i,1,1,10)
+    entry_raw = unverfiedSheet.getRange(2+i,1,1,11)
     entry     = entry_raw.getValues()[0]
     //Check if next row is empty
     val = entry.every(cell => (cell != "" && cell != null))
@@ -1020,7 +1052,8 @@ function approveAllData(){
         keys[i].getKey(),
         keys[i].getRoom(),
         keys[i].getExpirationDate(),
-        keys[i].getGivenDate()
+        keys[i].getGivenDate(),
+        msg
       ])
     }
   });
