@@ -238,7 +238,7 @@ function verifiedEntries(){
 
 }
 
-/**********Helper Functions used for safety checks********/
+/***************Helper Functions used for safety checks********/
 function validKey(key) {
   //Some error with Key formating
   if(!key.includes("4501-")){
@@ -346,8 +346,8 @@ function confirmUser(first,last,advisor,andrew,key,room,entry){
       return true
     } return false
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////Parsing entry data
+
+/*****************Parsing entry data***********************/
 /**
  * Parsing the sheets for entries 
  * */
@@ -459,8 +459,7 @@ function checkoutFormToEntries(allEntries){
   return allEntries
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////Manipulating the log sheet
+/*****************Manipulating the log sheet*************/
 /**
  * Read log data and turn them into entries
  */
@@ -739,6 +738,15 @@ function entryToUnverifiedInput(){
 function submitUnverifedData(){
   const unverfiedSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Unverified Input')
   var errorUpdate = unverfiedSheet.getRange("L2")
+
+
+
+
+
+
+
+
+  ////////////////////////////////////////////////////////
 }
 
 /**
@@ -757,7 +765,7 @@ function submitSelectedData(){
 
   var val = true
   var i = 0
-  var entry_raw = unverifiedSheet.getRange(2+i,1,1,10)
+  var entry_raw = unverifiedSheet.getRange(2+i,1,1,11) //11th is note (where message goes)
   var entry     = entry_raw.getValues()[0] //check if  [0] is necessary
   while(val){
     var approval  = entry[0]    
@@ -771,6 +779,9 @@ function submitSelectedData(){
     var expDate   = entry[8]
     var givenDate = entry[9]
     //change the color for the values!!!!!!!!!!!!!!!!!!
+
+    message = ""
+    //Add to note if there are invalid values (conjoin message values)
 
     //Only add values if they are no invalid values
     if((key != 'invalid key') && (room != 'invalid room') && (givenDate != "invalid date") && (expDate != "invalid date")){
