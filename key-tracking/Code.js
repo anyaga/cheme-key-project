@@ -130,17 +130,32 @@ class keyRecord {
 
 function onEdit(e){
   //e = event objct
+  var ui = SpreadsheetApp.getUi()
   const unverifiedSheet = "Unverified Input"
   const sheet           = e.range.getSheet()
 
 
+  
+
+
   if (sheet.getName() == unverifiedSheet){  //Changed this! Must be any cahge outsid eof A
+    const edit_range = e.range
+    const unverified_range = sheet.getRange("B2:J") //Could be K
+
+    //???????????????????????????
+    if(unverified_range.getLastRow() >= edit_range.getRow()
+     && unverified_range.getRow() <= edit_range.getlastRow()
+     && unverified_range.getLastColumn() >= edit_range.getColumn()
+     && unverified_range.getColumn() <= edit_range.getLastColumn()){
+      //ADD CHANGES TO THE Log!!!!
+      ui.alert("Edit to the entries!")
+
+      //add function to edit the logs here!!!
+    }
+
+
     const row = e.range.getRow()
     const col = e.range.gtColumn()
-
-
-
-    const edit_section = sheet.getRange("B2:J") //Could be K
 
     //if statemtn here!!!
   
