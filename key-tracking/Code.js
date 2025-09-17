@@ -644,7 +644,6 @@ function unverifiedValueCollection(){
   allEntries = checkoutFormToEntries(allEntries);
   allEntries = checkInForm(allEntries);         //////////////////////////////////////////////is this necessary??
 
-
   var unverifiedEntries = new Map();
 
   //if not in log or unverified in the log
@@ -1152,11 +1151,12 @@ function fillSheets(allEntries){
   var allEntries = unverifiedEntries()       
   */
   var allEntries = verifiedEntries()
+
+  ////Check if expired!!!!
+
+  //ADD EXPIRED TAG
   
-  //Recalculate when ever there is a change (change in what?????)
-  // const interval = dataSS.setRecalculationInterval(
-  //   SpreadsheetApp.RecalculationInterval.ON_CHANGE,
-  // )
+
   const dataSS = SpreadsheetApp.getActiveSpreadsheet() //'Keys Sheet Main'
   const allSheets = dataSS.getSheets()
   const template_sheet = allSheets[allSheets.length - 1]
@@ -1173,15 +1173,20 @@ function fillSheets(allEntries){
     }
   });
 
+  var today = new Date()
+  today.setHours(0,0,0,0)
+
   //Get the years from all the entries (map) in an array
-  const years = []
+  const years = ["Expired"]
   allEntries.forEach((entryRecord) => {
     var keys = entryRecord.getKeys()
     for(i = 0; i < keys.length; i++){
       var key = keys[i]
       var date = new Date(key.getExpirationDate())
       var entry_yr = date.getFullYear()
-      if(!years.includes(entry_yr)){
+
+      //Year not added and current day is after today
+      if(!years.includes(entry_yr) && date > today){
         years.push(entry_yr)
       }
     }
@@ -1199,11 +1204,8 @@ function fillSheets(allEntries){
     else 
       {new_sheet.getRange("A1").setValue((`Expiration: ${years[i]} `))}
   }
-
-  //!!!!!!!Create condition for unknown years
-
-
   //////////////////////////
+
 
   //Add entry to the different sheets
   allEntries.forEach((entryRecord) => {
@@ -1211,7 +1213,11 @@ function fillSheets(allEntries){
     for(i = 0; i < keys.length; i++){
       var key = keys[i]
       var date = new Date(key.getExpirationDate())
-      var yr1  = date.getFullYear() 
+      if( date < today)
+        {var yr1 = "Expired"}
+      else
+        {var yr1  = date.getFullYear()}
+      
       var new_sheet = dataSS.getSheetByName(yr1)
       new_sheet.appendRow([
         key.getExpirationDate(),entryRecord.getAndrewID(),
