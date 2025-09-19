@@ -34,7 +34,7 @@ clasp run <functionName>
 git add .
 git commit -m "---"
 git push
-git checkout -b branch_name
+git checkout branch_name
 
 
 
