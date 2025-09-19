@@ -1130,7 +1130,7 @@ function fillSheets(){
   const allSheets      = dataSS.getSheets()
   const template_sheet = allSheets[allSheets.length - 1] //Template is always the last sheet
 
-  const allEntries = verifiedEntries()  
+  var allEntries = verifiedEntries()  
 
   //Delete all the previous year sheets
   allSheets.forEach((sheet) => {
@@ -1148,7 +1148,7 @@ function fillSheets(){
   today.setHours(0,0,0,0)
 
   //Get the years from all the entries (map) in an array
-  const years = ["Expired"]
+  const years = []//"Expired"]
   allEntries.forEach((entryRecord) => {
     var keys = entryRecord.getKeys()
     for(i = 0; i < keys.length; i++){
@@ -1163,12 +1163,18 @@ function fillSheets(){
     }
   });
 
-  years.sort().reverse()//sort years array in descending order
+  years.sort()
+  years.push("Expired")
+  years.reverse()//sort years array in descending order
+  
 
   //Create sheets with the given years
   for(i = 0; i < years.length; i++ ){
     //Create new sheet
-    var new_sheet = dataSS.insertSheet((years[i]).toFixed(0), i+1, {template: template_sheet})
+    if (i == 0)
+      {var new_sheet = dataSS.insertSheet((years[i]), i+1, {template: template_sheet})}
+    else
+      {var new_sheet = dataSS.insertSheet((years[i]).toFixed(0), i+1, {template: template_sheet})}
     //Name the new sheet
     /** 
     if(i == 0) 
@@ -1177,18 +1183,25 @@ function fillSheets(){
       {new_sheet.getRange("A1").setValue((`Expiration: ${years[i]} `))}*/
     new_sheet.getRange("A1").setValue((`Expiration: ${years[i]} `))
   }
-
+  console.log("yo")
+  console.log(allEntries)
   //Add entry to the different sheets
   allEntries.forEach((entryRecord) => {
     var keys = entryRecord.getKeys()
+    console.log("hello")
     for(i = 0; i < keys.length; i++){
       var key = keys[i]
       var date = new Date(key.getExpirationDate())
-
+      
       if( date <= today)
-        {var yr1 = "Expired"}
+        {var yr1 = "Expired"
+         console.log("check1")
+        }
       else
-        {var yr1  = date.getFullYear()}
+        {
+          var yr1  = date.getFullYear()
+          console.log("check2")
+        }
       
       var new_sheet = dataSS.getSheetByName(yr1)
       new_sheet.appendRow([
