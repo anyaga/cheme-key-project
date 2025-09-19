@@ -65,3 +65,10 @@ Merge pull Request --> Confirm merge
 git checkout main
 git pull origin main
 clasp push (in key-tracking folder)
+
+
+# Git issues
+To close an issue, refrence it in a commit
+
+git add .
+git commit -m "Fix login redirect. Fixes #7"
