@@ -12,6 +12,11 @@ var E = null;
 var log;
 var currentRecord;
 
+var andrew_day   = []
+var andrew_week  = []
+var andrew_one   = []
+var expired_list = []
+
 class keyInfo{
   constructor(keyNumber,roomNumber,givenDate,expDate){
     //A string due to the dash in the middle
@@ -1235,10 +1240,10 @@ function analysis(){
   var dayDate  = new Date(currDate)
   dayDate.setDate(dayDate.getDate() + 1)
 
-  var andrew_day   = []
-  var andrew_week  = []
-  var andrew_one   = []
-  var expired_list = []
+  andrew_day   = []
+  andrew_week  = []
+  andrew_one   = []
+  expired_list = []
 
   allEntries.forEach((entryRecord) => {
     var keys = entryRecord.getKeys()
@@ -1314,16 +1319,16 @@ function expiration_check(){
     var file = files.next()
     switch (file.getName()){
       case "Month Till Expiration":
-        expire_msg(NaN,file,file.getName()) //Change to month list
+        expire_msg(andrew_one,file,file.getName()) //Change to month list
         break
       case "Week Till Expiration":
-        expire_msg(NaN,file,file.getName()) //Change to week list
+        expire_msg(andrew_week,file,file.getName()) //Change to week list
         break
       case "Day Till Expiration":
-        expire_msg(NaN,file,file.getName()) //Change to Day list
+        expire_msg(andrew_day,file,file.getName()) //Change to Day list
         break
       case "Expired":
-        expire_msg(NaN,file,file.getName()) //Change to expire list
+        expire_msg(expired_list,file,file.getName()) //Change to expire list
         break
 
     }
