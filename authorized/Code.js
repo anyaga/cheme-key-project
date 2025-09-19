@@ -1,3 +1,7 @@
+/**
+ * Captuers changes to actice spreadsheet
+ * @param {*} e  - event object
+ */
 function onEdit(e){
   const buttonCell = 'D2';
   const authorizeSS = e.source;
@@ -15,6 +19,7 @@ function onEdit(e){
     button.setBackground("#ffcccc");
     condenseEmails();
   }
+
 
   //Do not change the error line
   if((changeCol == button.getColumn()) && (changeRow == button.getRow())){
@@ -41,7 +46,7 @@ function condenseEmails(){
   
   //Only get valid emails from A column
   var rowTotal = 0;
-  var email_access = {};//dictionary in javascript
+  var email_access = {};
   for(var i = 0; i < emails_column.length; i++){
     //non-empty string and valid email
     if((emails_column[i][0] !== "") && (email_regex.test(emails_column[i][0]))){
@@ -111,14 +116,16 @@ function condenseEmails(){
  */
 function submitData(){
   const accessSheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();  
-  const keySS       = DriveApp.getFileById('1vQtW4KrtQg0T16zBT5GRi9oMe3q009HKhgctaHoyt-E');//('https://docs.google.com/spreadsheets/d/1vQtW4KrtQg0T16zBT5GRi9oMe3q009HKhgctaHoyt-E/edit?gid=0#gid=0');
+  //('https://docs.google.com/spreadsheets/d/1vQtW4KrtQg0T16zBT5GRi9oMe3q009HKhgctaHoyt-E/edit?gid=0#gid=0');
+  const keySS       = DriveApp.getFileById('1vQtW4KrtQg0T16zBT5GRi9oMe3q009HKhgctaHoyt-E');
   const file        = DriveApp.getFileById(keySS.getId());
 
   const emails = accessSheet.getRange('A2:A').getValues();
   const access = accessSheet.getRange('B2:B').getValues();
   const permanentAccess = [ //IT staff only
     "anyaga@andrew.cmu.edu",
-    "sarahhug@andrew.cmu.edu"
+    "sarahhug@andrew.cmu.edu",
+    "nyaga.angel@outlook.com"
   ]; 
 
   permanentAccess.forEach(function(email){
@@ -183,17 +190,17 @@ function submitData(){
   button.setBackground("#ccffcc");
 }
 
-//https://developers.google.com/apps-script/reference/spreadsheet/protection
-// function protectButtonCell() {
-//   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-//   const buttonCell = sheet.getRange('D2');
+https://developers.google.com/apps-script/reference/spreadsheet/protection
+function protectButtonCell() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const buttonCell = sheet.getRange('D2');
 
-//   //Create section to protect
-//   const protection = buttonCell.protect();
-//   protection.setDescription("Protect Submit Button");
-//   protection.removeEditors(protection.getEditors());
+  //Create section to protect
+  const protection = buttonCell.protect();
+  protection.setDescription("Protect Submit Button");
+  protection.removeEditors(protection.getEditors());
 
-//   if (protection.canDomainEdit()) {
-//     protection.setDomainEdit(false);
-//   }
-// }
+  if (protection.canDomainEdit()) {
+    protection.setDomainEdit(false);
+  }
+}
