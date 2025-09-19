@@ -14,8 +14,10 @@ var currentRecord;
 
 class keyInfo{
   constructor(keyNumber,roomNumber,givenDate,expDate){
-    this.keyNumber= keyNumber //A string due to the dash in the middle
-    this.roomNumber = roomNumber //String to designate building name
+    //A string due to the dash in the middle
+    this.keyNumber= keyNumber 
+     //String to designate building name
+    this.roomNumber = roomNumber
     this.givenDate = givenDate;
     this.expDate = expDate;
     this.status = true
@@ -36,7 +38,7 @@ class keyInfo{
     return this.status
   }
 
-  //////////////////////////////////////////////
+  ////////////////////May need to be deleted//////////////////////////
   deactivate(){
     this.status = false
   }
@@ -55,6 +57,7 @@ class keyInfo{
   expired(){
     return !this.active()
   }
+  ///////////////////////////
 }
 
 class keyRecord {
@@ -116,10 +119,8 @@ class keyRecord {
     var keys = this.key
     keys.push(newKey)
     this.key = keys
-    //this.key.push(newKey)//make sure it is an array
   }
   removeKey(remKey){
-    //??Can one key open multiple rooms???
     this.key.forEach((keyInfo) =>{
       if(keyInfo.getKey() == remKey){
         keyInfo.deactivate()
@@ -127,9 +128,11 @@ class keyRecord {
     });
   }
 }
-
+/**
+ * Capture changes to active spreadsheet (Key Main Sheet)
+ * @param {*} e - event object
+ */
 function onEdit(e){
-  //e = event objct
   var ui = SpreadsheetApp.getUi()
   const unverifiedSheet = "Unverified Input"
   const sheet           = e.range.getSheet()
@@ -139,7 +142,6 @@ function onEdit(e){
     const edit_range = e.range
     const unverified_range = sheet.getRange("B2:J") //Could be K
 
-    //???????????????????????????
 
     //getRow and getColumn --> top values
     //getLastRow and getLastColumn --> bottom values
@@ -157,22 +159,12 @@ function onEdit(e){
     }
 
 
-
     //if statemtn here!!!
   
     const button = sheet.getRange("L2")
     button.setValue("Data Changed")
     button.setBackground("#ffcccc")
-
-    //var val = e.value
-    //var row = e.getRow()
-    //var col = e.getColumn()
-
-    //FINISH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //(val,row,col)
   } 
-  //else {
-  //}
 }
 
 /**
@@ -565,9 +557,6 @@ function addAllToLog(){
   }
 }
 
-function test_update_log(){
-  updateLogApproval("bnyaga","4501-000","Approved")
-}
 
 /**
  * Update approval status of a log (based on what happens in the unverifed sheet)
@@ -610,8 +599,9 @@ function unverifiedToLogUpdate(andrewID,key,room,givenDate,expDate){
 //   var logSheet = keySS.getSheetName('Log');
 //   var andrewIDList = logSheet.getRange('A2:A').getValues();  
 // }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////Manipulating the unverifed sheet
+
+
+/************************ Manipulating the unverifed sheet ****************/
 
 /**
  * Take all new input values and add them to the unverifid sheet in 'Key Sheet Main;
@@ -621,8 +611,7 @@ function unverifiedValueCollection(){
   var logSheet = keySS.getSheetByName('Log');
   var approvalAndAndrew = logSheet.getRange('B2:C').getValues();
   
-  var logEntries = logToEntries() //log values to entry
-  //Need to change to active entries //////////////////////////////////////////////
+  var logEntries = logToEntries();
   var allEntries = new Map();
 
   //Read spreasheets with data. Should be in 'Key Inputs' folder
@@ -717,13 +706,6 @@ function entryToUnverifiedInput(){
 
   var dropdownRange = unverifiedSheet.getRange('A2:A');
   dropdownRange.setDataValidation(rule);
-
-  //var goalRange = unverifiedSheet.getRange('A2:A')
-  // //unverifiedSheet.getRange(1,2,rowTotal,1); //check if i need to switch the 1st and 2nd value
-  // goalRange.setDataValidation(rule);
-  // var allEntries = new Map();
-  // allEntries = checkoutFormToEntries(allEntries);
-  // allEntries = checkInForm(allEntries);
 
   var unverifiedEntries = unverifiedValueCollection()
   unverifiedEntries.forEach((entryRecord) => {
