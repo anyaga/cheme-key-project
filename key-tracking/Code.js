@@ -1319,19 +1319,19 @@ function expiration_check(){
       switch (file.getName()){
         case "Month Till Expiration":
           var doc_month = DocumentApp.openById(file.getId())
-          expire_msg(andrew_one,doc_month,file.getName()) //Change to month list
+          expire_msg(andrew_one,doc_month,file.getName()) 
           break
         case "Week Till Expiration":
           var doc_week = DocumentApp.openById(file.getId())
-          expire_msg(andrew_week,doc_week,file.getName()) //Change to week list
+          expire_msg(andrew_week,doc_week,file.getName()) 
           break
         case "Day Till Expiration":
           var doc_day  = DocumentApp.openById(file.getId())
-          expire_msg(andrew_day,doc_day,file.getName()) //Change to Day list
+          expire_msg(andrew_day,doc_day,file.getName()) 
           break
         case "Expired":
           var doc_exp  = DocumentApp.openById(file.getId())
-          expire_msg(expired_list,doc_exp,file.getName()) //Change to expire list
+          expire_msg(expired_list,doc_exp,file.getName()) 
           break
       }
     }
@@ -1343,8 +1343,8 @@ function expire_msg(list,doc,subj){
   
   for(var entry_record of list){
     var recipient       = entry_record.getAndrewID() + "@andrew.cmu.edu"
-    var doc_string_name = doc_string.replace("[First]",entry_record.getFirstName()) /////////////////////Try to replace with actual first name
-    doc_string_name     = doc_string_name.replace("[Last]",entry_record.getLastName()) //////////////////Try to replace with actual last  name
+    var doc_string_name = doc_string.replace("[First]",entry_record.getFirstName()) 
+    doc_string_name     = doc_string_name.replace("[Last]",entry_record.getLastName())
     MailApp.sendEmail(recipient,subj,doc_string_name) //check this
   }
 
