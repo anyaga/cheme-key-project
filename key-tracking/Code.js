@@ -1291,7 +1291,53 @@ function analysis(){
   }
 }
 
-function approach_expire(){
+function expiration_check(){
+
+
+  
+
+  var inputFolder = null
+  const folder = DriverApp.getFoldersByName("Keys Project")
+  const files  = folder.getFilesByType(MimeType.GOOGLE_DOCS)
+  while(files.hasNext()){
+    var file = files.next()
+    switch (file.getName()){
+      case "Month Till Expiration":
+        expire_msg(file)
+        break
+      case "Week Till Expiration":
+        expire_msg(file)
+        break
+      case "Day Till Expiration":
+        break
+      case "Expired":
+        break
+
+    }
+
+    if(name == "Key Inputs"){
+      break;
+    }
+  }
+  // const inputFiles = inputFolder.getFilesByType(MimeType.GOOGLE_DOCS)
+  // while(inputFiles.hasNext()){
+  //   var file = inputFiles.next()
+  //   allEntries = parseKeySheet(allEntries,file.getId()) 
+  // }
+
+
+
+}
+
+function expire_msg(file){
+  var expired = NaN //edit this!!!
+  var subj = "One Month till Key Expiration" 
+  for(var andrew of expired){
+    var recipient = andrew + "@andrew.cmu.edu"
+    
+
+    MailApp.sendEmail(recipient,subj,null) //check this
+  }
 
 }
 
