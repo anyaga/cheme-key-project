@@ -1307,7 +1307,7 @@ function analysis(){
 }
 
 function expiration_check(){
-  const folder = DriveApp.getFoldersByName("Keys Project")
+  const folder = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
   const files  = folder.getFiles()//getFilesByType(MimeType.GOOGLE_DOCS)
 
   while(files.hasNext()){
