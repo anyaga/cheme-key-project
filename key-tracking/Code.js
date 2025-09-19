@@ -181,7 +181,7 @@ function onEdit(e){
 function activeEntries(){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
   const logSheet = keySS.getSheetByName('Log')
-  const range    = logSheet.getRange(2,1,logSheet.getlastRow(),logSheet.getLastColumn()) 
+  const range    = logSheet.getRange(2,1,logSheet.getLastRow(),logSheet.getLastColumn()) 
   const log_values = range.getValues()
 
   var active_entries = new Map()
@@ -239,7 +239,7 @@ function inactiveEntries(){
 function verifiedEntries(){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
   const logSheet = keySS.getSheetByName('Log')
-  const range    = logSheet.getRange(2,1,logSheet.getlastRow(),logSheet.getLastColumn()) 
+  const range    = logSheet.getRange(2,1,logSheet.getLastRow(),logSheet.getLastColumn()) 
   const log_values = range.getValues()
 
   var verifiedEntries = new Map()
