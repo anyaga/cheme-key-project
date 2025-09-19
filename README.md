@@ -37,3 +37,31 @@ git push
 git checkout -b branch_name
 
 
+
+# Edit the authorized folder
+
+git checkout -b authorized
+git add .
+git commit -m "add new message"
+git push -u origin authorized
+
+Go online. Compare and pull request. Create pull request
+Merge pull Request --> Confirm merge
+
+git checkout main
+git pull origin main
+clasp push (in authorized folder)
+
+# Edit the key project
+
+git checkout -b key
+git add .
+git commit -m "add new message"
+git push -u origin key
+
+Go online. Compare and pull request. Create pull request
+Merge pull Request --> Confirm merge
+
+git checkout main
+git pull origin main
+clasp push (in key-tracking folder)
