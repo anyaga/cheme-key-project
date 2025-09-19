@@ -243,7 +243,7 @@ function verifiedEntries(){
   const log_values = range.getValues()
 
   var verifiedEntries = new Map()
-  for(var log_row in log_values){
+  for(var log_row of log_values){
     const status    = log_row[0]
     const approval  = log_row[1]
     const andrewID  = log_row[2]
@@ -256,7 +256,7 @@ function verifiedEntries(){
     const expDate   = log_row[9]
     const givenDate = log_row[10]
 
-    if((status == "Active") && (approval == "Approval")){
+    if((status == "Active") && (approval == "Approved")){
       var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
       verifiedEntries.set(andrewID,newKeyRec)
     }
