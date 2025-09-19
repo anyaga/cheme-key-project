@@ -1315,16 +1315,20 @@ function expiration_check(){
     if (file.getMimeType() === MimeType.GOOGLE_DOCS) {
       switch (file.getName()){
         case "Month Till Expiration":
-          expire_msg(andrew_one,file,file.getName()) //Change to month list
+          var doc_month = DocumentApp.openById(file.getId())
+          expire_msg(andrew_one,doc_month,file.getName()) //Change to month list
           break
         case "Week Till Expiration":
-          expire_msg(andrew_week,file,file.getName()) //Change to week list
+          var doc_week = DocumentApp.openById(file.getId())
+          expire_msg(andrew_week,doc_week,file.getName()) //Change to week list
           break
         case "Day Till Expiration":
-          expire_msg(andrew_day,file,file.getName()) //Change to Day list
+          var doc_day  = DocumentApp.openById(file.getId())
+          expire_msg(andrew_day,doc_day,file.getName()) //Change to Day list
           break
         case "Expired":
-          expire_msg(expired_list,file,file.getName()) //Change to expire list
+          var doc_exp  = DocumentApp.openById(file.getId())
+          expire_msg(expired_list,doc_exp,file.getName()) //Change to expire list
           break
       }
     }
