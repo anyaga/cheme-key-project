@@ -1308,15 +1308,12 @@ function analysis(){
 
 function expiration_check(){
 
-
-
-  var inputFolder = null
   const folder = DriverApp.getFoldersByName("Keys Project")
   const files  = folder.getFilesByType(MimeType.GOOGLE_DOCS)
 
-
   while(files.hasNext()){
     var file = files.next()
+    
     switch (file.getName()){
       case "Month Till Expiration":
         expire_msg(andrew_one,file,file.getName()) //Change to month list
@@ -1330,30 +1327,20 @@ function expiration_check(){
       case "Expired":
         expire_msg(expired_list,file,file.getName()) //Change to expire list
         break
-
-    }
-
-    if(name == "Key Inputs"){
-      break;
     }
   }
-  // const inputFiles = inputFolder.getFilesByType(MimeType.GOOGLE_DOCS)
-  // while(inputFiles.hasNext()){
-  //   var file = inputFiles.next()
-  //   allEntries = parseKeySheet(allEntries,file.getId()) 
-  // }
-
 
 
 }
 
-function expire_msg(list,doc,subject){
-  var subj = "One Month till Key Expiration" 
+function expire_msg(list,doc,subj){
+  var doc_string = doc.getBody().getText()
+
   for(var andrew of list){
     var recipient = andrew + "@andrew.cmu.edu"
-    
-
-    MailApp.sendEmail(recipient,subj,null) //check this
+    var doc_string_name = doc_string.replace("[First]","First Name")
+    doc_string_name     = doc_string_name.replace("[Last]","Last Name")
+    MailApp.sendEmail(recipient,subj,doc_string_name) //check this
   }
 
 }
