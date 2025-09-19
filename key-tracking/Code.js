@@ -1170,13 +1170,13 @@ function fillSheets(){
     //Create new sheet
     var new_sheet = dataSS.insertSheet((years[i]).toFixed(0), i+1, {template: template_sheet})
     //Name the new sheet
+    /** 
     if(i == 0) 
       {new_sheet.getRange("A1").setValue('Unknown Expiration')} 
     else 
-      {new_sheet.getRange("A1").setValue((`Expiration: ${years[i]} `))}
+      {new_sheet.getRange("A1").setValue((`Expiration: ${years[i]} `))}*/
+    new_sheet.getRange("A1").setValue((`Expiration: ${years[i]} `))
   }
-  //////////////////////////
-
 
   //Add entry to the different sheets
   allEntries.forEach((entryRecord) => {
@@ -1184,7 +1184,8 @@ function fillSheets(){
     for(i = 0; i < keys.length; i++){
       var key = keys[i]
       var date = new Date(key.getExpirationDate())
-      if( date < today)
+
+      if( date <= today)
         {var yr1 = "Expired"}
       else
         {var yr1  = date.getFullYear()}
