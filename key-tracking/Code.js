@@ -8,15 +8,6 @@ Goals:
 -1st Year PhD  advisor is Heather
 */
 
-var E = null;
-var log;
-var currentRecord;
-
-var andrew_day ;
-var andrew_week;
-var andrew_one  ;
-var expired_list;
-
 class keyInfo{
   constructor(keyNumber,roomNumber,givenDate,expDate){
     //A string due to the dash in the middle
@@ -173,7 +164,7 @@ function onEdit(e){
 }
 
 /**
- * Returns all active entries from the log
+ * Returns all active entries from the log     //////////////////////////////NOT IN USE
  */
 function activeEntries(){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
@@ -202,7 +193,7 @@ function activeEntries(){
 }
 
 /**
- * Returns all inactive entries from the log
+ * Returns all inactive entries from the log         ////////////////////////NOT IN USE
  */
 function inactiveEntries(){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
@@ -233,8 +224,7 @@ function inactiveEntries(){
 /**
  * Returns all active entries that are verified as valid inputs
  */
-function verifiedEntries(){
-  const keySS    = SpreadsheetApp.getActiveSpreadsheet()
+function verifiedEntries(keySS){
   const logSheet = keySS.getSheetByName('Log')
   const range    = logSheet.getRange(2,1,logSheet.getLastRow(),logSheet.getLastColumn()) 
   const log_values = range.getValues()
@@ -252,14 +242,12 @@ function verifiedEntries(){
     const room      = log_row[8]
     const expDate   = log_row[9]
     const givenDate = log_row[10]
-
     if((status == "Active") && (approval == "Approved")){
       var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
       verifiedEntries.set(andrewID,newKeyRec)
     }
   }
   return verifiedEntries
-
 }
 
 /***************Helper Functions used for safety checks********/
@@ -356,7 +344,7 @@ function validDate(date){
 
 //----- check if working properly
 function confirmUser(first,last,advisor,andrew,key,room,entry){
-  const key_rooms = entry.getKeys() //???????????????
+  const key_rooms = entry.getKeys() 
   var key_room_status = false
   for(var pairs in key_rooms){
     if((pairs.getKey() === key) &&(pairs.getRoom() ===room)){
@@ -575,7 +563,7 @@ function updateLogApproval(andrewID,key,approval){
   //Key and andrewid both exist somewhere in the sheet
   if(andrew_found && key_found){
     var andrew_rows = []
-    for(var i = 0; i < andrew_found.length;i++){ //?????????????????????????
+    for(var i = 0; i < andrew_found.length;i++){ 
       andrew_rows.push(andrew_found[i].getRow())
     } 
     var key_rows = [] 
@@ -595,23 +583,18 @@ function updateLogApproval(andrewID,key,approval){
 }
 
 
-
-
-////////////////////////////////////////////////////////////////////////////////////
+/**
+ * 
+ * @param {*} andrewID 
+ * @param {*} key 
+ * @param {*} room 
+ * @param {*} givenDate 
+ * @param {*} expDate 
+ */
 function unverifiedToLogUpdate(andrewID,key,room,givenDate,expDate){
   //can change everything but andrewid
 
 }
-// function searchLog(){
-//   var keySS = SpreadsheetApp.getActiveSpreadsheet();
-//   var logSheet = keySS.getSheetName('Log');
-//   var andrewIDList = logSheet.getRange('A2:A').getValues();  
-// }
-
-
-
-
-
 
 
 /************************ Manipulating the unverifed sheet ****************/
@@ -764,7 +747,11 @@ function entryToUnverifiedInput(){
 
 
 
-
+/**
+ * 
+ * @param {*} row 
+ * @param {*} col 
+ */
 function submitUnverifedData(row,col){
   //look got column value
   const unverfiedSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Unverified Input')
@@ -773,9 +760,6 @@ function submitUnverifedData(row,col){
   const andrewId = unverfiedSheet.getRange(row,2).getValue()
   const key      = unverfiedSheet.getRange(row,7).getValue()
   const room     = unverfiedSheet.getRange(row,8).getValue()
-
-
-
 
 
 
@@ -1062,6 +1046,17 @@ function approveAllData(){
 }
 
 /************ Check in values in the sheets********/
+/**
+ * 
+ * @param {*} allEntries 
+ * @param {*} andrewID 
+ * @param {*} firstName 
+ * @param {*} lastName 
+ * @param {*} advisor 
+ * @param {*} key 
+ * @param {*} room 
+ * @returns 
+ */
 function manualCheckIn(allEntries,andrewID,firstName,lastName,advisor,key,room){
     if(allEntries.has(andrewID)){      
       var entry     = allEntries.get(andrewID)
@@ -1089,6 +1084,11 @@ function manualCheckIn(allEntries,andrewID,firstName,lastName,advisor,key,room){
   return allEntries
 }
 
+/**
+ * 
+ * @param {*} allEntries 
+ * @returns 
+ */
 function checkInForm(allEntries){
   var firstName,lastName, advisor,andrewID, key,room;
   const checkInForm = FormApp.openByUrl("https://docs.google.com/forms/d/1t6IxYbw-evVopJd3XGKHRxb9HfWWke0ozHA39XT-1z8/")
@@ -1134,17 +1134,15 @@ function scheduleReload(){
 
 
 
-
-
-
-
-
-function fillSheets(){
-  const dataSS         = SpreadsheetApp.getActiveSpreadsheet() //'Keys Sheet Main'
+/**
+ * Fill the sheets that represent each expiration sheet 
+ * @param {*} dataSS - the active spreadsheet
+ * @returns - AllEntries 
+ */
+function fillSheets(dataSS){
   const allSheets      = dataSS.getSheets()
   const template_sheet = allSheets[allSheets.length - 1] //Template is always the last sheet
-
-  var allEntries = verifiedEntries()  
+  var allEntries = verifiedEntries(dataSS)  
 
   //Delete all the previous year sheets
   allSheets.forEach((sheet) => {
@@ -1217,17 +1215,12 @@ function fillSheets(){
   return allEntries
 }
 
-//On the main sheet
 /**
- * 
- * 
- * Add a time function  to regularily refresh this function!!!!!
- * 
- * 
+ *  Add a time function  to regularily refresh this function!!!!!
  */
 function analysis(){
   const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
-  var allEntries = fillSheets()
+  var allEntries = fillSheets(dataSS)
 
   var currDate = new Date()
 
@@ -1309,9 +1302,13 @@ function analysis(){
   expiration_check()
 }
 
+/**
+ * Send emails to individuals in the expiration range using templates in 
+ * the Keys Project folder 
+ */
 function expiration_check(){
   const folder = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
-  const files  = folder.getFiles()//getFilesByType(MimeType.GOOGLE_DOCS)
+  const files  = folder.getFiles()
 
   while(files.hasNext()){
     var file = files.next()
@@ -1338,17 +1335,26 @@ function expiration_check(){
   }
 }
 
+/**
+ * Send emails to all people in an expiration range list using the doc as the email body
+ * and the subj as the subjected of the email
+ * 
+ * @param {*} list - Speciic expiration range list 
+ * @param {*} doc  - Google Doc that has the template for the email sent to people
+ *                   in expiration range
+ * @param {*} subj - Subject of the email to the people in the expiration range list
+ */
 function expire_msg(list,doc,subj){
   var doc_string = doc.getBody().getText()
-  
   for(var entry_record of list){
     var recipient       = entry_record.getAndrewID() + "@andrew.cmu.edu"
     var doc_string_name = doc_string.replace("[First]",entry_record.getFirstName()) 
     doc_string_name     = doc_string_name.replace("[Last]",entry_record.getLastName())
     MailApp.sendEmail(recipient,subj,doc_string_name) //check this
   }
-
 }
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////
 function onOpen() {
