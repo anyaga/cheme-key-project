@@ -850,7 +850,6 @@ function submitSelectedData(){
     }
     msg = msg + exp_date_msg
 
-    //if((key != 'invalid key') && (room != 'invalid room') && (givenDate != "invalid date") && (expDate != "invalid date")){
     if(msg == "" || approval == "Denied"){
       var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
       //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
@@ -948,7 +947,7 @@ function approveAllData(){
   var allEntries     = new Map(); 
   var remainingEntries = new Map()
 
-  var val = true // this needs to be updated!!!!!!!!!!!!!!!!!1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+  var val = true // this needs to be updated!!!!!!!!!!!!!!!!!1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   var i = 0;
   var entry_raw = unverfiedSheet.getRange(2+i,1,1,11); //one row
   var entry = entry_raw.getValues()[0] //check this!!!!! [0]  
@@ -1119,12 +1118,6 @@ function scheduleReload(){
 //Check status ofvalues.remove them if checked in. Email or add to list if expired/near expiration (notification to return the values)
 }
 
-function currentKeys(){
-  ///////////////////////////////////////
-}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function fillSheets(){
   const dataSS         = SpreadsheetApp.getActiveSpreadsheet() //'Keys Sheet Main'
   const allSheets      = dataSS.getSheets()
