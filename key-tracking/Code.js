@@ -1252,13 +1252,13 @@ function analysis(){
       var expiration = new Date(key.getExpirationDate())
 
       if(isDateInFrame(currDate,dayDate,expiration)){
-        andrew_day.push(entryRecord.getAndrewID())
+        andrew_day.push(entryRecord)
       } else if(isDateInFrame(currDate,weekDate,expiration)){
-        andrew_week.push(entryRecord.getAndrewID())
+        andrew_week.push(entryRecord)
       } else if(isDateInFrame(currDate,oneDate,expiration)){
-        andrew_one.push(entryRecord.getAndrewID())
+        andrew_one.push(entryRecord)
       } else {
-        expired_list.push(entryRecord.getAndrewID())
+        expired_list.push(entryRecord)
       } 
     }  
   })
@@ -1271,7 +1271,7 @@ function analysis(){
   mainSheet.getRange(7,2).setValue('1 Month')
   for(var i = 0; i < one_values.length; i++){
     if(i < andrew_one.length){
-      mainSheet.getRange(8+i,2).setValue(andrew_one[i])
+      mainSheet.getRange(8+i,2).setValue(andrew_one[i].getAndrewID())
     }
   }
 
@@ -1281,7 +1281,7 @@ function analysis(){
   mainSheet.getRange(7,3).setValue('1 Week')
   for(var i = 0; i < week_values.lenght; i++){
     if(i < andrew_week.length){
-      mainSheet.getRange(8+i,3).setValue(andrew_week[i])
+      mainSheet.getRange(8+i,3).setValue(andrew_week[i].getAndrewID())
     }
   }
 
@@ -1291,7 +1291,7 @@ function analysis(){
   mainSheet.getRange(7,4).setValue('1 Day')
   for(var i = 0; i < day_values.length; i++){
   if(i <andrew_day.length){
-    mainSheet.getRange(8+i,4).setValue(andrew_day[i])
+    mainSheet.getRange(8+i,4).setValue(andrew_day[i].getAndrewID())
   }
  }
 
@@ -1301,13 +1301,12 @@ function analysis(){
   mainSheet.getRange(7,5).setValue('Expired')
   for(var i = 0; i < expired_values.length; i++){
     if(i < expired_list.length){
-      mainSheet.getRange(8+i,5).setValue(expired_list[i])
+      mainSheet.getRange(8+i,5).setValue(expired_list[i].getAndrewID())
     }
   }
 }
 
 function expiration_check(){
-
   const folder = DriverApp.getFoldersByName("Keys Project")
   const files  = folder.getFilesByType(MimeType.GOOGLE_DOCS)
 
@@ -1329,17 +1328,15 @@ function expiration_check(){
         break
     }
   }
-
-
 }
 
 function expire_msg(list,doc,subj){
   var doc_string = doc.getBody().getText()
 
-  for(var andrew of list){
-    var recipient = andrew + "@andrew.cmu.edu"
-    var doc_string_name = doc_string.replace("[First]","First Name") /////////////////////Try to replace with actual first name
-    doc_string_name     = doc_string_name.replace("[Last]","Last Name") //////////////////Try to replace with actual last  name
+  for(var entry_record of list){
+    var recipient       = entry_record.getAndrewID() + "@andrew.cmu.edu"
+    var doc_string_name = doc_string.replace("[First]",entry_record.getFirstName()) /////////////////////Try to replace with actual first name
+    doc_string_name     = doc_string_name.replace("[Last]",entry_record.getLastName()) //////////////////Try to replace with actual last  name
     MailApp.sendEmail(recipient,subj,doc_string_name) //check this
   }
 
