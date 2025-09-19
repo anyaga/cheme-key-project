@@ -1307,32 +1307,33 @@ function analysis(){
 }
 
 function expiration_check(){
-  const folder = DriverApp.getFoldersByName("Keys Project")
-  const files  = folder.getFilesByType(MimeType.GOOGLE_DOCS)
+  const folder = DriveApp.getFoldersByName("Keys Project")
+  const files  = folder.getFiles()//getFilesByType(MimeType.GOOGLE_DOCS)
 
   while(files.hasNext()){
     var file = files.next()
-    
-    switch (file.getName()){
-      case "Month Till Expiration":
-        expire_msg(andrew_one,file,file.getName()) //Change to month list
-        break
-      case "Week Till Expiration":
-        expire_msg(andrew_week,file,file.getName()) //Change to week list
-        break
-      case "Day Till Expiration":
-        expire_msg(andrew_day,file,file.getName()) //Change to Day list
-        break
-      case "Expired":
-        expire_msg(expired_list,file,file.getName()) //Change to expire list
-        break
+    if (file.getMimeType() === MimeType.GOOGLE_DOCS) {
+      switch (file.getName()){
+        case "Month Till Expiration":
+          expire_msg(andrew_one,file,file.getName()) //Change to month list
+          break
+        case "Week Till Expiration":
+          expire_msg(andrew_week,file,file.getName()) //Change to week list
+          break
+        case "Day Till Expiration":
+          expire_msg(andrew_day,file,file.getName()) //Change to Day list
+          break
+        case "Expired":
+          expire_msg(expired_list,file,file.getName()) //Change to expire list
+          break
+      }
     }
   }
 }
 
 function expire_msg(list,doc,subj){
   var doc_string = doc.getBody().getText()
-
+  
   for(var entry_record of list){
     var recipient       = entry_record.getAndrewID() + "@andrew.cmu.edu"
     var doc_string_name = doc_string.replace("[First]",entry_record.getFirstName()) /////////////////////Try to replace with actual first name
