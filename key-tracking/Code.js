@@ -1204,10 +1204,14 @@ function fillSheets(){
 }
 
 //On the main sheet
+/**
+ * 
+ * 
+ * Add a time function  to regularily refresh this function!!!!!
+ * 
+ * 
+ */
 function analysis(){
-  //Add more spreadsheets here! Add the spreadsheet folder!!!!
-  //var allEntries = checkoutFormToEntries(null) //CHANGE TO THE ACTUAL ENTRIES
-
   const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
   var allEntries = fillSheets()
 
@@ -1228,7 +1232,6 @@ function analysis(){
   var expired_list = []
 
   allEntries.forEach((entryRecord) => {
-
     var keys = entryRecord.getKeys()
     for(i = 0; i < keys.length; i++){
       var key = keys[i]
@@ -1241,15 +1244,14 @@ function analysis(){
       } else if(isDateInFrame(currDate,oneDate,expiration)){
         andrew_one.push(entryRecord.getAndrewID())
       } else {
-        ////////////////////////////////
         expired_list.push(entryRecord.getAndrewID())
       } 
     }  
   })
   
-  const sheets = dataSS.getSheets()
+  const sheets    = dataSS.getSheets()
   const mainSheet = sheets[0]
-
+  //One month
   var one        = mainSheet.getRange("B8:B")
   var one_values = one.getValues()
   mainSheet.getRange(7,2).setValue('1 Month')
@@ -1258,7 +1260,6 @@ function analysis(){
       mainSheet.getRange(8+i,2).setValue(andrew_one[i])
     }
   }
-
 
   //1 week
   var week        = mainSheet.getRange("C8:C")
@@ -1288,20 +1289,18 @@ function analysis(){
       mainSheet.getRange(8+i,5).setValue(expired_list[i])
     }
   }
+}
 
-
-
-
-  //Sort through all the sections
-  //Later->Add new Sheet at the end of each year
-  //1.Add all the new form responses
-  //2.Add form checked out to each student
-  //3.Add form to show outstanding keys
-  //4.Add form to show current keys
-  /**Toast message should be sent if deadline 
-   * is being approachd **/
+function approach_expire(){
 
 }
+
+function already_expire(){
+
+}
+
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////
 function onOpen() {
