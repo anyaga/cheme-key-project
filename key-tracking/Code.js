@@ -1176,11 +1176,6 @@ function fillSheets(){
     else
       {var new_sheet = dataSS.insertSheet((years[i]).toFixed(0), i+1, {template: template_sheet})}
     //Name the new sheet
-    /** 
-    if(i == 0) 
-      {new_sheet.getRange("A1").setValue('Unknown Expiration')} 
-    else 
-      {new_sheet.getRange("A1").setValue((`Expiration: ${years[i]} `))}*/
     new_sheet.getRange("A1").setValue((`Expiration: ${years[i]} `))
   }
   //Add entry to the different sheets
@@ -1210,145 +1205,91 @@ function fillSheets(){
 
 //On the main sheet
 function analysis(){
-  const dataSS = SpreadsheetApp.getActiveSpreadsheet()
-
   //Add more spreadsheets here! Add the spreadsheet folder!!!!
   //var allEntries = checkoutFormToEntries(null) //CHANGE TO THE ACTUAL ENTRIES
-  var allEntries = new Map()
-  allEntries = fillSheets()//(allEntries)
-  var E = allEntries
-  //ADD CONDIITON FOR ALL ENTRIES
-  var currDate   = new Date()
 
-  var sixDate = new Date(currDate)
-  sixDate.setMonth(sixDate.getMonth() + 6)
-  
-  var threeDate = new Date(currDate)
-  threeDate.setMonth(threeDate.getMonth() + 3)
-  
-  var oneDate = new Date(currDate)
+  const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
+  var allEntries = fillSheets()
+
+  var currDate = new Date()
+
+  var oneDate  = new Date(currDate)
   oneDate.setMonth(oneDate.getMonth() + 1) 
 
   var weekDate = new Date(currDate)
   weekDate.setDate(weekDate.getDay() + 7)
 
-  var dayDate = new Date(currDate)
+  var dayDate  = new Date(currDate)
   dayDate.setDate(dayDate.getDate() + 1)
 
   var andrew_day   = []
   var andrew_week  = []
   var andrew_one   = []
-  var andrew_three = []
-  var andrew_six   = []
   var expired_list = []
-  var unknown_list = []
-
 
   allEntries.forEach((entryRecord) => {
-
-    //error in 1 and 3
 
     var keys = entryRecord.getKeys()
     for(i = 0; i < keys.length; i++){
       var key = keys[i]
       var expiration = new Date(key.getExpirationDate())
+
       if(isDateInFrame(currDate,dayDate,expiration)){
         andrew_day.push(entryRecord.getAndrewID())
-
       } else if(isDateInFrame(currDate,weekDate,expiration)){
         andrew_week.push(entryRecord.getAndrewID())
-
       } else if(isDateInFrame(currDate,oneDate,expiration)){
         andrew_one.push(entryRecord.getAndrewID())
-      
-
-      } else if (isDateInFrame(currDate,threeDate,expiration)){
-        andrew_three.push(entryRecord.getAndrewID())
-      } else if(isDateInFrame(currDate,sixDate,expiration)){
-        andrew_six.push(entryRecord.getAndrewID())
-      } 
-      
-      
-      else if(isExpired(currDate,expiration)){
+      } else {
         ////////////////////////////////
         expired_list.push(entryRecord.getAndrewID())
-      
-      } else {
-        //////////////////////////////
-        unknown_list.push(entryRecord.getAndrewID()) 
-      }
+      } 
     }  
   })
   
   const sheets = dataSS.getSheets()
   const mainSheet = sheets[0]
 
-  var six     = mainSheet.getRange("B8:B")
-  var six_values = six.getValues()
-  mainSheet.getRange(7,2).setValue('6 Months')
-  for(var i = 0; i < six_values.length; i++){
-    if(i < andrew_six.length){
-      mainSheet.getRange(8+i,2).setValue(andrew_six[i])
-    }
-  }
-
-  var three   = mainSheet.getRange("D8:D")
-  var three_values = three.getValues()
-  mainSheet.getRange(7,3).setValue('3 Month')
-  for(var i = 0; i < three_values.length; i++){
-    if(i < andrew_three.length){
-      mainSheet.getRange(8+i,3).setValue(andrew_three[i])
-    }
-  }
-
-  var one     = mainSheet.getRange("D8:D")
+  var one        = mainSheet.getRange("B8:B")
   var one_values = one.getValues()
-  mainSheet.getRange(7,4).setValue('1 Month')
+  mainSheet.getRange(7,2).setValue('1 Month')
   for(var i = 0; i < one_values.length; i++){
     if(i < andrew_one.length){
-      mainSheet.getRange(8+i,4).setValue(andrew_one[i])
+      mainSheet.getRange(8+i,2).setValue(andrew_one[i])
     }
   }
 
 
   //1 week
-  var week    = mainSheet.getRange("E8:E")
+  var week        = mainSheet.getRange("C8:C")
   var week_values = week.getValues()
-  mainSheet.getRange(7,5).setValue('1 Week')
+  mainSheet.getRange(7,3).setValue('1 Week')
   for(var i = 0; i < week_values.lenght; i++){
     if(i < andrew_week.length){
-      mainSheet.getRange(8+i,5).setValue(andrew_week[i])
+      mainSheet.getRange(8+i,3).setValue(andrew_week[i])
     }
   }
 
   //1 day
-  var day        = mainSheet.getRange("F8:F")
+  var day        = mainSheet.getRange("D8:D")
   var day_values = day.getValues()
-  mainSheet.getRange(7,6).setValue('1 Day')
- for(var i = 0; i < day_values.length; i++){
+  mainSheet.getRange(7,4).setValue('1 Day')
+  for(var i = 0; i < day_values.length; i++){
   if(i <andrew_day.length){
-    mainSheet.getRange(8+i,6).setValue(andrew_day[i])
+    mainSheet.getRange(8+i,4).setValue(andrew_day[i])
   }
  }
 
-  var expired = mainSheet.getRange("G8:G")
+  var expired        = mainSheet.getRange("E8:E")
   var expired_values = expired.getValues()
-  mainSheet.getRange(7,7).setValue('Expired')
+  mainSheet.getRange(7,5).setValue('Expired')
   for(var i = 0; i < expired_values.length; i++){
     if(i < expired_list.length){
-      mainSheet.getRange(8+i,7).setValue(expired_list[i])
+      mainSheet.getRange(8+i,5).setValue(expired_list[i])
     }
   }
 
-  var unk     = mainSheet.getRange("H8:H")
-  var unk_values = unk.getValues()
-  mainSheet.getRange(7,8).setValue('Unknown')
-  for(var i = 0; i < unk_values.length; i++){
-    if(i < unknown_list.length){
-      mainSheet.getRange(8+i,8).setValue(unknown_list[i])
-    }
-  }
-  //If it is within 6 months of expiration
+
 
 
   //Sort through all the sections
