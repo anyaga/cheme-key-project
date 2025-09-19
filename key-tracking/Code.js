@@ -1125,41 +1125,12 @@ function currentKeys(){
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function fillSheets(allEntries){
-  /** 
-  //Input SS Files
-  var   inputFolder = null
-  const folders = DriveApp.getFolders()
-  while (folders.hasNext()){
-    inputFolder = folders.next()
-    var name   = inputFolder.getName()
-    if(name == "Key Inputs"){
-      break; //leave the loop when folder is found
-    }
-  }
-  const inputFiles = inputFolder.getFilesByType(MimeType.GOOGLE_SHEETS)
-  while(inputFiles.hasNext()){
-    var file = inputFiles.next()
-    var id = file.getId() 
-    var file_name = file.getName() //////////////////
-    //var allEntries = parseKeySheet(allEntries,id)
-  }
+function fillSheets(){
+  const dataSS         = SpreadsheetApp.getActiveSpreadsheet() //'Keys Sheet Main'
+  const allSheets      = dataSS.getSheets()
+  const template_sheet = allSheets[allSheets.length - 1] //Template is always the last sheet
 
-  //INSERT !VERIFIED! ENTRIES HERE!!!!
-  // allEntries = checkoutFormToEntries(allEntries) //??MAY not be necessary
-  // allEntries = checkInForm(allEntries)        
-  var allEntries = unverifiedEntries()       
-  */
-  var allEntries = verifiedEntries()
-
-  ////Check if expired!!!!
-
-  //ADD EXPIRED TAG
-  
-
-  const dataSS = SpreadsheetApp.getActiveSpreadsheet() //'Keys Sheet Main'
-  const allSheets = dataSS.getSheets()
-  const template_sheet = allSheets[allSheets.length - 1]
+  const allEntries = verifiedEntries()  
 
   //Delete all the previous year sheets
   allSheets.forEach((sheet) => {
@@ -1238,7 +1209,7 @@ function analysis(){
   //Add more spreadsheets here! Add the spreadsheet folder!!!!
   //var allEntries = checkoutFormToEntries(null) //CHANGE TO THE ACTUAL ENTRIES
   var allEntries = new Map()
-  allEntries = fillSheets(allEntries)
+  allEntries = fillSheets()//(allEntries)
   var E = allEntries
   //ADD CONDIITON FOR ALL ENTRIES
   var currDate   = new Date()
