@@ -12,6 +12,11 @@ var E = null;
 var log;
 var currentRecord;
 
+var andrew_day   = []
+var andrew_week  = []
+var andrew_one   = []
+var expired_list = []
+
 class keyInfo{
   constructor(keyNumber,roomNumber,givenDate,expDate){
     //A string due to the dash in the middle
@@ -557,7 +562,6 @@ function addAllToLog(){
   }
 }
 
-
 /**
  * Update approval status of a log (based on what happens in the unverifed sheet)
  */
@@ -589,6 +593,10 @@ function updateLogApproval(andrewID,key,approval){
     fullRow.setValues([row1]) //debug these values
   } 
 }
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////
 function unverifiedToLogUpdate(andrewID,key,room,givenDate,expDate){
   //can change everything but andrewid
@@ -599,6 +607,11 @@ function unverifiedToLogUpdate(andrewID,key,room,givenDate,expDate){
 //   var logSheet = keySS.getSheetName('Log');
 //   var andrewIDList = logSheet.getRange('A2:A').getValues();  
 // }
+
+
+
+
+
 
 
 /************************ Manipulating the unverifed sheet ****************/
@@ -748,6 +761,10 @@ function entryToUnverifiedInput(){
   unverifiedSheet.setConditionalFormatRules(newRules);
 }
 
+
+
+
+
 function submitUnverifedData(row,col){
   //look got column value
   const unverfiedSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Unverified Input')
@@ -763,10 +780,17 @@ function submitUnverifedData(row,col){
 
 
 
-
-
   ////////////////////////////////////////////////////////
 }
+
+
+
+
+
+
+
+
+
 
 /**
  * Given what is in the approval tab, update what is in the unverifeid tab. Approve Selected - Button
@@ -1094,11 +1118,26 @@ function checkInForm(allEntries){
   return allEntries
 }
 
+
+
+
+
+
+
 function scheduleReload(){
 ////////////////////////////
 
 //Check status ofvalues.remove them if checked in. Email or add to list if expired/near expiration (notification to return the values)
 }
+
+
+
+
+
+
+
+
+
 
 function fillSheets(){
   const dataSS         = SpreadsheetApp.getActiveSpreadsheet() //'Keys Sheet Main'
@@ -1201,10 +1240,10 @@ function analysis(){
   var dayDate  = new Date(currDate)
   dayDate.setDate(dayDate.getDate() + 1)
 
-  var andrew_day   = []
-  var andrew_week  = []
-  var andrew_one   = []
-  var expired_list = []
+  andrew_day   = []
+  andrew_week  = []
+  andrew_one   = []
+  expired_list = []
 
   allEntries.forEach((entryRecord) => {
     var keys = entryRecord.getKeys()
@@ -1223,9 +1262,9 @@ function analysis(){
       } 
     }  
   })
-  
   const sheets    = dataSS.getSheets()
   const mainSheet = sheets[0]
+
   //One month
   var one        = mainSheet.getRange("B8:B")
   var one_values = one.getValues()
@@ -1256,6 +1295,7 @@ function analysis(){
   }
  }
 
+  //Expired
   var expired        = mainSheet.getRange("E8:E")
   var expired_values = expired.getValues()
   mainSheet.getRange(7,5).setValue('Expired')
@@ -1268,60 +1308,42 @@ function analysis(){
 
 function expiration_check(){
 
-
-  
-
-  var inputFolder = null
   const folder = DriverApp.getFoldersByName("Keys Project")
   const files  = folder.getFilesByType(MimeType.GOOGLE_DOCS)
+
   while(files.hasNext()){
     var file = files.next()
+    
     switch (file.getName()){
       case "Month Till Expiration":
-        expire_msg(file)
+        expire_msg(andrew_one,file,file.getName()) //Change to month list
         break
       case "Week Till Expiration":
-        expire_msg(file)
+        expire_msg(andrew_week,file,file.getName()) //Change to week list
         break
       case "Day Till Expiration":
+        expire_msg(andrew_day,file,file.getName()) //Change to Day list
         break
       case "Expired":
+        expire_msg(expired_list,file,file.getName()) //Change to expire list
         break
-
-    }
-
-    if(name == "Key Inputs"){
-      break;
     }
   }
-  // const inputFiles = inputFolder.getFilesByType(MimeType.GOOGLE_DOCS)
-  // while(inputFiles.hasNext()){
-  //   var file = inputFiles.next()
-  //   allEntries = parseKeySheet(allEntries,file.getId()) 
-  // }
-
 
 
 }
 
-function expire_msg(file){
-  var expired = NaN //edit this!!!
-  var subj = "One Month till Key Expiration" 
-  for(var andrew of expired){
+function expire_msg(list,doc,subj){
+  var doc_string = doc.getBody().getText()
+
+  for(var andrew of list){
     var recipient = andrew + "@andrew.cmu.edu"
-    
-
-    MailApp.sendEmail(recipient,subj,null) //check this
+    var doc_string_name = doc_string.replace("[First]","First Name") /////////////////////Try to replace with actual first name
+    doc_string_name     = doc_string_name.replace("[Last]","Last Name") //////////////////Try to replace with actual last  name
+    MailApp.sendEmail(recipient,subj,doc_string_name) //check this
   }
 
 }
-
-function already_expire(){
-
-}
-
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 function onOpen() {
