@@ -1183,25 +1183,17 @@ function fillSheets(){
       {new_sheet.getRange("A1").setValue((`Expiration: ${years[i]} `))}*/
     new_sheet.getRange("A1").setValue((`Expiration: ${years[i]} `))
   }
-  console.log("yo")
-  console.log(allEntries)
   //Add entry to the different sheets
   allEntries.forEach((entryRecord) => {
     var keys = entryRecord.getKeys()
-    console.log("hello")
     for(i = 0; i < keys.length; i++){
       var key = keys[i]
       var date = new Date(key.getExpirationDate())
       
       if( date <= today)
-        {var yr1 = "Expired"
-         console.log("check1")
-        }
+        {var yr1 = "Expired"}
       else
-        {
-          var yr1  = date.getFullYear()
-          console.log("check2")
-        }
+        {var yr1  = date.getFullYear()}
       
       var new_sheet = dataSS.getSheetByName(yr1)
       new_sheet.appendRow([
