@@ -1338,8 +1338,8 @@ function expire_msg(list,doc,subj){
 
   for(var andrew of list){
     var recipient = andrew + "@andrew.cmu.edu"
-    var doc_string_name = doc_string.replace("[First]","First Name")
-    doc_string_name     = doc_string_name.replace("[Last]","Last Name")
+    var doc_string_name = doc_string.replace("[First]","First Name") /////////////////////Try to replace with actual first name
+    doc_string_name     = doc_string_name.replace("[Last]","Last Name") //////////////////Try to replace with actual last  name
     MailApp.sendEmail(recipient,subj,doc_string_name) //check this
   }
 
