@@ -12,10 +12,10 @@ var E = null;
 var log;
 var currentRecord;
 
-var andrew_day   = []
-var andrew_week  = []
-var andrew_one   = []
-var expired_list = []
+var andrew_day ;
+var andrew_week;
+var andrew_one  ;
+var expired_list;
 
 class keyInfo{
   constructor(keyNumber,roomNumber,givenDate,expDate){
@@ -1304,6 +1304,9 @@ function analysis(){
       mainSheet.getRange(8+i,5).setValue(expired_list[i].getAndrewID())
     }
   }
+
+  //RMOVE LATER!!!!!
+  expiration_check()
 }
 
 function expiration_check(){
