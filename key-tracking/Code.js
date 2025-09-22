@@ -1310,7 +1310,7 @@ function analysis(){
   }
 
   //RMOVE LATER!!!!!
-  expiration_check()
+  //expiration_check()
 }
 
 /**
