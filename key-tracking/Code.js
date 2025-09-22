@@ -94,6 +94,7 @@ class keyRecord {
   setKey(newKeySet){
     this.key = newKeySet
   }
+  /*
   getActiveKeys(){
     const allKeys = this.key
     var activeKeys
@@ -101,7 +102,9 @@ class keyRecord {
       if(key.active()) activeKeys.push(key)
     });
     return activeKeys
-  }
+  }*/
+
+  /*
   getInactiveKeys(){
     const allKeys = this.key
     var inactiveKeys
@@ -109,7 +112,8 @@ class keyRecord {
       if(key.expired()) inactiveKeys.push(key)
     });
     return inactiveKeys
-  }
+  }*/
+ 
   addKey(key,room,givenDate,expDate) {
     var newKey = new keyInfo(key,room,givenDate,expDate)
     var keys = this.key
@@ -747,6 +751,11 @@ function entryToUnverifiedInput(){
 
 
 
+
+
+
+
+
 /**
  * 
  * @param {*} row 
@@ -766,6 +775,8 @@ function submitUnverifedData(row,col){
 
   ////////////////////////////////////////////////////////
 }
+
+
 
 
 
@@ -1233,10 +1244,10 @@ function analysis(){
   var dayDate  = new Date(currDate)
   dayDate.setDate(dayDate.getDate() + 1)
 
-  andrew_day   = []
-  andrew_week  = []
-  andrew_one   = []
-  expired_list = []
+  var andrew_day   = []
+  var andrew_week  = []
+  var andrew_one   = []
+  var expired_list = []
 
   allEntries.forEach((entryRecord) => {
     var keys = entryRecord.getKeys()
@@ -1307,8 +1318,60 @@ function analysis(){
  * the Keys Project folder 
  */
 function expiration_check(){
-  const folder = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
-  const files  = folder.getFiles()
+  const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
+  const mainSheet = dataSS.getSheetByName("Main")
+  const folder    = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
+  const files     = folder.getFiles()
+  
+  var allEntries = verifiedEntries(dataSS)  
+
+
+  //FINISH THE MAP LOOK UP!!!!
+
+  
+  var index = 0
+  var andrew_one          = []
+  var andrew_one_temp = mainSheet.getRange("B8:B").getValues()
+  var one             = andrew_one_temp[index][0]
+  while(one != ""){
+    var one_value = allEntries.get(one) 
+    andrew_one.push(one_value)
+    index = index + 1
+    one = andrew_one_temp[index][0]
+  }
+
+  index = 0
+  var andrew_week           = []
+  var andrew_week_temp  = mainSheet.getRange("C8:C").getValues()
+  var week              = andrew_week_temp[index][0]
+  while(week != ""){
+    var week_value = allEntries.get(week)
+    andrew_week.push(week_value)
+    index = index + 1
+    week = andrew_week_temp[index][0]
+  }
+
+  index = 0
+  var andrew_day          = []
+  var andrew_day_temp = mainSheet.getRange("D8:D").getValues()
+  var day             = andrew_day_temp[index][0]
+  while(day != ""){
+    var day_value = allEntries.get(one)
+    andrew_day.push(day_value)
+    index = index + 1
+    day = andrew_day_temp[index][0]
+  }
+  index = 0
+  var expired_list          = []
+  var expired_list_temp = mainSheet.getRange("E8:E").getValues()  
+  var exp               = expired_list_temp[index][0]
+  while(exp != ""){
+    var exp_value = allEntries.get(exp)
+    expired_list.push(exp_value)
+    index = index + 1
+    exp = expired_list_temp[index][0]
+  }
+  
 
   while(files.hasNext()){
     var file = files.next()
@@ -1353,6 +1416,13 @@ function expire_msg(list,doc,subj){
     MailApp.sendEmail(recipient,subj,doc_string_name) //check this
   }
 }
+
+
+
+
+
+
+
 
 
 
