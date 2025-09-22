@@ -1313,11 +1313,43 @@ function expiration_check(){
   const folder = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
   const files  = folder.getFiles()
 
-  andrew_one   = mainSheet.getRange("B8:B").getValues()
-  andrew_week  = mainSheet.getRange("C8:C").getValues()
-  andrew_day   = mainSheet.getRange("D8:D").getValues()
-  expired_list = mainSheet.getRange("E8:E").getValues()  
-  
+  var index = 0
+  andrew_one          = []
+  var andrew_one_temp = mainSheet.getRange("B8:B").getValues()
+  var one             = andrew_one_temp[index]
+  while(one != ""){
+    andrew_one.push(one)
+    index = index + 1
+    one = andrew_one_temp[index]
+  }
+  index = 0
+  andrew_week           = []
+  var andrew_week_temp  = mainSheet.getRange("C8:C").getValues()
+  var week = andrew_week_temp[index]
+  while(week != ""){
+    andrew_week.push(week)
+    index = index + 1
+    week = andrew_week_temp[index]
+  }
+
+  index = 0
+  andrew_day          = []
+  var andrew_day_temp = mainSheet.getRange("D8:D").getValues()
+  var day             = andrew_day_temp[index]
+  while(day != ""){
+    andrew_day.push(day)
+    index = index + 1
+    day = andrew_day_temp[index]
+  }
+  index = 0
+  expired_list          = []
+  var expired_list_temp = mainSheet.getRange("E8:E").getValues()  
+  var exp               = expired_list_temp[index]
+  while(exp != ""){
+    expired_list.push(exp)
+    index = index + 1
+    exp = expired_list_temp[index]
+  }
 
 
   while(files.hasNext()){
