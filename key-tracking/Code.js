@@ -1319,18 +1319,24 @@ function analysis(){
  */
 function expiration_check(){
   const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
+  var allEntries = verifiedEntries(dataSS)  
+
   const mainSheet = dataSS.getSheetByName("Main")
   
   const folder = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
   const files  = folder.getFiles()
 
-  /*
+
+  //FINISH THE MAP LOOK UP!!!!
+
+  
   var index = 0
   andrew_one          = []
   var andrew_one_temp = mainSheet.getRange("B8:B").getValues()
   var one             = andrew_one_temp[index]
   while(one != ""){
-    andrew_one.push(one)
+    var one_value = allEntries.get(one) 
+    andrew_one.push(one_value)
     index = index + 1
     one = andrew_one_temp[index]
   }
@@ -1339,7 +1345,8 @@ function expiration_check(){
   var andrew_week_temp  = mainSheet.getRange("C8:C").getValues()
   var week = andrew_week_temp[index]
   while(week != ""){
-    andrew_week.push(week)
+    var week_value = allEntries.get(week)
+    andrew_week.push(week_value)
     index = index + 1
     week = andrew_week_temp[index]
   }
@@ -1349,7 +1356,8 @@ function expiration_check(){
   var andrew_day_temp = mainSheet.getRange("D8:D").getValues()
   var day             = andrew_day_temp[index]
   while(day != ""){
-    andrew_day.push(day)
+    var day_value = allEntries.get(one)
+    andrew_day.push(day_value)
     index = index + 1
     day = andrew_day_temp[index]
   }
@@ -1358,11 +1366,12 @@ function expiration_check(){
   var expired_list_temp = mainSheet.getRange("E8:E").getValues()  
   var exp               = expired_list_temp[index]
   while(exp != ""){
-    expired_list.push(exp)
+    var exp_value = allEntries.get(exp)
+    expired_list.push(exp_value)
     index = index + 1
     exp = expired_list_temp[index]
   }
-  */
+  
 
   while(files.hasNext()){
     var file = files.next()
