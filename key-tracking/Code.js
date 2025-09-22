@@ -1299,7 +1299,7 @@ function analysis(){
   }
 
   //RMOVE LATER!!!!!
-  expiration_check()
+  //expiration_check()
 }
 
 /**
@@ -1307,8 +1307,18 @@ function analysis(){
  * the Keys Project folder 
  */
 function expiration_check(){
+  const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
+  const mainSheet = dataSS.getSheetByName("Main")
+  
   const folder = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
   const files  = folder.getFiles()
+
+  andrew_one   = mainSheet.getRange("B8:B").getValues()
+  andrew_week  = mainSheet.getRange("C8:C").getValues()
+  andrew_day   = mainSheet.getRange("D8:D").getValues()
+  expired_list = mainSheet.getRange("E8:E").getValues()  
+  
+
 
   while(files.hasNext()){
     var file = files.next()
