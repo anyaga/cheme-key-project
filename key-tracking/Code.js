@@ -94,6 +94,7 @@ class keyRecord {
   setKey(newKeySet){
     this.key = newKeySet
   }
+  /*
   getActiveKeys(){
     const allKeys = this.key
     var activeKeys
@@ -101,7 +102,9 @@ class keyRecord {
       if(key.active()) activeKeys.push(key)
     });
     return activeKeys
-  }
+  }*/
+
+  /*
   getInactiveKeys(){
     const allKeys = this.key
     var inactiveKeys
@@ -109,7 +112,8 @@ class keyRecord {
       if(key.expired()) inactiveKeys.push(key)
     });
     return inactiveKeys
-  }
+  }*/
+ 
   addKey(key,room,givenDate,expDate) {
     var newKey = new keyInfo(key,room,givenDate,expDate)
     var keys = this.key
