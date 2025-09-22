@@ -410,7 +410,7 @@ function parseKeySheet(allEntries,id){
       else {//<---Overwriting old values
         var entry = allEntries.get(andrewID); 
         allEntries.delete(andrewID); 
-        entry.addKey(keys,room,advisor);
+        entry.addKey(keys,room,given0,exp0);
         allEntries.set(andrewID,entry); 
       }
     }
@@ -468,7 +468,7 @@ function checkoutFormToEntries(allEntries){
     } else {
         var Entry = allEntries.get(andrewID);
         allEntries.delete(andrewID);
-        Entry.addKey(key,room,advisor);
+        Entry.addKey(key,room,givenDate,expDate);
         allEntries.set(andrewID,Entry);
     }
   }
@@ -616,7 +616,7 @@ function unverifiedValueCollection(){
 
   //Read spreasheets with data. Should be in 'Key Inputs' folder
   var inputFolder = null
-  const folders = DriverApp.getFolders()
+  const folders = DriveApp.getFolders()
   while(folders.hasNext()){
     inputFolder = folders.next()
     var name = inputFolder.getName()
