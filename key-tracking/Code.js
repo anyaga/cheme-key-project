@@ -751,6 +751,11 @@ function entryToUnverifiedInput(){
 
 
 
+
+
+
+
+
 /**
  * 
  * @param {*} row 
@@ -770,6 +775,8 @@ function submitUnverifedData(row,col){
 
   ////////////////////////////////////////////////////////
 }
+
+
 
 
 
@@ -1303,7 +1310,7 @@ function analysis(){
   }
 
   //RMOVE LATER!!!!!
-  //expiration_check()
+  expiration_check()
 }
 
 /**
@@ -1317,6 +1324,7 @@ function expiration_check(){
   const folder = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
   const files  = folder.getFiles()
 
+  /*
   var index = 0
   andrew_one          = []
   var andrew_one_temp = mainSheet.getRange("B8:B").getValues()
@@ -1354,7 +1362,7 @@ function expiration_check(){
     index = index + 1
     exp = expired_list_temp[index]
   }
-
+  */
 
   while(files.hasNext()){
     var file = files.next()
