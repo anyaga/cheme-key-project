@@ -376,7 +376,6 @@ function validDate(date){
   return "invalid Date"
 }
 
-//----- check if working properly
 function confirmUser(first,last,advisor,andrew,key,room,entry){
   const key_rooms = entry.getKeys() 
   var key_room_status = false
@@ -543,9 +542,6 @@ function logToEntries(){
  * Adds any value to the log based on the input to the function
  */
 function addToLog(andrewID,keyRecord,logSheet,logEntries,activity){
-  //var logRange = logSheet.getRange()
-  //var l  = logRange().getLastRow()
-  //console.log(l)
 
   var keys = keyRecord.getKeys()
   for(var i = 0; i < keys.length; i++){
@@ -578,7 +574,10 @@ function addToLog(andrewID,keyRecord,logSheet,logEntries,activity){
 function addAllToLog(){
   var keySS    = SpreadsheetApp.getActiveSpreadsheet();
   var logSheet = keySS.getSheetByName('Log');
-  
+
+  var logRange = logSheet.getRange("A2:M")
+  logRange.clear()
+
   var logEntries = logToEntries();
   var allEntries = new Map();
   allEntries = checkoutFormToEntries(allEntries);
@@ -587,6 +586,10 @@ function addAllToLog(){
   for(const [andrewID, keyRecord] of allEntries){
     addToLog(andrewID,keyRecord,logSheet,logEntries,'Active')
   }
+}
+
+function updateLog(id){
+  return 
 }
 
 /**
