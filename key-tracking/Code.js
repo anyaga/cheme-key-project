@@ -9,7 +9,8 @@ Goals:
 */
 
 class keyInfo{
-  constructor(keyNumber,roomNumber,givenDate,expDate){
+  constructor(id,keyNumber,roomNumber,givenDate,expDate){
+    this.id = id
     //A string due to the dash in the middle
     this.keyNumber= keyNumber 
      //String to designate building name
@@ -17,6 +18,12 @@ class keyInfo{
     this.givenDate = givenDate;
     this.expDate = expDate;
     this.status = true
+  }
+  getId(){
+    return this.id
+  }
+  setId(){
+    this.id = 0 ////////////////////////////////////////////////////////////////////change this
   }
   getKey(){
     return this.keyNumber
@@ -128,6 +135,12 @@ class keyRecord {
     });
   }
 }
+
+
+
+
+
+
 /**
  * Capture changes to active spreadsheet (Key Main Sheet)
  * @param {*} e - event object
@@ -166,6 +179,17 @@ function onEdit(e){
     button.setBackground("#ffcccc")
   } 
 }
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Returns all active entries from the log     //////////////////////////////NOT IN USE
@@ -484,7 +508,7 @@ function logToEntries(){
   var logSheet = keySS.getSheetByName('Log');
   var allEntries = new Map();
 
-  var logRange = logSheet.getRange('A:J');
+  var logRange = logSheet.getRange('B:L');
   var logValues = logRange.getValues();
 
   for(var i = 1; i < logValues.length; i++){
@@ -513,11 +537,16 @@ function logToEntries(){
  * Adds any value to the log based on the input to the function
  */
 function addToLog(andrewID,keyRecord,logSheet,logEntries,activity){
+  var logRange = logSheet.getRange()
+  var l  = logRange().getLastRow()
+  console.log(l)
+
   var keys = keyRecord.getKeys()
   for(var i = 0; i < keys.length; i++){
     var key = keys[i]
     if(!logEntries.has(andrewID)){
       logSheet.appendRow([
+        0,
         activity,
         'Unverified',
         keyRecord.getAndrewID(),
@@ -550,7 +579,7 @@ function addAllToLog(){
   allEntries = checkInForm(allEntries);
 
   for(const [andrewID, keyRecord] of allEntries){
-    addToLog(andrewID,keyRecord,logSheet,logEntries,"Active")
+    addToLog(andrewID,keyRecord,logSheet,logEntries,'Active')
   }
 }
 
@@ -578,17 +607,17 @@ function updateLogApproval(andrewID,key,approval){
     //  matching column value is found (andrewid and key are on the same column)  
     var found   = andrew_rows.find(a => key_rows.includes(a)) 
     //fullRow = location of 'found' column
-    var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
+    var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn()) /////////////////////////////////////////////////////
     var row1    = fullRow.getValues()[0]
     //2.replace the approval values I was looking for
-    row1[1] = approval
-    fullRow.setValues([row1]) //debug these values
+    row1[1] = approval ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    fullRow.setValues([row1]) //debug these values /////////////////////////////////////////////////////////////////////////////
   } 
 }
 
 
 /**
- * 
+ * If values changed in unveriifed, update values in log
  * @param {*} andrewID 
  * @param {*} key 
  * @param {*} room 
@@ -597,6 +626,12 @@ function updateLogApproval(andrewID,key,approval){
  */
 function unverifiedToLogUpdate(andrewID,key,room,givenDate,expDate){
   //can change everything but andrewid
+  var keySS          = SpreadsheetApp.getActiveSpreadsheet();
+  var logSheet       = keySS.getSheetByName('Log');
+  var unverfiedSheet = keySS.getSheetByName('Unverified Input');
+
+
+  
 
 }
 
@@ -609,7 +644,7 @@ function unverifiedToLogUpdate(andrewID,key,room,givenDate,expDate){
 function unverifiedValueCollection(){
   var keySS    = SpreadsheetApp.getActiveSpreadsheet();
   var logSheet = keySS.getSheetByName('Log');
-  var approvalAndAndrew = logSheet.getRange('B2:C').getValues();
+  var approvalAndAndrew = logSheet.getRange('C2:D').getValues();
   
   var logEntries = logToEntries();
   var allEntries = new Map();
@@ -715,6 +750,7 @@ function entryToUnverifiedInput(){
       //var date = new Date(key.getExpirationDate());
       unverifiedSheet.appendRow([
         'Select',
+        0,
         entryRecord.getAndrewID(),
         entryRecord.getLastName(),
         entryRecord.getFirstName(),
@@ -923,6 +959,7 @@ function submitSelectedData(){
     for(var i = 0; i < keys.length; i++) {
       unverifiedSheet.appendRow([
         'Select',
+        0,
         entryRecord.getAndrewID(),
         entryRecord.getLastName(),
         entryRecord.getFirstName(),
