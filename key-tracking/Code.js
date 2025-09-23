@@ -9,21 +9,16 @@ Goals:
 */
 
 class keyInfo{
-  constructor(id,keyNumber,roomNumber,givenDate,expDate){
-    this.id = id
-    //A string due to the dash in the middle
-    this.keyNumber= keyNumber 
-     //String to designate building name
-    this.roomNumber = roomNumber
-    this.givenDate = givenDate;
-    this.expDate = expDate;
-    this.status = true
+  constructor(andrewID,keyNumber,roomNumber,givenDate,expDate){
+    this.id         = hash_id(keyNumber+andrewID)
+    this.keyNumber  = keyNumber          //A string due to the dash in the middle
+    this.roomNumber = roomNumber         //String to designate building name
+    this.givenDate  = givenDate;
+    this.expDate    = expDate;
+    this.status     = true
   }
   getId(){
     return this.id
-  }
-  setId(){
-    this.id = 0 ////////////////////////////////////////////////////////////////////change this
   }
   getKey(){
     return this.keyNumber
@@ -70,7 +65,7 @@ class keyRecord {
     this.andrewID  = andrewID;
     this.advisor   = advisor;
     this.dept      = dept;
-    this.key       = [new keyInfo(key,room,givenDate,expDate)];
+    this.key       = [new keyInfo(andrewID,key,room,givenDate,expDate)];
   }
   //Basic constructor functions
   getFirstName(){
@@ -122,7 +117,7 @@ class keyRecord {
   }*/
  
   addKey(key,room,givenDate,expDate) {
-    var newKey = new keyInfo(key,room,givenDate,expDate)
+    var newKey = new keyInfo(andrewID,key,room,givenDate,expDate)
     var keys = this.key
     keys.push(newKey)
     this.key = keys
@@ -136,8 +131,15 @@ class keyRecord {
   }
 }
 
-
-
+//Murmer Hash3 function set up
+function hash_id(str){
+  var hash =  0x811c9dc5 // FNV offset basis
+  for(var i = 0; i < str.lenght; i++){
+    hash ^= str.charCodeAt(i)
+    hash  = (hash * 0x01000193) >>> 0
+  }
+  return hash >>> 0
+}
 
 
 
