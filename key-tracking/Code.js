@@ -143,6 +143,10 @@ function hash_id(str){
 
 
 
+
+
+
+
 /**
  * Capture changes to active spreadsheet (Key Main Sheet)
  * @param {*} e - event object
@@ -548,7 +552,7 @@ function addToLog(andrewID,keyRecord,logSheet,logEntries,activity){
     var key = keys[i]
     if(!logEntries.has(andrewID)){
       logSheet.appendRow([
-        0,
+        key.getId(),
         activity,
         'Unverified',
         keyRecord.getAndrewID(),
@@ -752,7 +756,7 @@ function entryToUnverifiedInput(){
       //var date = new Date(key.getExpirationDate());
       unverifiedSheet.appendRow([
         'Select',
-        0,
+        key.getId(),
         entryRecord.getAndrewID(),
         entryRecord.getLastName(),
         entryRecord.getFirstName(),
@@ -961,7 +965,7 @@ function submitSelectedData(){
     for(var i = 0; i < keys.length; i++) {
       unverifiedSheet.appendRow([
         'Select',
-        0,
+        key.getId(),
         entryRecord.getAndrewID(),
         entryRecord.getLastName(),
         entryRecord.getFirstName(),
@@ -1080,6 +1084,7 @@ function approveAllData(){
     for(var i = 0; i < keys.length; i++){
       unverfiedSheet.appendRow([
         'Select',
+        key.getId(),
         entryRecord.getAndrewID(),
         entryRecord.getLastName(),
         entryRecord.getFirstName(),
