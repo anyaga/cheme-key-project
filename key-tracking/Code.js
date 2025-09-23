@@ -159,7 +159,7 @@ function onEdit(e){
 
   if (sheet.getName() == unverifiedSheet){  //Changed this! Must be any cahge outsid eof A
     const edit_range = e.range
-    const unverified_range = sheet.getRange("B2:J") //Could be K
+    const unverified_range = sheet.getRange("B2:K") //Could be K
 
 
     //getRow and getColumn --> top values
@@ -792,8 +792,6 @@ function entryToUnverifiedInput(){
   );
   unverifiedSheet.setConditionalFormatRules(newRules);
 }
-
-
 
 
 
