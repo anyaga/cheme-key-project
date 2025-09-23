@@ -116,7 +116,7 @@ class keyRecord {
     return inactiveKeys
   }*/
  
-  addKey(key,room,givenDate,expDate) {
+  addKey(andrewID,key,room,givenDate,expDate) {
     var newKey = new keyInfo(andrewID,key,room,givenDate,expDate)
     var keys = this.key
     keys.push(newKey)
@@ -134,7 +134,7 @@ class keyRecord {
 //Murmer Hash3 function set up
 function hash_id(str){
   var hash =  0x811c9dc5 // FNV offset basis
-  for(var i = 0; i < str.lenght; i++){
+  for(var i = 0; i < str.length; i++){
     hash ^= str.charCodeAt(i)
     hash  = (hash * 0x01000193) >>> 0
   }
@@ -543,9 +543,9 @@ function logToEntries(){
  * Adds any value to the log based on the input to the function
  */
 function addToLog(andrewID,keyRecord,logSheet,logEntries,activity){
-  var logRange = logSheet.getRange()
-  var l  = logRange().getLastRow()
-  console.log(l)
+  //var logRange = logSheet.getRange()
+  //var l  = logRange().getLastRow()
+  //console.log(l)
 
   var keys = keyRecord.getKeys()
   for(var i = 0; i < keys.length; i++){
