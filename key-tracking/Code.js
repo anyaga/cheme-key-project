@@ -151,43 +151,33 @@ function hash_id(str){
  * Capture changes to active spreadsheet (Key Main Sheet)
  * @param {*} e - event object
  */
-function onEdit(e){
-  var ui = SpreadsheetApp.getUi()
-  const unverifiedSheet = "Unverified Input"
-  const sheet           = e.range.getSheet()
+function onEdit(e) {
+  const sheet           = e.range.getSheet();
+  const unverifiedSheet = "Unverified Input";
 
+  if (sheet.getName() === unverifiedSheet) {
+    const row    = e.range.getRow()
+    const col    = e.range.getColumn()
+    const values = e.range.getValues()
 
-  if (sheet.getName() == unverifiedSheet){  //Changed this! Must be any cahge outsid eof A
-    const edit_range = e.range
-    const unverified_range = sheet.getRange("B2:K") //Could be K
+    // Only trigger if row >= 2 and column is between 3 (C) and 11 (K)
+    if (row >= 2 && col >= 3 && col <= 11) {
+      SpreadsheetApp.getUi().alert("Edit inside C2:K!");     
 
-
-    //getRow and getColumn --> top values
-    //getLastRow and getLastColumn --> bottom values
-    if(unverified_range.getLastRow() >= edit_range.getRow()
-     && unverified_range.getRow() <= edit_range.getlastRow()
-     && unverified_range.getLastColumn() >= edit_range.getColumn()
-     && unverified_range.getColumn() <= edit_range.getLastColumn()){
-      //ADD CHANGES TO THE Log!!!!
-      ui.alert("Edit to the entries!")
-
-
-      //add function to edit the logs here!!!
-
-      //submitUnverifedData(unverified_range.getRow(),unverified_range.getColumn())
+      for(var r = 0; r < values.length; r++){
+        for(var c = 0; c < values[0].length; c++){
+          var temp_r = row + r
+          var temp_c = col + c
+          var value = values[r][c]
+          submitUnverifedData(temp_r,temp_c,value)
+        }
+      }      
     }
-
-
-    //if statemtn here!!!
-  
-    const button = sheet.getRange("L2")
-    button.setValue("Data Changed")
-    button.setBackground("#ffcccc")
-  } 
+    const button = sheet.getRange("L2");
+    button.setValue("Data Changed");
+    button.setBackground("#ffcccc");
+  }
 }
-
-
-
 
 
 
@@ -796,27 +786,61 @@ function entryToUnverifiedInput(){
 
 
 
-
-
-
 /**
  * 
  * @param {*} row 
  * @param {*} col 
  */
-function submitUnverifedData(row,col){
-  //look got column value
+function submitUnverifedData(row,col,value){
   const unverfiedSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Unverified Input')
-  var errorUpdate = unverfiedSheet.getRange("L2")
+  const id             = unverfiedSheet.getRange(row,2).getValue()  
+  
+  const logSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Log')
+  var log_found  = logSheet.createTextFinder(id).findAll()[0]
+  var log_row    = log_found.getRow()
+  var logRange = logSheet.getRange("D2:L")
 
-  const andrewId = unverfiedSheet.getRange(row,2).getValue()
-  const key      = unverfiedSheet.getRange(row,7).getValue()
-  const room     = unverfiedSheet.getRange(row,8).getValue()
-
-
-
-
-  ////////////////////////////////////////////////////////
+  SpreadsheetApp.getUi().alert("inside function!" + row + " "+ col+ " " + value + " " + id + " log:" + log_row)
+  
+  switch (col){
+    
+    case 3:
+      //andrewid
+      logRange.getCell(log_row-1,1).setValue(value)      
+      break
+    case 4:
+      //last name
+      logRange.getCell(log_row-1,2).setValue(value)
+      break
+    case 5:
+      //first name
+      logRange.getCell(log_row-1,3).setValue(value)
+      break
+    case 6:
+      //advisor
+      logRange.getCell(log_row-1,4).setValue(value)
+      break
+    case 7:
+      //department
+      logRange.getCell(log_row-1,5).setValue(value)
+      break
+    case 8:
+      //key
+      logRange.getCell(log_row-1,6).setValue(value)
+      break
+    case 9:
+      //room
+      logRange.getCell(log_row-1,7).setValue(value)
+      break
+    case 10:
+      //expiration date
+      logRange.getCell(log_row-1,8).setValue(value)
+      break
+    case 11:
+      //given date
+      logRange.getCell(log_row-1,9).setValue(value)
+      break
+  }
 }
 
 
