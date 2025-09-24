@@ -151,43 +151,28 @@ function hash_id(str){
  * Capture changes to active spreadsheet (Key Main Sheet)
  * @param {*} e - event object
  */
-function onEdit(e){
-  var ui = SpreadsheetApp.getUi()
-  const unverifiedSheet = "Unverified Input"
-  const sheet           = e.range.getSheet()
+function onEdit(e) {
+  const sheet           = e.range.getSheet();
+  const unverifiedSheet = "Unverified Input";
 
+  if (sheet.getName() === unverifiedSheet) {
+    const row    = e.range.getRow()
+    const col    = e.range.getColumn()
+    const values = e.range.getValues()
 
-  if (sheet.getName() == unverifiedSheet){  //Changed this! Must be any cahge outsid eof A
-    const edit_range = e.range
-    const unverified_range = sheet.getRange("B2:K") //Could be K
-
-
-    //getRow and getColumn --> top values
-    //getLastRow and getLastColumn --> bottom values
-    if(unverified_range.getLastRow() >= edit_range.getRow()
-     && unverified_range.getRow() <= edit_range.getlastRow()
-     && unverified_range.getLastColumn() >= edit_range.getColumn()
-     && unverified_range.getColumn() <= edit_range.getLastColumn()){
-      //ADD CHANGES TO THE Log!!!!
-      ui.alert("Edit to the entries!")
-
-
-      //add function to edit the logs here!!!
-
-      //submitUnverifedData(unverified_range.getRow(),unverified_range.getColumn())
+    // Only trigger if row >= 2 and column is between 3 (C) and 11 (K)
+    if (row >= 2 && col >= 3 && col <= 11) {
+      for(var r = 0; r < values.length; r++){
+        for(var c = 0; c < values[0].length; c++){
+          var temp_r = row + r
+          var temp_c = col + c
+          var value = values[r][c]
+          submitUnverifedData(temp_r,temp_c,value)
+        }
+      }      
     }
-
-
-    //if statemtn here!!!
-  
-    const button = sheet.getRange("L2")
-    button.setValue("Data Changed")
-    button.setBackground("#ffcccc")
-  } 
+  }
 }
-
-
-
 
 
 
@@ -794,40 +779,61 @@ function entryToUnverifiedInput(){
 }
 
 
-
-
-
-
-
 /**
- * 
+ * If change in the unverified section, use id to update the log 
+ * @param (*) value
  * @param {*} row 
  * @param {*} col 
  */
-function submitUnverifedData(row,col){
-  //look got column value
+function submitUnverifedData(row,col,value){
   const unverfiedSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Unverified Input')
-  var errorUpdate = unverfiedSheet.getRange("L2")
-
-  const andrewId = unverfiedSheet.getRange(row,2).getValue()
-  const key      = unverfiedSheet.getRange(row,7).getValue()
-  const room     = unverfiedSheet.getRange(row,8).getValue()
-
-
-
-
-  ////////////////////////////////////////////////////////
+  const id             = unverfiedSheet.getRange(row,2).getValue()  
+  
+  const logSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Log')
+  var log_found  = logSheet.createTextFinder(id).findAll()[0]
+  var log_row    = log_found.getRow()
+  var logRange = logSheet.getRange("D2:L")
+  
+  switch (col){
+    
+    case 3:
+      //andrewid
+      logRange.getCell(log_row-1,1).setValue(value)      
+      break
+    case 4:
+      //last name
+      logRange.getCell(log_row-1,2).setValue(value)
+      break
+    case 5:
+      //first name
+      logRange.getCell(log_row-1,3).setValue(value)
+      break
+    case 6:
+      //advisor
+      logRange.getCell(log_row-1,4).setValue(value)
+      break
+    case 7:
+      //department
+      logRange.getCell(log_row-1,5).setValue(value)
+      break
+    case 8:
+      //key
+      logRange.getCell(log_row-1,6).setValue(value)
+      break
+    case 9:
+      //room
+      logRange.getCell(log_row-1,7).setValue(value)
+      break
+    case 10:
+      //expiration date
+      logRange.getCell(log_row-1,8).setValue(value)
+      break
+    case 11:
+      //given date
+      logRange.getCell(log_row-1,9).setValue(value)
+      break
+  }
 }
-
-
-
-
-
-
-
-
-
-
 
 
 /**
@@ -845,26 +851,28 @@ function submitSelectedData(){
 
   var val = true
   var i = 0
-  var entry_raw = unverifiedSheet.getRange(2+i,1,1,11) //11th is note (where message goes)
+  //row,col,numrows,numcol
+  var entry_raw = unverifiedSheet.getRange(2+i,1,1,11) //A2:K
   var entry     = entry_raw.getValues()[0] //check if  [0] is necessary
   while(val){
-    var approval  = entry[0]    
-    var andrewID  = entry[1]
-    var lastName  = entry[2]
-    var firstName = entry[3]
-    var advisor   = entry[4]
-    var dept      = entry[5]
-    var key       = entry[6]
-    var room      = entry[7]
-    var expDate   = entry[8]
-    var givenDate = entry[9]
+    var approval  = entry[0] 
+    var id        = entry[1]   
+    var andrewID  = entry[2]
+    var lastName  = entry[3]
+    var firstName = entry[4]
+    var advisor   = entry[5]
+    var dept      = entry[6]
+    var key       = entry[7]
+    var room      = entry[8]
+    var expDate   = entry[9]
+    var givenDate = entry[10]
     //change the color for the values!!!!!!!!!!!!!!!!!!
 
-    msg = ""
-    key_msg = ""
-    room_msg = ""
-    given_date_msg = ""
-    exp_date_msg  = ""
+    var msg = ""
+    var key_msg = ""
+    var room_msg = ""
+    var given_date_msg = ""
+    var exp_date_msg  = ""
     //Add to note if there are invalid values (conjoin message values)
 
     //Keys
@@ -920,7 +928,7 @@ function submitSelectedData(){
     entry_raw = unverifiedSheet.getRange(2+i,1,1,11)  
     entry     = entry_raw.getValues()[0]
     //check if next row is empty
-    val = entry.every(cell => (cell != "" && cell != null))
+    val = !(entry.every(cell => (cell === "" || cell === null)))
   }
   //Update the log
   var logSheet = keySS.getSheetByName('Log')
@@ -929,8 +937,8 @@ function submitSelectedData(){
 
   for(var i = 0; i < logEntries.length; i++){
     var entry_row = logEntries[i]
-    var andrewID1 = entry_row[2]
-    var key1      = entry_row[7]
+    var andrewID1 = entry_row[3]
+    var key1      = entry_row[8]
 
     //For all log values, check if it matches value in allEntries (approved entries)
     var found_entry = approveEntries.get(andrewID1)
@@ -966,7 +974,7 @@ function submitSelectedData(){
     for(var i = 0; i < keys.length; i++) {
       unverifiedSheet.appendRow([
         'Select',
-        key.getId(),
+        keys[i].getId(),
         entryRecord.getAndrewID(),
         entryRecord.getLastName(),
         entryRecord.getFirstName(),
@@ -994,19 +1002,18 @@ function approveAllData(){
 
   var val = true // this needs to be updated!!!!!!!!!!!!!!!!!1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   var i = 0;
-  var entry_raw = unverfiedSheet.getRange(2+i,1,1,11); //one row
+  var entry_raw = unverfiedSheet.getRange(2+i,4,1,11); //one row
   var entry = entry_raw.getValues()[0] //check this!!!!! [0]  
   while(val){
-    //var approval  = entry[0]
-    var andrewID  = entry[1]
-    var lastName  = entry[2]
-    var firstName = entry[3]
-    var advisor   = entry[4]
-    var dept      = entry[5]
-    var key       = entry[6]
-    var room      = entry[7]
-    var expDate   = entry[8]
-    var givenDate = entry[9]
+    var andrewID  = entry[0]
+    var lastName  = entry[1]
+    var firstName = entry[2]
+    var advisor   = entry[3]
+    var dept      = entry[4]
+    var key       = entry[5]
+    var room      = entry[6]
+    var expDate   = entry[7]
+    var givenDate = entry[8]
     
     msg = ""
     key_msg = ""
