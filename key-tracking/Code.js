@@ -778,7 +778,6 @@ function entryToUnverifiedInput(){
   unverifiedSheet.setConditionalFormatRules(newRules);
 }
 
-
 /**
  * If change in the unverified section, use id to update the log 
  * @param (*) value
@@ -793,9 +792,9 @@ function submitUnverifedData(row,col,value){
   var log_found  = logSheet.createTextFinder(id).findAll()[0]
   var log_row    = log_found.getRow()
   var logRange = logSheet.getRange("D2:L")
-  
+
+  SpreadsheetApp.getUi().alert("inside function!" + row + " "+ col+ " " + value + " " + id + " log:" + log_row)
   switch (col){
-    
     case 3:
       //andrewid
       logRange.getCell(log_row-1,1).setValue(value)      
@@ -834,7 +833,6 @@ function submitUnverifedData(row,col,value){
       break
   }
 }
-
 
 /**
  * Given what is in the approval tab, update what is in the unverifeid tab. Approve Selected - Button
