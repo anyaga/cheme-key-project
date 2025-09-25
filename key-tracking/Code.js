@@ -592,13 +592,6 @@ function addAllToLog(){
 */
 
 
-
-
-
-function updateLog(id){
-  return 
-}
-
 /**
  * Update approval status of a log (based on what happens in the unverifed sheet)
  */
