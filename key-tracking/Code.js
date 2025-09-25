@@ -141,12 +141,6 @@ function hash_id(str){
   return hash >>> 0
 }
 
-
-
-
-
-
-
 /**
  * Capture changes to active spreadsheet (Key Main Sheet)
  * @param {*} e - event object
@@ -183,7 +177,7 @@ function onEdit(e) {
 
 
 /**
- * Returns all active entries from the log     //////////////////////////////NOT IN USE
+ * Returns all active entries from the log     //////////////////////////////////////////////////////NOT IN USE
  */
 function activeEntries(){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
@@ -212,7 +206,7 @@ function activeEntries(){
 }
 
 /**
- * Returns all inactive entries from the log         ////////////////////////NOT IN USE
+ * Returns all inactive entries from the log         /////////////////////////////////////////NOT IN USE
  */
 function inactiveEntries(){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
@@ -239,6 +233,26 @@ function inactiveEntries(){
   }
   return inactive_entries
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Returns all active entries that are verified as valid inputs
@@ -550,12 +564,15 @@ function addToLog(andrewID,keyRecord,logSheet,logEntries,activity){
   }
 }
 
+
+
+
 /**
- * !!!!CHange so it can distingush active and non-active entries
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CHange so it can distingush active and non-active entries
  * 
  * 
  * Initially adds a value to the log if it is not already in the log (should be right after initially parsed)
- */
+ 
 function addAllToLog(){
   var keySS    = SpreadsheetApp.getActiveSpreadsheet();
   var logSheet = keySS.getSheetByName('Log');
@@ -572,6 +589,11 @@ function addAllToLog(){
     addToLog(andrewID,keyRecord,logSheet,logEntries,'Active')
   }
 }
+*/
+
+
+
+
 
 function updateLog(id){
   return 
@@ -778,6 +800,7 @@ function entryToUnverifiedInput(){
   unverifiedSheet.setConditionalFormatRules(newRules);
 }
 
+
 /**
  * If change in the unverified section, use id to update the log 
  * @param (*) value
@@ -792,9 +815,9 @@ function submitUnverifedData(row,col,value){
   var log_found  = logSheet.createTextFinder(id).findAll()[0]
   var log_row    = log_found.getRow()
   var logRange = logSheet.getRange("D2:L")
-
-  SpreadsheetApp.getUi().alert("inside function!" + row + " "+ col+ " " + value + " " + id + " log:" + log_row)
+  
   switch (col){
+    
     case 3:
       //andrewid
       logRange.getCell(log_row-1,1).setValue(value)      
@@ -833,6 +856,7 @@ function submitUnverifedData(row,col,value){
       break
   }
 }
+
 
 /**
  * Given what is in the approval tab, update what is in the unverifeid tab. Approve Selected - Button
