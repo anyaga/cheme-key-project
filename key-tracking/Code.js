@@ -595,28 +595,36 @@ function addAllToLog(){
 /**
  * Update approval status of a log (based on what happens in the unverifed sheet)
  */
-function updateLogApproval(andrewID,key,approval){
+function updateLogApproval(id,andrewID,key,approval){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
   const logSheet = keySS.getSheetByName('Log')
 
   //Find all instances of the andrewID and the key value in the spreadsheet
-  var andrew_found = logSheet.createTextFinder(andrewID).findAll()
-  var key_found    = logSheet.createTextFinder(key).findAll()  
-  //Key and andrewid both exist somewhere in the sheet
-  if(andrew_found && key_found){
-    var andrew_rows = []
-    for(var i = 0; i < andrew_found.length;i++){ 
-      andrew_rows.push(andrew_found[i].getRow())
-    } 
-    var key_rows = [] 
-    for(var j = 0; j < key_found.length; j++){
-      key_rows.push(key_found[j].getRow())
-    }
-    //1.Now that the value is found, get the full range
-    //  matching column value is found (andrewid and key are on the same column)  
-    var found   = andrew_rows.find(a => key_rows.includes(a)) 
-    //fullRow = location of 'found' column
-    var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn()) /////////////////////////////////////////////////////
+  if (id != -1){
+    var fullRow = logSheet.createTextFinder(id).findAll()[0]
+  }else {
+    var andrew_found = logSheet.createTextFinder(andrewID).findAll()
+    var key_found    = logSheet.createTextFinder(key).findAll()  
+    //Key and andrewid both exist somewhere in the sheet
+    if(andrew_found && key_found){
+      var andrew_rows = []
+      for(var i = 0; i < andrew_found.length;i++){ 
+        andrew_rows.push(andrew_found[i].getRow())
+      } 
+      var key_rows = [] 
+      for(var j = 0; j < key_found.length; j++){
+        key_rows.push(key_found[j].getRow())
+      }
+      //1.Now that the value is found, get the full range
+      //  matching column value is found (andrewid and key are on the same column)  
+      var found   = andrew_rows.find(a => key_rows.includes(a)) 
+      //fullRow = location of 'found' column
+      var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn()) /////////////////////////////////////////////////////
+  }
+ 
+
+
+
     var row1    = fullRow.getValues()[0]
     //2.replace the approval values I was looking for
     row1[1] = approval ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -868,7 +876,7 @@ function submitSelectedData(){
   var i = 0
   //row,col,numrows,numcol
   var entry_raw = unverifiedSheet.getRange(2+i,1,1,11) //A2:K
-  var entry     = entry_raw.getValues()[0] //check if  [0] is necessary
+  var entry     = entry_raw.getValues()[0]
   while(val){
     var approval  = entry[0] 
     var id        = entry[1]   
@@ -881,44 +889,42 @@ function submitSelectedData(){
     var room      = entry[8]
     var expDate   = entry[9]
     var givenDate = entry[10]
-    //change the color for the values!!!!!!!!!!!!!!!!!!
 
+    //Add to note if there are invalid values (conjoin message values)
     var msg = ""
     var key_msg = ""
     var room_msg = ""
     var given_date_msg = ""
     var exp_date_msg  = ""
-    //Add to note if there are invalid values (conjoin message values)
 
     //Keys
-    if(key == 'invalid key'){
+    if(key == 'invalid key' || key == ''){
       key_msg = "invalid key"
     }
     msg = msg + key_msg
     
     //Rooms
-    if(room == 'invalid room'){
+    if(room == 'invalid room' || room == ""){
       if(msg == ""){room_msg = "invalid room"}
       else{room_msg = ", "+"invalid room"}
     }
     msg = msg + room_msg
     
     //Given Date
-    if(givenDate == "invalid date"){
+    if(givenDate == "invalid date" || givenDate == ""){
       if(msg == ""){given_date_msg = "invalid date"}
       else {given_date_msg = ", " + "invalid date"}
     }
     msg = msg + given_date_msg
 
     //Expiration Date
-    if(expDate == "invalid date"){
+    if(expDate == "invalid date" || expDate == ""){
       if(msg == ""){exp_date_msg = "invalid date"}
       else{exp_date_msg = ", " + "invalid date"}    
     }
     msg = msg + exp_date_msg
-
-    if(msg == "" || approval == "Denied"){
-      var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
+    var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
+    if(msg == "" || approval == "Denied"){  
       //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
       if(approval == "Approved"){
         approveEntries.set(andrewID,keyRec)
@@ -934,7 +940,6 @@ function submitSelectedData(){
       }
     } 
     else{
-      var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
       remainingEntries.set(andrewID,keyRec)
       entry_raw.clear()
     }
@@ -942,13 +947,12 @@ function submitSelectedData(){
     i = i + 1
     entry_raw = unverifiedSheet.getRange(2+i,1,1,11)  
     entry     = entry_raw.getValues()[0]
-    //check if next row is empty
+    //check if next row has at least one value 
     val = !(entry.every(cell => (cell === "" || cell === null)))
   }
   //Update the log
   var logSheet = keySS.getSheetByName('Log')
-  var logEntries_raw = logSheet.getRange("A2:K");
-  var logEntries = logEntries_raw.getValues()
+  var logEntries = logSheet.getRange("A2:K").getValues()
 
   for(var i = 0; i < logEntries.length; i++){
     var entry_row = logEntries[i]
@@ -960,11 +964,11 @@ function submitSelectedData(){
     if(found_entry != undefined){
       var keys = found_entry.key
       for(var i = 0; i < keys.length; i++){
-        k = keys[i]
-        keyNum = k.keyNumber
+        key = keys[i]
+        keyNum = key.keyNumber
         //If andrew ID(above) and key match, say it is approved in log
         if(keyNum == key1){
-          updateLogApproval(andrewID1,key1,"Approved")
+          updateLogApproval(id,andrewID1,key1,"Approved")
         }
       }
     }
@@ -978,7 +982,7 @@ function submitSelectedData(){
         keyNum1 = k1.keyNumber
         //If andrewID(above) and key match, say it is denied in log
         if(keyNum1 == key1){
-          updateLogApproval(andrewID1,key1,"Denied")
+          updateLogApproval(id,andrewID1,key1,"Denied")
         }
       }
     }
@@ -1006,7 +1010,7 @@ function submitSelectedData(){
 }
 
 /**
- * Approve all unverified input, regardless of what is in the approval tab. Approve All - Button
+ * Approve all unverified input, regardless of what is in the approval tab. Approve All - Button ///////////////////////////////////update once other function is complete 
  */
 function approveAllData(){
   //clear all the data in the unverifeid
@@ -1097,7 +1101,7 @@ function approveAllData(){
         k = keys[i]
         keyNum = k.keyNumber
         if(keyNum == key1){
-          updateLogApproval(andrewID1,key1,"Approved")
+          updateLogApproval(-1,andrewID1,key1,"Approved")
         }
       }
     }
@@ -1156,7 +1160,7 @@ function manualCheckIn(allEntries,andrewID,firstName,lastName,advisor,key,room){
           allEntries.set(andrewID,entry)   
         }
         //2.Update the log to show key has been removed
-        updateLogApproval(andrewID,key,"Inactive")
+        updateLogApproval(-1,andrewID,key,"Inactive")
       }
     }
   return allEntries
