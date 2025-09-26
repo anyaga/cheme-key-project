@@ -572,7 +572,7 @@ function addToLog(andrewID,keyRecord,logSheet,logEntries,activity){
 /**
  * Update approval status of a log (based on what happens in the unverifed sheet)
  */
-function updateLogApproval(id,andrewID,key,approval){
+function updateLogApproval(id,andrewID,key,approval,status){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
   const logSheet = keySS.getSheetByName('Log')
 
@@ -599,11 +599,7 @@ function updateLogApproval(id,andrewID,key,approval){
   } 
   var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
   var row1    = fullRow.getValues()[0]
-  if (approval == "Approved"){
-    row1[1] = "Active"
-  } else{
-    row1[1] = "Inactive"
-  }
+  row1[1] = status
   row1[2] = approval 
   fullRow.setValues([row1]) //debug these values /
 }
@@ -949,7 +945,7 @@ function submitSelectedData(){
         var k1 = keys[i]
         //If andrew ID(above) and key match, say it is approved in log
         if(k1.keyNumber == key1){
-          updateLogApproval(id1,andrewID1,key1,"Approved")
+          updateLogApproval(id1,andrewID1,key1,"Approved","Active")
         }
       }
     }
@@ -962,7 +958,7 @@ function submitSelectedData(){
         var k2 = keys1[j]
         //If andrewID(above) and key match, say it is denied in log
         if(k2.keyNumber == key1){
-          updateLogApproval(id1,andrewID1,key1,"Denied")
+          updateLogApproval(id1,andrewID1,key1,"Denied","Inactive")
         }
       }
     }
@@ -1098,7 +1094,7 @@ function approveAllData(){
       for(var i = 0; i  < keys.length; i++){
         var k1 = keys[i]
         if(k1.keyNumber == key1){
-          updateLogApproval(id1,andrewID1,key1,"Approved")
+          updateLogApproval(id1,andrewID1,key1,"Approved","Active")
         }
       }
     }
@@ -1161,7 +1157,7 @@ function manualCheckIn(allEntries,andrewID,firstName,lastName,advisor,key,room){
           allEntries.set(andrewID,entry)   
         }
         //2.Update the log to show key has been removed
-        updateLogApproval(-1,andrewID,key,"Inactive")
+        updateLogApproval(-1,andrewID,key,"Approved","Inactive")
       }
     }
   return allEntries
