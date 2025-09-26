@@ -601,7 +601,11 @@ function updateLogApproval(id,andrewID,key,approval){
 
   //Find all instances of the andrewID and the key value in the spreadsheet
   if (id != -1){
-    var fullRow = logSheet.createTextFinder(id).findAll()[0]
+    var found = logSheet.createTextFinder(id).findAll()[0].getRow()
+    // var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
+    // var row1    = fullRow.getValues()[0]
+    // row1[2] = approval 
+    // fullRow.setValues([row1]) //debug these values /
   }else {
     var andrew_found = logSheet.createTextFinder(andrewID).findAll()
     var key_found    = logSheet.createTextFinder(key).findAll()  
@@ -619,14 +623,17 @@ function updateLogApproval(id,andrewID,key,approval){
       //  matching column value is found (andrewid and key are on the same column)  
       var found   = andrew_rows.find(a => key_rows.includes(a)) 
       //fullRow = location of 'found' column
-      var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn()) /////////////////////////////////////////////////////
-  }
- 
-    var row1    = fullRow.getValues()[0]
-    //2.replace the approval values I was looking for
-    row1[2] = approval ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    fullRow.setValues([row1]) //debug these values /////////////////////////////////////////////////////////////////////////////
+
+      // var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
+      // var row1    = fullRow.getValues()[0]
+      // row1[2] = approval 
+      // fullRow.setValues([row1]) //debug these values /
+    }
   } 
+  var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
+  var row1    = fullRow.getValues()[0]
+  row1[2] = approval 
+  fullRow.setValues([row1]) //debug these values /
 }
 
 
@@ -852,7 +859,7 @@ function submitSelectedData(){
   var val = true
   var i = 0
   //row,col,numrows,numcol
-  var entry_raw = unverifiedSheet.getRange(2+i,1,1,11) //A2:K
+  var entry_raw = unverifiedSheet.getRange(2+i,1,1,12) //A2:L
   var entry     = entry_raw.getValues()[0]
   while(val){
     var approval  = entry[0] 
@@ -904,7 +911,6 @@ function submitSelectedData(){
     if(msg == "" || approval == "Denied"){  
       //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
       if(approval == "Approved"){
-
         if(approveEntries.has(andrewID)){
           var entry = approveEntries.get(andrewID)
           approveEntries.delete(andrewID)
@@ -913,11 +919,9 @@ function submitSelectedData(){
         } else{
           approveEntries.set(andrewID,keyRec)
         }
-
         entry_raw.clear()
       } 
       else if(approval == "Denied"){
-        
         if(deletedEntires.has(andrewID)){
           var entry = deletedEntires.get(andrewID)
           deletedEntires.delete(andrewID)
@@ -926,12 +930,9 @@ function submitSelectedData(){
         } else{
           deletedEntires.set(andrewID,keyRec)
         }
-        
-        
         entry_raw.clear()
       }
       else{
-
         if(remainingEntries.has(andrewID)){
           var entry = remainingEntries.get(andrewID)
           remainingEntries.delete((andrewID))
@@ -940,7 +941,6 @@ function submitSelectedData(){
         } else{
           remainingEntries.set(andrewID,keyRec)
         }
-        
         entry_raw.clear()
       }
     } 
@@ -954,11 +954,10 @@ function submitSelectedData(){
           remainingEntries.set(andrewID,keyRec)
         }      
         entry_raw.clear()
-  
     }
     //Update loop conditions 
     i = i + 1
-    entry_raw = unverifiedSheet.getRange(2+i,1,1,11)  
+    entry_raw = unverifiedSheet.getRange(2+i,1,1,12)  
     entry     = entry_raw.getValues()[0]
     //check if next row has at least one value 
     val = !(entry.every(cell => (cell === "" || cell === null)))
@@ -971,17 +970,16 @@ function submitSelectedData(){
     var entry_row = logEntries[i]
     var andrewID1 = entry_row[3]
     var key1      = entry_row[8]
-
+    var id1       = entry_row[0]
     //For all log values, check if it matches value in allEntries (approved entries)
     var found_entry = approveEntries.get(andrewID1)
     if(found_entry != undefined){
       var keys = found_entry.key
       for(var i = 0; i < keys.length; i++){
-        key = keys[i]
-        keyNum = key.keyNumber
+        var k1 = keys[i]
         //If andrew ID(above) and key match, say it is approved in log
-        if(keyNum == key1){
-          updateLogApproval(id,andrewID1,key1,"Approved")
+        if(k1.keyNumber == key1){
+          updateLogApproval(id1,andrewID1,key1,"Approved")
         }
       }
     }
@@ -991,11 +989,10 @@ function submitSelectedData(){
     if(found_entry1 != undefined){
       var keys1 = found_entry1.key
       for(var j = 0; j < keys1.length; j++){
-        k1 = keys1[j]
-        keyNum1 = k1.keyNumber
+        var k2 = keys1[j]
         //If andrewID(above) and key match, say it is denied in log
-        if(keyNum1 == key1){
-          updateLogApproval(id,andrewID1,key1,"Denied")
+        if(k2.keyNumber == key1){
+          updateLogApproval(id1,andrewID1,key1,"Denied")
         }
       }
     }
