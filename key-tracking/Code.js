@@ -141,7 +141,7 @@ function hash_id(str){
   return hash >>> 0
 }
 
-/**
+/**(
  * Capture changes to active spreadsheet (Key Main Sheet)
  * @param {*} e - event object
  */
@@ -168,9 +168,63 @@ function onEdit(e) {
   }
 }
 
+function onFormSubmit(e){
+  var sheet = e.range.getSheet()
+  var sheetName = sheet.getName()
+  var data  = e.values
+  var keySS = SpreadsheetApp.getActiveSpreadsheet()
+  var startCol = e.range.getColumn()
+
+  if(sheetName === "Key Check-In Form"){
+    for(var i = 0; 0 < data.length; i++ ){
+      var col = startCol + i
+      switch(col){
+        case 1:
+          var date_returned = data[i]
+          break
+        case 2:
+          var email = data[i]
+          break
+        case 3: 
+          var firstName = data[i]
+          break
+        case 4:
+          var lastName = data[i]
+          break
+        case 5:
+          var advisor = data[i]
+          break
+        case 6:
+          var andrewID = data[i]
+          break
+        case 7:
+          var key = data[i]
+          break
+        case 8:
+          var room = data[i]
+          break
+      }
+    }
+    //manualCheckIn(----,andrewID,firstName,lastName,advisor,key,room)
+    room = 
+    //Return Key
+    formVal(keySS,data)
+  }
+  /*
+  else if (sheetName == "Key Check-In Form"){
+
+  }*/
 
 
 
+  //update
+}
+
+function formVal(keySS){
+  var unverifiedSheet = keySS.getSheetByName("Log")
+
+
+}
 
 
 
@@ -1136,16 +1190,21 @@ function approveAllData(){
  * @param {*} room 
  * @returns 
  */
-function manualCheckIn(allEntries,andrewID,firstName,lastName,advisor,key,room){
-    if(allEntries.has(andrewID)){      
-      var entry     = allEntries.get(andrewID)
+function manualCheckIn(andrewID,firstName,lastName,advisor,key,room){
+  var logEntries = logToEntries()
+    if(logEntries.has(andrewID)){      
+      var entry     = logEntries.get(andrewID)
       var confirmed = confirmUser(firstName,lastName,advisor,andrewID,key,room,entry) 
       if(confirmed){
         var key_count = entry.getKeys().length
         //1.Remove specific key
-        if(key_count == 1){allEntries.delete(andrewID)}   
-        else{
+        if(key_count == 1){
+          logEntries.delete(andrewID)
+        } else{
           keys = []
+
+
+          
           entry.key.forEach((keyDetails) => {
             if(keyDetails.getKey() == key){
               keyDetails.deactivate()       //This does not seem to work. deactiveate isnt doing anything but sorting to active and non active fkeys <--may need to remove this
@@ -1154,7 +1213,7 @@ function manualCheckIn(allEntries,andrewID,firstName,lastName,advisor,key,room){
             }
           });
           entry.setKey(keys)
-          allEntries.set(andrewID,entry)   
+          logEntries.set(andrewID,entry)   
         }
         //2.Update the log to show key has been removed
         updateLogApproval(-1,andrewID,key,"Approved","Inactive")
@@ -1169,7 +1228,7 @@ function manualCheckIn(allEntries,andrewID,firstName,lastName,advisor,key,room){
  * @returns 
  */
 function checkInForm(){
-  var allEntries = new Map()
+  //var allEntries = new Map()
   var firstName,lastName, advisor,andrewID, key,room;
   const checkInForm = FormApp.openByUrl("https://docs.google.com/forms/d/1t6IxYbw-evVopJd3XGKHRxb9HfWWke0ozHA39XT-1z8/")
   var allResponses = checkInForm.getResponses()
