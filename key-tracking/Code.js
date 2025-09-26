@@ -1195,19 +1195,22 @@ function manualCheckIn(andrewID,firstName,lastName,advisor,key,room){
     if(logEntries.has(andrewID)){      
       var entry     = logEntries.get(andrewID)
       var confirmed = confirmUser(firstName,lastName,advisor,andrewID,key,room,entry) 
+      var id = -1
       if(confirmed){
         var key_count = entry.getKeys().length
         //1.Remove specific key
         if(key_count == 1){
           logEntries.delete(andrewID)
+          id = entry.key.id
         } else{
           keys = []
 
 
-          
+
           entry.key.forEach((keyDetails) => {
             if(keyDetails.getKey() == key){
               keyDetails.deactivate()       //This does not seem to work. deactiveate isnt doing anything but sorting to active and non active fkeys <--may need to remove this
+              id = keyDetails.id
             } else{
               keys.push(keyDetails)
             }
@@ -1216,7 +1219,8 @@ function manualCheckIn(andrewID,firstName,lastName,advisor,key,room){
           logEntries.set(andrewID,entry)   
         }
         //2.Update the log to show key has been removed
-        updateLogApproval(-1,andrewID,key,"Approved","Inactive")
+
+        updateLogApproval(id,andrewID,key,"Approved","Inactive")
       }
     }
   return allEntries
