@@ -264,17 +264,18 @@ function verifiedEntries(keySS){
 
   var verifiedEntries = new Map()
   for(var log_row of log_values){
-    const status    = log_row[0]
-    const approval  = log_row[1]
-    const andrewID  = log_row[2]
-    const lastName  = log_row[3]
-    const firstName = log_row[4]
-    const advisor   = log_row[5]
-    const dept      = log_row[6]
-    const key       = log_row[7]
-    const room      = log_row[8]
-    const expDate   = log_row[9]
-    const givenDate = log_row[10]
+    const id        = log_row[0]
+    const status    = log_row[1]
+    const approval  = log_row[2]
+    const andrewID  = log_row[3]
+    const lastName  = log_row[4]
+    const firstName = log_row[5]
+    const advisor   = log_row[6]
+    const dept      = log_row[7]
+    const key       = log_row[8]
+    const room      = log_row[9]
+    const expDate   = log_row[10]
+    const givenDate = log_row[11]
     if((status == "Active") && (approval == "Approved")){
       var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
       verifiedEntries.set(andrewID,newKeyRec)
@@ -597,8 +598,6 @@ function updateLogApproval(id,andrewID,key,approval){
   row1[2] = approval 
   fullRow.setValues([row1]) //debug these values /
 }
-
-
 
 /************************ Manipulating the unverifed sheet ****************/
 
@@ -1115,6 +1114,10 @@ function approveAllData(){
     }
   });
 }
+
+
+
+
 
 /************ Check in values in the sheets********/
 /**
