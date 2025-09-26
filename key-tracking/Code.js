@@ -622,35 +622,13 @@ function updateLogApproval(id,andrewID,key,approval){
       var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn()) /////////////////////////////////////////////////////
   }
  
-
-
-
     var row1    = fullRow.getValues()[0]
     //2.replace the approval values I was looking for
-    row1[1] = approval ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    row1[2] = approval ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     fullRow.setValues([row1]) //debug these values /////////////////////////////////////////////////////////////////////////////
   } 
 }
 
-
-/**
- * If values changed in unveriifed, update values in log
- * @param {*} andrewID 
- * @param {*} key 
- * @param {*} room 
- * @param {*} givenDate 
- * @param {*} expDate 
- */
-function unverifiedToLogUpdate(andrewID,key,room,givenDate,expDate){
-  //can change everything but andrewid
-  var keySS          = SpreadsheetApp.getActiveSpreadsheet();
-  var logSheet       = keySS.getSheetByName('Log');
-  var unverfiedSheet = keySS.getSheetByName('Unverified Input');
-
-
-  
-
-}
 
 
 /************************ Manipulating the unverifed sheet ****************/
