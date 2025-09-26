@@ -35,27 +35,6 @@ class keyInfo{
   getStatus(){
     return this.status
   }
-
-  ////////////////////May need to be deleted//////////////////////////
-  deactivate(){
-    this.status = false
-  }
-  activate(){
-    this.status = true
-  }
-  
-  active(){
-    var curr = new Date()
-    if((this.givenDate instanceof Date)&& (this.givenDate < curr)){
-      return false
-    } else {
-      return true
-    }
-  }
-  expired(){
-    return !this.active()
-  }
-  ///////////////////////////
 }
 
 class keyRecord {
@@ -96,25 +75,6 @@ class keyRecord {
   setKey(newKeySet){
     this.key = newKeySet
   }
-  /*
-  getActiveKeys(){
-    const allKeys = this.key
-    var activeKeys
-    allKeys.forEach((key)=>{
-      if(key.active()) activeKeys.push(key)
-    });
-    return activeKeys
-  }*/
-
-  /*
-  getInactiveKeys(){
-    const allKeys = this.key
-    var inactiveKeys
-    allKeys.forEach((key) => {
-      if(key.expired()) inactiveKeys.push(key)
-    });
-    return inactiveKeys
-  }*/
  
   addKey(andrewID,key,room,givenDate,expDate) {
     var newKey = new keyInfo(andrewID,key,room,givenDate,expDate)
@@ -205,7 +165,7 @@ function onFormSubmit(e){
           break
       }
     }
-    //manualCheckIn(----,andrewID,firstName,lastName,advisor,key,room)
+    //manualCheckIn(andrewID,firstName,lastName,advisor,key,room)
     room = 
     //Return Key
     formVal(keySS,data)
@@ -1192,38 +1152,30 @@ function approveAllData(){
  */
 function manualCheckIn(andrewID,firstName,lastName,advisor,key,room){
   var logEntries = logToEntries()
-    if(logEntries.has(andrewID)){      
-      var entry     = logEntries.get(andrewID)
-      var confirmed = confirmUser(firstName,lastName,advisor,andrewID,key,room,entry) 
-      var id = -1
-      if(confirmed){
-        var key_count = entry.getKeys().length
-        //1.Remove specific key
-        if(key_count == 1){
-          logEntries.delete(andrewID)
-          id = entry.key.id
-        } else{
-          keys = []
-
-
-
-          entry.key.forEach((keyDetails) => {
-            if(keyDetails.getKey() == key){
-              keyDetails.deactivate()       //This does not seem to work. deactiveate isnt doing anything but sorting to active and non active fkeys <--may need to remove this
-              id = keyDetails.id
-            } else{
-              keys.push(keyDetails)
-            }
-          });
-          entry.setKey(keys)
-          logEntries.set(andrewID,entry)   
-        }
-        //2.Update the log to show key has been removed
-
-        updateLogApproval(id,andrewID,key,"Approved","Inactive")
+  if(logEntries.has(andrewID)){      
+    var entry     = logEntries.get(andrewID)
+    var confirmed = confirmUser(firstName,lastName,advisor,andrewID,key,room,entry) 
+    var id = -1
+    if(confirmed){
+      var key_count = entry.getKeys().length
+      //1.Remove specific key
+      if(key_count == 1){
+        id = entry.key.id
+      } else{
+        entry.key.forEach((keyDetails) => {
+          if(keyDetails.getKey() == key){
+            id = keyDetails.id
+          } 
+        });
       }
+      //2.Update the log to show key has been removed
+
+
+
+
+      updateLogApproval(id,andrewID,key,"Approved","Inactive")
     }
-  return allEntries
+  }
 }
 
 /**
@@ -1232,7 +1184,6 @@ function manualCheckIn(andrewID,firstName,lastName,advisor,key,room){
  * @returns 
  */
 function checkInForm(){
-  //var allEntries = new Map()
   var firstName,lastName, advisor,andrewID, key,room;
   const checkInForm = FormApp.openByUrl("https://docs.google.com/forms/d/1t6IxYbw-evVopJd3XGKHRxb9HfWWke0ozHA39XT-1z8/")
   var allResponses = checkInForm.getResponses()
@@ -1256,9 +1207,8 @@ function checkInForm(){
         room = validRoom(answ);
       } 
     }
-    allEntries = manualCheckIn(allEntries,andrewID,firstName,lastName,advisor,key,room)
+    manualCheckIn(andrewID,firstName,lastName,advisor,key,room)
   }
-  return allEntries
 }
 
 
