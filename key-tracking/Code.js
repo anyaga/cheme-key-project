@@ -564,34 +564,6 @@ function addToLog(andrewID,keyRecord,logSheet,logEntries,activity){
   }
 }
 
-
-
-
-/**
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CHange so it can distingush active and non-active entries
- * 
- * 
- * Initially adds a value to the log if it is not already in the log (should be right after initially parsed)
- 
-function addAllToLog(){
-  var keySS    = SpreadsheetApp.getActiveSpreadsheet();
-  var logSheet = keySS.getSheetByName('Log');
-
-  var logRange = logSheet.getRange("A2:M")
-  logRange.clear()
-
-  var logEntries = logToEntries();
-  var allEntries = new Map();
-  allEntries = checkoutFormToEntries(allEntries);
-  allEntries = checkInForm(allEntries);
-
-  for(const [andrewID, keyRecord] of allEntries){
-    addToLog(andrewID,keyRecord,logSheet,logEntries,'Active')
-  }
-}
-*/
-
-
 /**
  * Update approval status of a log (based on what happens in the unverifed sheet)
  */
@@ -602,10 +574,6 @@ function updateLogApproval(id,andrewID,key,approval){
   //Find all instances of the andrewID and the key value in the spreadsheet
   if (id != -1){
     var found = logSheet.createTextFinder(id).findAll()[0].getRow()
-    // var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
-    // var row1    = fullRow.getValues()[0]
-    // row1[2] = approval 
-    // fullRow.setValues([row1]) //debug these values /
   }else {
     var andrew_found = logSheet.createTextFinder(andrewID).findAll()
     var key_found    = logSheet.createTextFinder(key).findAll()  
@@ -622,12 +590,6 @@ function updateLogApproval(id,andrewID,key,approval){
       //1.Now that the value is found, get the full range
       //  matching column value is found (andrewid and key are on the same column)  
       var found   = andrew_rows.find(a => key_rows.includes(a)) 
-      //fullRow = location of 'found' column
-
-      // var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
-      // var row1    = fullRow.getValues()[0]
-      // row1[2] = approval 
-      // fullRow.setValues([row1]) //debug these values /
     }
   } 
   var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
