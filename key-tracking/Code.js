@@ -779,7 +779,6 @@ function entryToUnverifiedInput(){
   unverifiedSheet.setConditionalFormatRules(newRules);
 }
 
-
 /**
  * If change in the unverified section, use id to update the log 
  * @param (*) value
@@ -905,21 +904,57 @@ function submitSelectedData(){
     if(msg == "" || approval == "Denied"){  
       //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
       if(approval == "Approved"){
-        approveEntries.set(andrewID,keyRec)
+
+        if(approveEntries.has(andrewID)){
+          var entry = approveEntries.get(andrewID)
+          approveEntries.delete(andrewID)
+          entry.addKey(key,room,givenDate,expDate)
+          approveEntries.set(andrewID,entry)
+        } else{
+          approveEntries.set(andrewID,keyRec)
+        }
+
         entry_raw.clear()
       } 
       else if(approval == "Denied"){
-        deletedEntires.set(andrewID,keyRec)
+        
+        if(deletedEntires.has(andrewID)){
+          var entry = deletedEntires.get(andrewID)
+          deletedEntires.delete(andrewID)
+          entry.addKey(key,room,givenDate,expDate)
+          deletedEntires.set(andrewID.entry)
+        } else{
+          deletedEntires.set(andrewID,keyRec)
+        }
+        
+        
         entry_raw.clear()
       }
       else{
-        remainingEntries.set(andrewID,keyRec)
+
+        if(remainingEntries.has(andrewID)){
+          var entry = remainingEntries.get(andrewID)
+          remainingEntries.delete((andrewID))
+          entry.addKey(key,room,givenDate,expDate)
+          remainingEntries.set(andrewID,entry)
+        } else{
+          remainingEntries.set(andrewID,keyRec)
+        }
+        
         entry_raw.clear()
       }
     } 
     else{
-      remainingEntries.set(andrewID,keyRec)
-      entry_raw.clear()
+        if(remainingEntries.has(andrewID)){
+          var entry = remainingEntries.get(andrewID)
+          remainingEntries.delete((andrewID))
+          entry.addKey(key,room,givenDate,expDate)
+          remainingEntries.set(andrewID,entry)
+        } else{
+          remainingEntries.set(andrewID,keyRec)
+        }      
+        entry_raw.clear()
+  
     }
     //Update loop conditions 
     i = i + 1
