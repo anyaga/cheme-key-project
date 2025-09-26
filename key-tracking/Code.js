@@ -634,7 +634,7 @@ function unverifiedValueCollection(){
   }
 
   allEntries = checkoutFormToEntries(allEntries);
-  allEntries = checkInForm(allEntries);         //////////////////////////////////////////////is this necessary??
+  //var checkInEntries = checkInForm();         //////////////////////////////////////////////is this necessary??
 
   var unverifiedEntries = new Map();
 
@@ -1168,7 +1168,8 @@ function manualCheckIn(allEntries,andrewID,firstName,lastName,advisor,key,room){
  * @param {*} allEntries 
  * @returns 
  */
-function checkInForm(allEntries){
+function checkInForm(){
+  var allEntries = new Map()
   var firstName,lastName, advisor,andrewID, key,room;
   const checkInForm = FormApp.openByUrl("https://docs.google.com/forms/d/1t6IxYbw-evVopJd3XGKHRxb9HfWWke0ozHA39XT-1z8/")
   var allResponses = checkInForm.getResponses()
@@ -1198,9 +1199,21 @@ function checkInForm(allEntries){
 }
 
 
+/** 
+function checkInToLog(){
+  var keySS    = SpreadsheetApp.getActiveSpreadsheet()
+  var verified = verifiedEntries(keySS)
+  
+  var checkInEntries = checkInForm()
+  checkInEntries.forEach((entryRecord) => {
+    var 
 
-
-
+    var andrewID = entryRecord.getAndrewID()
+    var key      = entryRecord.get
+    updateLogApproval(-1,entryRecord.getAndrewID(),key,"Inactive","Approved")
+  });
+}
+*/
 
 
 function scheduleReload(){
@@ -1397,10 +1410,6 @@ function expiration_check(){
   
   var allEntries = verifiedEntries(dataSS)  
 
-
-  //FINISH THE MAP LOOK UP!!!!
-
-  
   var index = 0
   var andrew_one          = []
   var andrew_one_temp = mainSheet.getRange("B8:B").getValues()
