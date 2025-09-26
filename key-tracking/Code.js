@@ -284,6 +284,10 @@ function verifiedEntries(keySS){
   return verifiedEntries
 }
 
+
+
+
+
 /***************Helper Functions used for safety checks********/
 function validKey(key) {
   //Some error with Key formating
@@ -595,6 +599,11 @@ function updateLogApproval(id,andrewID,key,approval){
   } 
   var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
   var row1    = fullRow.getValues()[0]
+  if (approval == "Approved"){
+    row1[1] = "Active"
+  } else{
+    row1[1] = "Inactive"
+  }
   row1[2] = approval 
   fullRow.setValues([row1]) //debug these values /
 }
