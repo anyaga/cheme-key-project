@@ -1024,55 +1024,57 @@ function submitSelectedData(){
  */
 function approveAllData(){
   //clear all the data in the unverifeid
-  var keySS          = SpreadsheetApp.getActiveSpreadsheet();
-  var unverfiedSheet = keySS.getSheetByName('Unverified Input');
-  var allEntries     = new Map(); 
+  var keySS            = SpreadsheetApp.getActiveSpreadsheet();
+  var unverfiedSheet   = keySS.getSheetByName('Unverified Input');
+  var allEntries       = new Map(); 
   var remainingEntries = new Map()
 
   var val = true // this needs to be updated!!!!!!!!!!!!!!!!!1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   var i = 0;
-  var entry_raw = unverfiedSheet.getRange(2+i,4,1,11); //one row
-  var entry = entry_raw.getValues()[0] //check this!!!!! [0]  
+  var entry_raw = unverfiedSheet.getRange(2+i,1,1,12); //one row
+  var entry     = entry_raw.getValues()[0] //check this!!!!! [0]  
   while(val){
-    var andrewID  = entry[0]
-    var lastName  = entry[1]
-    var firstName = entry[2]
-    var advisor   = entry[3]
-    var dept      = entry[4]
-    var key       = entry[5]
-    var room      = entry[6]
-    var expDate   = entry[7]
-    var givenDate = entry[8]
+    var approval  = entry[0]
+    var id        = entry[1]
+    var andrewID  = entry[2]
+    var lastName  = entry[3]
+    var firstName = entry[4]
+    var advisor   = entry[5]
+    var dept      = entry[6]
+    var key       = entry[7]
+    var room      = entry[8]
+    var expDate   = entry[9]
+    var givenDate = entry[10]
     
-    msg = ""
-    key_msg = ""
-    room_msg = ""
-    given_date_msg = ""
-    exp_date_msg  = ""
+    var msg = ""
+    var key_msg = ""
+    var room_msg = ""
+    var given_date_msg = ""
+    var exp_date_msg  = ""
     //Add to note if there are invalid values (conjoin message values)
 
     //Keys
-    if(key == 'invalid key'){
+    if(key == 'invalid key' || key == ""){
       key_msg = "invalid key"
     }
     msg = msg + key_msg
     
     //Rooms
-    if(room == 'invalid room'){
+    if(room == 'invalid room' || room == ""){
       if(msg == ""){room_msg = "invalid room"}
       else{room_msg = ", "+"invalid room"}
     }
     msg = msg + room_msg
     
     //Given Date
-    if(givenDate == "invalid date"){
+    if(givenDate == "invalid date"||givenDate ==""){
       if(msg == ""){given_date_msg = "invalid date"}
       else {given_date_msg = ", " + "invalid date"}
     }
     msg = msg + given_date_msg
 
     //Expiration Date
-    if(expDate == "invalid date"){
+    if(expDate == "invalid date" || expDate == ""){
       if(msg == ""){exp_date_msg = "invalid date"}
       else{exp_date_msg = ", " + "invalid date"}    
     }
@@ -1080,38 +1082,53 @@ function approveAllData(){
 
     var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
     if((key != 'invalid key') && (room != 'invalid room') && (expDate != 'invalid date') && (givenDate != 'invalid date')){
-      //All 'Approve'. All can be added to the map for entries
-      allEntries.set(andrewID,keyRec)
+      //All 'Approve'. All can be added to the map for entries      
+      if(allEntries.has(andrewID)){
+        var entry = allEntries.get(andrewID)
+        allEntries.delete(andrewID)
+        entry.addKey(key,room,givenDate,expDate)
+        allEntries.set(andrewID,entry)
+      } else {
+        allEntries.set(andrewID,keyRec)
+      }
+
     }
     else {
-      remainingEntries.set(andrewID,keyRec)
+
+      if(remainingEntries.has(andrewID)){
+        var entry = remainingEntries.get(andrewID)
+        remainingEntries.delete(andrewID)
+        entry.addKey(key,room,givenDate,expDate)
+        remainingEntries.set(andrewID,entry)
+      } else{
+        remainingEntries.set(andrewID,keyRec)
+      }      
     }
     entry_raw.clear()
     //Uppdate loop conditions
     i = i + 1
-    entry_raw = unverfiedSheet.getRange(2+i,1,1,11)
+    entry_raw = unverfiedSheet.getRange(2+i,1,1,12)
     entry     = entry_raw.getValues()[0]
     //Check if next row is empty
-    val = entry.every(cell => (cell != "" && cell != null))
+    val = !(entry.every(cell => (cell === "" || cell === null)))
   }
   //Update the log
   var logSheet       = keySS.getSheetByName('Log');
-  var logEntries_raw = logSheet.getRange("A2:K");
-  var logEntries     = logEntries_raw.getValues();
+  var logEntries     = logSheet.getRange("A2:K").getValues();
   
   for(var i = 0; i < logEntries.length; i++){
     var entry_row  = logEntries[i]
-    var andrewID1  = entry_row[2]
-    var key1       = entry_row[7]
+    var andrewID1  = entry_row[3]
+    var key1       = entry_row[8]
+    var id1        = entry_row[0]
 
     var found_entry = allEntries.get(andrewID1) //undefined if not there
     if(found_entry != undefined){
       var keys = found_entry.key
       for(var i = 0; i  < keys.length; i++){
-        k = keys[i]
-        keyNum = k.keyNumber
-        if(keyNum == key1){
-          updateLogApproval(-1,andrewID1,key1,"Approved")
+        var k1 = keys[i]
+        if(k1.keyNumber == key1){
+          updateLogApproval(id1,andrewID1,key1,"Approved")
         }
       }
     }
@@ -1121,7 +1138,7 @@ function approveAllData(){
     for(var i = 0; i < keys.length; i++){
       unverfiedSheet.appendRow([
         'Select',
-        key.getId(),
+        keys[i].getId(),
         entryRecord.getAndrewID(),
         entryRecord.getLastName(),
         entryRecord.getFirstName(),
