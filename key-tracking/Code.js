@@ -264,17 +264,18 @@ function verifiedEntries(keySS){
 
   var verifiedEntries = new Map()
   for(var log_row of log_values){
-    const status    = log_row[0]
-    const approval  = log_row[1]
-    const andrewID  = log_row[2]
-    const lastName  = log_row[3]
-    const firstName = log_row[4]
-    const advisor   = log_row[5]
-    const dept      = log_row[6]
-    const key       = log_row[7]
-    const room      = log_row[8]
-    const expDate   = log_row[9]
-    const givenDate = log_row[10]
+    const id        = log_row[0]
+    const status    = log_row[1]
+    const approval  = log_row[2]
+    const andrewID  = log_row[3]
+    const lastName  = log_row[4]
+    const firstName = log_row[5]
+    const advisor   = log_row[6]
+    const dept      = log_row[7]
+    const key       = log_row[8]
+    const room      = log_row[9]
+    const expDate   = log_row[10]
+    const givenDate = log_row[11]
     if((status == "Active") && (approval == "Approved")){
       var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
       verifiedEntries.set(andrewID,newKeyRec)
@@ -282,6 +283,10 @@ function verifiedEntries(keySS){
   }
   return verifiedEntries
 }
+
+
+
+
 
 /***************Helper Functions used for safety checks********/
 function validKey(key) {
@@ -564,34 +569,6 @@ function addToLog(andrewID,keyRecord,logSheet,logEntries,activity){
   }
 }
 
-
-
-
-/**
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CHange so it can distingush active and non-active entries
- * 
- * 
- * Initially adds a value to the log if it is not already in the log (should be right after initially parsed)
- 
-function addAllToLog(){
-  var keySS    = SpreadsheetApp.getActiveSpreadsheet();
-  var logSheet = keySS.getSheetByName('Log');
-
-  var logRange = logSheet.getRange("A2:M")
-  logRange.clear()
-
-  var logEntries = logToEntries();
-  var allEntries = new Map();
-  allEntries = checkoutFormToEntries(allEntries);
-  allEntries = checkInForm(allEntries);
-
-  for(const [andrewID, keyRecord] of allEntries){
-    addToLog(andrewID,keyRecord,logSheet,logEntries,'Active')
-  }
-}
-*/
-
-
 /**
  * Update approval status of a log (based on what happens in the unverifed sheet)
  */
@@ -602,10 +579,6 @@ function updateLogApproval(id,andrewID,key,approval){
   //Find all instances of the andrewID and the key value in the spreadsheet
   if (id != -1){
     var found = logSheet.createTextFinder(id).findAll()[0].getRow()
-    // var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
-    // var row1    = fullRow.getValues()[0]
-    // row1[2] = approval 
-    // fullRow.setValues([row1]) //debug these values /
   }else {
     var andrew_found = logSheet.createTextFinder(andrewID).findAll()
     var key_found    = logSheet.createTextFinder(key).findAll()  
@@ -622,21 +595,18 @@ function updateLogApproval(id,andrewID,key,approval){
       //1.Now that the value is found, get the full range
       //  matching column value is found (andrewid and key are on the same column)  
       var found   = andrew_rows.find(a => key_rows.includes(a)) 
-      //fullRow = location of 'found' column
-
-      // var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
-      // var row1    = fullRow.getValues()[0]
-      // row1[2] = approval 
-      // fullRow.setValues([row1]) //debug these values /
     }
   } 
   var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
   var row1    = fullRow.getValues()[0]
+  if (approval == "Approved"){
+    row1[1] = "Active"
+  } else{
+    row1[1] = "Inactive"
+  }
   row1[2] = approval 
   fullRow.setValues([row1]) //debug these values /
 }
-
-
 
 /************************ Manipulating the unverifed sheet ****************/
 
@@ -1153,6 +1123,10 @@ function approveAllData(){
     }
   });
 }
+
+
+
+
 
 /************ Check in values in the sheets********/
 /**
