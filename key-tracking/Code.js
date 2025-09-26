@@ -632,7 +632,6 @@ function unverifiedValueCollection(){
   }
 
   allEntries = checkoutFormToEntries(allEntries);
-  //var checkInEntries = checkInForm();         //////////////////////////////////////////////is this necessary??
 
   var unverifiedEntries = new Map();
 
@@ -713,7 +712,6 @@ function entryToUnverifiedInput(){
     var keys = entryRecord.getKeys()
     for(i = 0; i < keys.length; i++){
       var key = keys[i];
-      //var date = new Date(key.getExpirationDate());
       unverifiedSheet.appendRow([
         'Select',
         key.getId(),
