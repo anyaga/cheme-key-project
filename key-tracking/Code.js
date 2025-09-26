@@ -71,7 +71,6 @@ class keyRecord {
   getKeys(){
     return this.key
   }
-  /////////////////////////////////////
   setKey(newKeySet){
     this.key = newKeySet
   }
