@@ -164,25 +164,10 @@ function onFormSubmit(e){
           break
       }
     }
-    //manualCheckIn(andrewID,firstName,lastName,advisor,key,room)
-    room = 
-    //Return Key
-    formVal(keySS,data)
+    manualCheckIn(andrewID,firstName,lastName,advisor,key,room)
   }
-  /*
-  else if (sheetName == "Key Check-In Form"){
-
-  }*/
-
-
 
   //update
-}
-
-function formVal(keySS){
-  var unverifiedSheet = keySS.getSheetByName("Log")
-
-
 }
 
 
@@ -1168,9 +1153,6 @@ function manualCheckIn(andrewID,firstName,lastName,advisor,key,room){
         });
       }
       //2.Update the log to show key has been removed
-
-
-
 
       updateLogApproval(id,andrewID,key,"Approved","Inactive")
     }
