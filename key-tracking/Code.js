@@ -1221,7 +1221,7 @@ function scheduleReload(){
 function fillSheets(dataSS){
   const allSheets      = dataSS.getSheets()
   const template_sheet = allSheets[allSheets.length - 1] //Template is always the last sheet
-  var allEntries = verifiedEntries(dataSS)  
+  var allEntries       = verifiedEntries(dataSS)  
 
   //Delete all the previous year sheets
   allSheets.forEach((sheet) => {
@@ -1338,6 +1338,7 @@ function analysis(){
   const mainSheet = sheets[0]
 
   //One month
+  mainSheet.getRange("B8:B").clearContent()
   var one        = mainSheet.getRange("B8:B")
   var one_values = one.getValues()
   mainSheet.getRange(7,2).setValue('1 Month')
@@ -1348,6 +1349,7 @@ function analysis(){
   }
 
   //1 week
+  mainSheet.getRange("C8:C").clearContent()
   var week        = mainSheet.getRange("C8:C")
   var week_values = week.getValues()
   mainSheet.getRange(7,3).setValue('1 Week')
@@ -1358,6 +1360,7 @@ function analysis(){
   }
 
   //1 day
+  mainSheet.getRange("D8:D").clearContent()
   var day        = mainSheet.getRange("D8:D")
   var day_values = day.getValues()
   mainSheet.getRange(7,4).setValue('1 Day')
@@ -1368,6 +1371,7 @@ function analysis(){
  }
 
   //Expired
+  mainSheet.getRange("E8:E").clearContent()
   var expired        = mainSheet.getRange("E8:E")
   var expired_values = expired.getValues()
   mainSheet.getRange(7,5).setValue('Expired')
