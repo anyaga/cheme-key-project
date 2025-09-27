@@ -41,7 +41,7 @@ class keyRecord {
   constructor(first,last,andrewID,advisor,dept,key,room,givenDate,expDate)  {
     this.firstName = first;
     this.lastName  = last;
-    this.andrewID  = andrewID;
+    this.andrewID  = (andrewID == "") ? this.firstName +"_"+ this.lastName+ "_no_andrew_id" : andrewID; 
     this.advisor   = advisor;
     this.dept      = dept;
     this.key       = [new keyInfo(andrewID,key,room,givenDate,expDate)];
@@ -57,9 +57,6 @@ class keyRecord {
     return this.firstName +" " +this.lastName
   }
   getAndrewID(){
-    if(this.andrewID == ""){
-      return this.firstName +"_"+ this.lastName+ "_no_andrew_id"
-    }
     return this.andrewID
   }
   getAdvisor(){
