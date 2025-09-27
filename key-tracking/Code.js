@@ -761,45 +761,51 @@ function submitUnverifedData(row,col,value){
   const logSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Log')
   var log_found  = logSheet.createTextFinder(id).findAll()[0]
   var log_row    = log_found.getRow()
-  var logRange = logSheet.getRange("D2:L")
+  var logRange = logSheet.getRange("A2:L")
   
   switch (col){
     
     case 3:
-      //andrewid
-      logRange.getCell(log_row-1,1).setValue(value)      
+      //andrewid --> also change 
+      var keyNum = logRange.getCell(log_row-1,9).getValue()
+      var new_id = hash_id(keyNum+ value) 
+      logRange.getCell(log_row-1,4).setValue(value)      
+      logRange.getCell(log_row-1,1).setValue(new_id)
       break
     case 4:
       //last name
-      logRange.getCell(log_row-1,2).setValue(value)
+      logRange.getCell(log_row-1,5).setValue(value)
       break
     case 5:
       //first name
-      logRange.getCell(log_row-1,3).setValue(value)
+      logRange.getCell(log_row-1,6).setValue(value)
       break
     case 6:
       //advisor
-      logRange.getCell(log_row-1,4).setValue(value)
+      logRange.getCell(log_row-1,7).setValue(value)
       break
     case 7:
       //department
-      logRange.getCell(log_row-1,5).setValue(value)
+      logRange.getCell(log_row-1,8).setValue(value)
       break
     case 8:
       //key
-      logRange.getCell(log_row-1,6).setValue(value)
+      var old_andrew = logRange.getCell(log_row-1,4).getValue()
+      var new_id = hash_id(value+old_andrew)
+      logRange.getCell(log_row-1,9).setValue(value)
+      logRange.getCell(log_row-1,1).setValue(new_id)
       break
     case 9:
       //room
-      logRange.getCell(log_row-1,7).setValue(value)
+      logRange.getCell(log_row-1,10).setValue(value)
       break
     case 10:
       //expiration date
-      logRange.getCell(log_row-1,8).setValue(value)
+      logRange.getCell(log_row-1,11).setValue(value)
       break
     case 11:
       //given date
-      logRange.getCell(log_row-1,9).setValue(value)
+      logRange.getCell(log_row-1,12).setValue(value)
       break
   }
 }
@@ -929,14 +935,16 @@ function submitSelectedData(){
   approveEntries.forEach((entryRecord) => {
     var keys = entryRecord.key
     for(var i = 0; i < keys.length; i++){
-      updateLogApproval(keys[i].getId(),entryRecord.getAndrewID(),keys[i].getKey(),"Approved","Active")
+      var key = keys[i]
+      updateLogApproval(key.getId(),entryRecord.getAndrewID(),key.getKey(),"Approved","Active")
     }
   });
-  
+
   deletedEntires.forEach((entryRecord) => {
     var keys = entryRecord.key
     for(var i = 0; i < keys.length; i++){
-      updateLogApproval(keys[i].getId(),entryRecord.getAndrewID(),keys[i].getKey(),"Denied","Inactive")
+      var key = keys[i]
+      updateLogApproval(key.getId(),entryRecord.getAndrewID(),key.getKey(),"Denied","Inactive")
     }
   });
   
