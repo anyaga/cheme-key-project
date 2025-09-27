@@ -924,41 +924,22 @@ function submitSelectedData(){
     //check if next row has at least one value 
     val = !(entry.every(cell => (cell === "" || cell === null)))
   }
-  //Update the log
-  var logSheet = keySS.getSheetByName('Log')
-  var logEntries = logSheet.getRange("A2:K").getValues()
 
-  for(var i = 0; i < logEntries.length; i++){
-    var entry_row = logEntries[i]
-    var andrewID1 = entry_row[3]
-    var key1      = entry_row[8]
-    var id1       = entry_row[0]
-    //For all log values, check if it matches value in allEntries (approved entries)
-    var found_entry = approveEntries.get(andrewID1)
-    if(found_entry != undefined){
-      var keys = found_entry.key
-      for(var i = 0; i < keys.length; i++){
-        var k1 = keys[i]
-        //If andrew ID(above) and key match, say it is approved in log
-        if(k1.keyNumber == key1){
-          updateLogApproval(id1,andrewID1,key1,"Approved","Active")
-        }
-      }
+  //Update the log  
+  approveEntries.forEach((entryRecord) => {
+    var keys = entryRecord.key
+    for(var i = 0; i < keys.length; i++){
+      updateLogApproval(keys[i].getId(),entryRecord.getAndrewID(),keys[i].getKey(),"Approved","Active")
     }
-
-    //For all log vales, check if it matches value in deletedEntries (deleted entries)
-    var found_entry1 = deletedEntires.get(andrewID1)
-    if(found_entry1 != undefined){
-      var keys1 = found_entry1.key
-      for(var j = 0; j < keys1.length; j++){
-        var k2 = keys1[j]
-        //If andrewID(above) and key match, say it is denied in log
-        if(k2.keyNumber == key1){
-          updateLogApproval(id1,andrewID1,key1,"Denied","Inactive")
-        }
-      }
+  });
+  
+  deletedEntires.forEach((entryRecord) => {
+    var keys = entryRecord.key
+    for(var i = 0; i < keys.length; i++){
+      updateLogApproval(keys[i].getId(),entryRecord.getAndrewID(),keys[i].getKey(),"Denied","Inactive")
     }
-  }
+  });
+  
   //first value is undefined
   remainingEntries.forEach((entryRecord) => {
     var keys = entryRecord.key
