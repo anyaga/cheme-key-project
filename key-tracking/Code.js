@@ -41,7 +41,7 @@ class keyRecord {
   constructor(first,last,andrewID,advisor,dept,key,room,givenDate,expDate)  {
     this.firstName = first;
     this.lastName  = last;
-    this.andrewID  = andrewID;
+    this.andrewID  = (andrewID == "") ? this.firstName +"_"+ this.lastName+ "_no_andrew_id" : andrewID; 
     this.advisor   = advisor;
     this.dept      = dept;
     this.key       = [new keyInfo(andrewID,key,room,givenDate,expDate)];
@@ -57,9 +57,6 @@ class keyRecord {
     return this.firstName +" " +this.lastName
   }
   getAndrewID(){
-    if(this.andrewID == ""){
-      return this.firstName +"_"+ this.lastName+ "_no_andrew_id"
-    }
     return this.andrewID
   }
   getAdvisor(){
@@ -281,9 +278,6 @@ function verifiedEntries(keySS){
   }
   return verifiedEntries
 }
-
-
-
 
 
 /***************Helper Functions used for safety checks********/
@@ -756,14 +750,15 @@ function entryToUnverifiedInput(){
  */
 function submitUnverifedData(row,col,value){
   const unverfiedSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Unverified Input')
-  const id             = unverfiedSheet.getRange(row,2).getValue()  
-  
+  const id_loc             = unverfiedSheet.getRange(row,2)
+  const id = id_loc.getValue()
+
   const logSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Log')
   var log_found  = logSheet.createTextFinder(id).findAll()[0]
   var log_row    = log_found.getRow()
   var logRange = logSheet.getRange("A2:L")
   
-  switch (col){
+  switch(col){
     
     case 3:
       //andrewid --> also change 
@@ -771,6 +766,7 @@ function submitUnverifedData(row,col,value){
       var new_id = hash_id(keyNum+ value) 
       logRange.getCell(log_row-1,4).setValue(value)      
       logRange.getCell(log_row-1,1).setValue(new_id)
+      id_loc.setValue(new_id)
       break
     case 4:
       //last name
@@ -794,6 +790,7 @@ function submitUnverifedData(row,col,value){
       var new_id = hash_id(value+old_andrew)
       logRange.getCell(log_row-1,9).setValue(value)
       logRange.getCell(log_row-1,1).setValue(new_id)
+      id_loc.setValue(new_id)
       break
     case 9:
       //room
