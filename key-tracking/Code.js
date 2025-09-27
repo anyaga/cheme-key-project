@@ -283,9 +283,6 @@ function verifiedEntries(keySS){
 }
 
 
-
-
-
 /***************Helper Functions used for safety checks********/
 function validKey(key) {
   //Some error with Key formating
@@ -756,14 +753,15 @@ function entryToUnverifiedInput(){
  */
 function submitUnverifedData(row,col,value){
   const unverfiedSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Unverified Input')
-  const id             = unverfiedSheet.getRange(row,2).getValue()  
-  
+  const id_loc             = unverfiedSheet.getRange(row,2)
+  const id = id_loc.getValue()
+
   const logSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Log')
   var log_found  = logSheet.createTextFinder(id).findAll()[0]
   var log_row    = log_found.getRow()
   var logRange = logSheet.getRange("A2:L")
   
-  switch (col){
+  switch(col){
     
     case 3:
       //andrewid --> also change 
@@ -771,6 +769,7 @@ function submitUnverifedData(row,col,value){
       var new_id = hash_id(keyNum+ value) 
       logRange.getCell(log_row-1,4).setValue(value)      
       logRange.getCell(log_row-1,1).setValue(new_id)
+      id_loc.setValue(new_id)
       break
     case 4:
       //last name
@@ -794,6 +793,7 @@ function submitUnverifedData(row,col,value){
       var new_id = hash_id(value+old_andrew)
       logRange.getCell(log_row-1,9).setValue(value)
       logRange.getCell(log_row-1,1).setValue(new_id)
+      id_loc.setValue(new_id)
       break
     case 9:
       //room
