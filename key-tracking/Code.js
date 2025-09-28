@@ -861,15 +861,15 @@ function submitSelectedData(){
     
     //Given Date
     if(givenDate == "invalid date" || givenDate == ""){
-      if(msg == ""){given_date_msg = "invalid date"}
-      else {given_date_msg = ", " + "invalid date"}
+      if(msg == ""){given_date_msg = "invalid given date"}
+      else {given_date_msg = ", " + "invalid given date"}
     }
     msg = msg + given_date_msg
 
     //Expiration Date
     if(expDate == "invalid date" || expDate == ""){
-      if(msg == ""){exp_date_msg = "invalid date"}
-      else{exp_date_msg = ", " + "invalid date"}    
+      if(msg == ""){exp_date_msg = "invalid expiration date"}
+      else{exp_date_msg = ", " + "invalid expiration date"}    
     }
     msg = msg + exp_date_msg
     var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
