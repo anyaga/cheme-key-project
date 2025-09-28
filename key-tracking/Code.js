@@ -130,8 +130,10 @@ function onFormSubmit(e){
   var data  = e.values
   var keySS = SpreadsheetApp.getActiveSpreadsheet()
   var startCol = e.range.getColumn()
-
+  var ui = SpreadsheetApp.getUi(); // Get the spreadsheet UI
+  ui.alert('This is an alert!');
   if(sheetName === "Key Check-In Form"){
+
     for(var i = 0; 0 < data.length; i++ ){
       var col = startCol + i
       switch(col){
@@ -278,7 +280,6 @@ function verifiedEntries(keySS){
   }
   return verifiedEntries
 }
-
 
 /***************Helper Functions used for safety checks********/
 function validKey(key) {
@@ -538,7 +539,6 @@ function logToEntries(){
  * Adds any value to the log based on the input to the function
  */
 function addToLog(andrewID,keyRecord,logSheet,logEntries,activity){
-
   var keys = keyRecord.getKeys()
   for(var i = 0; i < keys.length; i++){
     var key = keys[i]
@@ -571,7 +571,7 @@ function updateLogApproval(id,andrewID,key,approval,status){
   //Find all instances of the andrewID and the key value in the spreadsheet
   if (id != -1){
     var found = logSheet.createTextFinder(id).findAll()[0].getRow()
-  }else {
+  } else {
     var andrew_found = logSheet.createTextFinder(andrewID).findAll()
     var key_found    = logSheet.createTextFinder(key).findAll()  
     //Key and andrewid both exist somewhere in the sheet
@@ -593,7 +593,7 @@ function updateLogApproval(id,andrewID,key,approval,status){
   var row1    = fullRow.getValues()[0]
   row1[1] = status
   row1[2] = approval 
-  fullRow.setValues([row1]) //debug these values /
+  fullRow.setValues([row1])
 }
 
 /************************ Manipulating the unverifed sheet ****************/
@@ -759,7 +759,6 @@ function submitUnverifedData(row,col,value){
   var logRange = logSheet.getRange("A2:L")
   
   switch(col){
-    
     case 3:
       //andrewid --> also change 
       var keyNum = logRange.getCell(log_row-1,9).getValue()
@@ -1139,6 +1138,7 @@ function manualCheckIn(andrewID,firstName,lastName,advisor,key,room){
       //2.Update the log to show key has been removed
 
       updateLogApproval(id,andrewID,key,"Approved","Inactive")
+      analysis()
     }
   }
 }
@@ -1175,24 +1175,6 @@ function checkInForm(){
     manualCheckIn(andrewID,firstName,lastName,advisor,key,room)
   }
 }
-
-
-/** 
-function checkInToLog(){
-  var keySS    = SpreadsheetApp.getActiveSpreadsheet()
-  var verified = verifiedEntries(keySS)
-  
-  var checkInEntries = checkInForm()
-  checkInEntries.forEach((entryRecord) => {
-    var 
-
-    var andrewID = entryRecord.getAndrewID()
-    var key      = entryRecord.get
-    updateLogApproval(-1,entryRecord.getAndrewID(),key,"Inactive","Approved")
-  });
-}
-*/
-
 
 function scheduleReload(){
 ////////////////////////////
@@ -1298,7 +1280,7 @@ function analysis(){
   oneDate.setMonth(oneDate.getMonth() + 1) 
 
   var weekDate = new Date(currDate)
-  weekDate.setDate(weekDate.getDay() + 7)
+  weekDate.setDate(weekDate.getDate() + 7)
 
   var dayDate  = new Date(currDate)
   dayDate.setDate(dayDate.getDate() + 1)
@@ -1312,7 +1294,7 @@ function analysis(){
     var keys = entryRecord.getKeys()
     for(i = 0; i < keys.length; i++){
       var key = keys[i]
-      var expiration = new Date(key.getExpirationDate())
+      var expiration = new Date(key.expDate)
 
       if(isDateInFrame(currDate,dayDate,expiration)){
         andrew_day.push(entryRecord)
@@ -1320,11 +1302,11 @@ function analysis(){
         andrew_week.push(entryRecord)
       } else if(isDateInFrame(currDate,oneDate,expiration)){
         andrew_one.push(entryRecord)
-      } else {
+      } else if(isExpired(currDate,expiration)){
         expired_list.push(entryRecord)
       } 
     }  
-  })
+  });
   const sheets    = dataSS.getSheets()
   const mainSheet = sheets[0]
 
@@ -1476,16 +1458,22 @@ function expire_msg(list,doc,subj){
   }
 }
 
+function isDateInFrame(start, end,date){
+  if(date == null || date == undefined) return false
+  return start.getTime() <= date.getTime() 
+      && date.getTime()  <= end.getTime()
+}
+
+function isExpired(curr,date){
+  if(date == null || date == undefined) return false
+  return curr.getTime() > date.getTime()
+}
 
 
 
 
 
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////
+/** 
 function onOpen() {
   SpreadsheetApp.getUi()
       .createMenu('Key Menu')  
@@ -1525,15 +1513,6 @@ function processInputs(fname, lname, advisor, andrewID,
   Logger.log('Input 6: ' + roomNum);
   Logger.log('Input 7: ' + givenDate);
   Logger.log('Input 8: ' + loseDate);
-}
+}*/
 
-function isDateInFrame(start, end,date){
-  if(date == null || date == undefined) return false
-  return start.getTime() <= date.getTime() 
-      && date.getTime()  <= end.getTime()
-}
 
-function isExpired(curr,date){
-  if(date == null || date == undefined) return false
-  return curr.getTime() > date.getTime()
-}
