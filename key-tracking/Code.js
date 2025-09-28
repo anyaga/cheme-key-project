@@ -496,7 +496,7 @@ function checkoutFormToEntries(allEntries){
 
 /*****************Manipulating the log sheet*************/
 /**
- * Read log data and turn them into entries
+ * Read log data and turn ACTIVE values into entries
  */
 function logToEntries(){
   var keySS = SpreadsheetApp.getActiveSpreadsheet();
