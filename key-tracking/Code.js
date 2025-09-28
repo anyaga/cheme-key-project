@@ -141,7 +141,7 @@ function onFormSubmit(e){
     manualCheckIn(andrewID,firstName,lastName,advisor,key,room)
   }
 
-  if (sheetName == " Key Check-Out Form"){
+  if (sheetName == "Key Check-Out Form"){
     var date_returned = data[0]
     var email         = data[1]
     var firstName     = data[2]
@@ -154,7 +154,9 @@ function onFormSubmit(e){
     var givenDate     = data[9]
     var expDate       = data[10]
 
+    Logger.log("Checkout a key!!!")
 
+    unverifiedValueCollection()
 
 
     //add to log and add to unverifed!!!!!
@@ -496,7 +498,7 @@ function checkoutFormToEntries(allEntries){
 
 /*****************Manipulating the log sheet*************/
 /**
- * Read log data and turn them into entries
+ * Read log data and turn ACTIVE values into entries
  */
 function logToEntries(){
   var keySS = SpreadsheetApp.getActiveSpreadsheet();
@@ -599,6 +601,8 @@ function unverifiedValueCollection(){
   var logSheet = keySS.getSheetByName('Log');
   var approvalAndAndrew = logSheet.getRange('C2:D').getValues();
   
+  Logger.log("in unverrifed log collection")
+
   var logEntries = logToEntries();
   var allEntries = new Map();
 
@@ -631,6 +635,9 @@ function unverifiedValueCollection(){
     } 
     //Not in log (add to unverified and add to log)
     else if(!logEntries.has(andrewID)){
+
+      Logger.log("Adding to log")
+
       unverifiedEntries.set(andrewID,keyRecord)
       addToLog(andrewID,keyRecord,logSheet,logEntries)
     }    
