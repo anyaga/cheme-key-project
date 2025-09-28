@@ -1646,6 +1646,7 @@ function expire_msg(id,list,doc,subj){
         var doc_string_name = doc_string.replace("[First]",entry_record.getFirstName()) 
                                         .replace("[Last]",entry_record.getLastName())
                                         .replace("[keyNumber]",keys[i].getKey())      
+                                        .replace("[Room]",keys[i].getRoom())     
         MailApp.sendEmail(recipient,subj,doc_string_name)                                         
       }
     }
