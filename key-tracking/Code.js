@@ -1369,7 +1369,7 @@ function expiration_month(){
     var file = files.next()
     if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Month Till Expiration")){
       var doc_month = DocumentApp.openById(file.getId())
-      expire_msg(andrew_one,doc_month,file.getName()) 
+      expire_msg(-1,andrew_one,doc_month,file.getName()) 
     }
   }
 }
@@ -1396,7 +1396,7 @@ function expiration_week(){
     var file = files.next()
     if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Week Till Expiration")){
       var doc = DocumentApp.openById(file.getId())
-      expire_msg(andrew_week,doc,file.getName()) 
+      expire_msg(-1,andrew_week,doc,file.getName()) 
     }
   }
 }
@@ -1423,7 +1423,7 @@ function expiration_day(){
     var file = files.next()
     if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Day Till Expiration")){
       var doc = DocumentApp.openById(file.getId())
-      expire_msg(andrew_day,doc,file.getName()) 
+      expire_msg(-1,andrew_day,doc,file.getName()) 
     }
   }
 }
@@ -1451,7 +1451,7 @@ function expiration_exp_11(){
     var file = files.next()
     if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Expired")){
       var doc = DocumentApp.openById(file.getId())
-      expire_msg(expired_list,doc,file.getName()) 
+      expire_msg(-1,expired_list,doc,file.getName()) 
     }
   }
 }
@@ -1464,22 +1464,31 @@ function expiration_exp(){
   var allEntries = verifiedEntries(dataSS) 
 
   var index = 0
+  
   var expired_list      = []
+  var id_list           = []
   var expired_list_temp = mainSheet.getRange("I8:I").getValues()  
+  var id_list_temp      = mainSheet.getRange("H8:H").getValues()
   var exp               = expired_list_temp[index][0]
+  var id                = id_list_temp[index][0]
   
   while(exp != ""){
     var exp_value = allEntries.get(exp)
-    expired_list.push(exp_value)
+    var keys = exp_value.key
+    for(var i = 0; i < keys.length; i++){
+      expired_list.push(exp_value)
+      id_list.push(keys[i].getId())
+    }
     index = index + 1
     exp = expired_list_temp[index][0]
+    id  = id_list_temp[index][0]
   }
 
   while(files.hasNext()){
     var file = files.next()
     if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Expired")){
       var doc = DocumentApp.openById(file.getId())
-      expire_msg(expired_list,doc,file.getName()) 
+      expire_msg(id_list,expired_list,doc,file.getName()) 
     }
   }
 }
@@ -1487,7 +1496,7 @@ function expiration_exp(){
 /**
  * Send emails to individuals in the expiration range using templates in 
  * the Keys Project folder 
- */
+ 
 function expiration_check(){
   const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
   const mainSheet = dataSS.getSheetByName("Main")
@@ -1545,24 +1554,24 @@ function expiration_check(){
       switch (file.getName()){
         case "Month Till Expiration":
           var doc_month = DocumentApp.openById(file.getId())
-          expire_msg(andrew_one,doc_month,file.getName()) 
+          expire_msg(-1,andrew_one,doc_month,file.getName()) 
           break
         case "Week Till Expiration":
           var doc_week = DocumentApp.openById(file.getId())
-          expire_msg(andrew_week,doc_week,file.getName()) 
+          expire_msg(-1,andrew_week,doc_week,file.getName()) 
           break
         case "Day Till Expiration":
           var doc_day  = DocumentApp.openById(file.getId())
-          expire_msg(andrew_day,doc_day,file.getName()) 
+          expire_msg(-1,andrew_day,doc_day,file.getName()) 
           break
         case "Expired":
           var doc_exp  = DocumentApp.openById(file.getId())
-          expire_msg(expired_list,doc_exp,file.getName()) 
+          expire_msg(-1,expired_list,doc_exp,file.getName()) 
           break
       }
     }
   }
-}
+}*/
 
 /**
  * Send emails to all people in an expiration range list using the doc as the email body
@@ -1573,13 +1582,23 @@ function expiration_check(){
  *                   in expiration range
  * @param {*} subj - Subject of the email to the people in the expiration range list
  */
-function expire_msg(list,doc,subj){
+function expire_msg(id,list,doc,subj){
   var doc_string = doc.getBody().getText()
-  for(var entry_record of list){
-    var recipient       = entry_record.getAndrewID() + "@andrew.cmu.edu"
-    var doc_string_name = doc_string.replace("[First]",entry_record.getFirstName()) 
-    doc_string_name     = doc_string_name.replace("[Last]",entry_record.getLastName())
-    MailApp.sendEmail(recipient,subj,doc_string_name) //check this
+
+  //for(var entry_record of list){
+  for(var j =0; j < list.length; j++){
+    var entry_record = list[j]
+    var keys = entry_record.getKeys()
+    for(var i = 0; i < keys.length; i++){
+      if(id[j] == keys[i].getId()){
+        var recipient       = entry_record.getAndrewID() + "@andrew.cmu.edu"
+        var doc_string_name = doc_string.replace("[First]",entry_record.getFirstName()) 
+                                        .replace("[Last]",entry_record.getLastName())
+                                        .replace("[keyNumber]",keys[i].getKey())      
+        MailApp.sendEmail(recipient,subj,doc_string_name)                                         
+      }
+    }
+
   }
 }
 
