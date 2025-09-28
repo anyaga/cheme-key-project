@@ -141,7 +141,7 @@ function onFormSubmit(e){
     manualCheckIn(andrewID,firstName,lastName,advisor,key,room)
   }
 
-  if (sheetName == " Key Check-Out Form"){
+  if (sheetName == "Key Check-Out Form"){
     var date_returned = data[0]
     var email         = data[1]
     var firstName     = data[2]
@@ -154,7 +154,9 @@ function onFormSubmit(e){
     var givenDate     = data[9]
     var expDate       = data[10]
 
+    Logger.log("Checkout a key!!!")
 
+    unverifiedValueCollection()
 
 
     //add to log and add to unverifed!!!!!
