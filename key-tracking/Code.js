@@ -156,8 +156,8 @@ function onFormSubmit(e){
 
     Logger.log("Checkout a key!!!")
 
-    unverifiedValueCollection()
-
+    //unverifiedValueCollection()
+    entryToUnverifiedInput()
 
     //add to log and add to unverifed!!!!!
     //1. append to unverifeid
@@ -1482,34 +1482,6 @@ function expiration_day(){
     if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Day Till Expiration")){
       var doc = DocumentApp.openById(file.getId())
       expire_msg(id_list,andrew_day,doc,file.getName()) 
-    }
-  }
-}
-
-function expiration_exp_11(){
-  const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
-  const mainSheet = dataSS.getSheetByName("Main")
-  const folder    = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
-  const files     = folder.getFiles()
-  var allEntries = verifiedEntries(dataSS) 
-
-  var index = 0
-  var expired_list      = []
-  var expired_list_temp = mainSheet.getRange("I8:I").getValues()  
-  var exp               = expired_list_temp[index][0]
-  
-  while(exp != ""){
-    var exp_value = allEntries.get(exp)
-    expired_list.push(exp_value)
-    index = index + 1
-    exp = expired_list_temp[index][0]
-  }
-
-  while(files.hasNext()){
-    var file = files.next()
-    if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Expired")){
-      var doc = DocumentApp.openById(file.getId())
-      expire_msg(-1,expired_list,doc,file.getName()) 
     }
   }
 }
