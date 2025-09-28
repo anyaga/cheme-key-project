@@ -130,8 +130,10 @@ function onFormSubmit(e){
   var data  = e.values
   var keySS = SpreadsheetApp.getActiveSpreadsheet()
   var startCol = e.range.getColumn()
-
+  var ui = SpreadsheetApp.getUi(); // Get the spreadsheet UI
+  ui.alert('This is an alert!');
   if(sheetName === "Key Check-In Form"){
+
     for(var i = 0; 0 < data.length; i++ ){
       var col = startCol + i
       switch(col){
@@ -1136,6 +1138,7 @@ function manualCheckIn(andrewID,firstName,lastName,advisor,key,room){
       //2.Update the log to show key has been removed
 
       updateLogApproval(id,andrewID,key,"Approved","Inactive")
+      analysis()
     }
   }
 }
@@ -1172,24 +1175,6 @@ function checkInForm(){
     manualCheckIn(andrewID,firstName,lastName,advisor,key,room)
   }
 }
-
-
-/** 
-function checkInToLog(){
-  var keySS    = SpreadsheetApp.getActiveSpreadsheet()
-  var verified = verifiedEntries(keySS)
-  
-  var checkInEntries = checkInForm()
-  checkInEntries.forEach((entryRecord) => {
-    var 
-
-    var andrewID = entryRecord.getAndrewID()
-    var key      = entryRecord.get
-    updateLogApproval(-1,entryRecord.getAndrewID(),key,"Inactive","Approved")
-  });
-}
-*/
-
 
 function scheduleReload(){
 ////////////////////////////
@@ -1488,10 +1473,7 @@ function isExpired(curr,date){
 
 
 
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////
+/** 
 function onOpen() {
   SpreadsheetApp.getUi()
       .createMenu('Key Menu')  
@@ -1531,5 +1513,4 @@ function processInputs(fname, lname, advisor, andrewID,
   Logger.log('Input 6: ' + roomNum);
   Logger.log('Input 7: ' + givenDate);
   Logger.log('Input 8: ' + loseDate);
-}
-
+}*/
