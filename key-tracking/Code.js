@@ -125,15 +125,12 @@ function onEdit(e) {
 }
 
 function onFormSubmit(e){
+  Logger.log("Form SUbmitted")
   var sheet = e.range.getSheet()
   var sheetName = sheet.getName()
   var data  = e.values
 
-  var keySS = SpreadsheetApp.getActiveSpreadsheet()
-  var startCol = e.range.getColumn()
-  
-  var ui = SpreadsheetApp.getUi(); // Get the spreadsheet UI
-  ui.alert('This is an alert!');
+
   if(sheetName === "Key Check-In Form"){
     var date_returned = data[0];
     var email         = data[1];
@@ -143,7 +140,9 @@ function onFormSubmit(e){
     var andrewID      = data[5];
     var key           = data[6];
     var room          = data[7];
-
+    
+    Logger.log("Sheet confirmed")
+    Logger.log(data)
     /** 
     for(var i = 0; i < data.length; i++ ){
       var col = startCol + i
@@ -1423,7 +1422,6 @@ function expiration_check(){
     exp = expired_list_temp[index][0]
   }
   
-
   while(files.hasNext()){
     var file = files.next()
     if (file.getMimeType() === MimeType.GOOGLE_DOCS) {
