@@ -65,13 +65,21 @@ class keyRecord {
   getDepartment(){
     return this.dept
   }
+
   getKeys(){
     return this.key
   }
   setKey(newKeySet){
     this.key = newKeySet
   }
- 
+  listKeys(){
+    var list = []
+    var keys = this.key
+    for(var i = 0 ; i < keys.length; i++){
+      list.append(keys[i].getKey())
+    }
+    return list
+  }
   addKey(andrewID,key,room,givenDate,expDate) {
     var newKey = new keyInfo(andrewID,key,room,givenDate,expDate)
     var keys = this.key
