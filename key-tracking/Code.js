@@ -1514,5 +1514,3 @@ function processInputs(fname, lname, advisor, andrewID,
   Logger.log('Input 7: ' + givenDate);
   Logger.log('Input 8: ' + loseDate);
 }*/
-
-
