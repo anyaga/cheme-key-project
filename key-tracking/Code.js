@@ -674,9 +674,19 @@ function unverifiedValueCollection(){
     } 
     //Not in log (add to unverified and add to log)
     else if(!logEntries.has(andrewID) && !andrewID.includes("no-andrewID")){
+
       unverifiedEntries.set(andrewID,keyRecord)
       addToLog(andrewID,keyRecord,logSheet,logEntries)
-    }    
+    }  else if (logEntries.has(andrewID)){
+      var logKeyRecord = logEntries.get(andrewID)
+      var logKeys = logKeyRecord.key
+      for(var i = 0; i < logKeys.length; i++){
+        log_key = logKeys[i]
+
+      }
+      //var notShared = (logKeyRecord.key).filter(keys =>)
+
+    }
   }
   return unverifiedEntries;
 }
