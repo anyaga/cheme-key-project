@@ -155,7 +155,13 @@ function onFormSubmit(e){
     var expDate       = data[10]
 
 
+
+
     //add to log and add to unverifed!!!!!
+    //1. append to unverifeid
+    //2. append to add to log
+
+    //FIX LOG ENTRIES!!!!!
   }
 }
 
