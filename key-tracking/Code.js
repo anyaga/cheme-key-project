@@ -500,7 +500,7 @@ function checkoutFormToEntries(allEntries){
 /**
  * Read log data and turn ACTIVE values into entries
  */
-function logToEntries(){
+function logToEntries_11(){
   var keySS = SpreadsheetApp.getActiveSpreadsheet();
   var logSheet = keySS.getSheetByName('Log');
   var allEntries = new Map();
@@ -511,6 +511,36 @@ function logToEntries(){
   for(var i = 1; i < logValues.length; i++){
     var row = logValues[i];
     if(row.length == 0 || row.length < 11 || row[0] == "Inactive" || row[0] == "" || row[0] == NaN) continue;
+    var andrewID  = row[2];
+    var lastName  = row[3];
+    var firstName = row[4];
+    var advisor   = row[5];
+    var dept      = row[6];
+    var key       = row[7];
+    var room      = row[8];
+    var expDate   = row[9];
+    var givenDate = row[10];
+    if((andrewID == '') && (lastName =='') && (firstName == '') && 
+       (advisor == '') && (dept == '') && (key == '') && (room == '') &&
+       (expDate == '') && (givenDate == '')){break;}
+
+    var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
+    allEntries.set(andrewID,newKeyRec);
+  }
+  return allEntries;
+}
+
+function logToEntries(){
+  var keySS = SpreadsheetApp.getActiveSpreadsheet();
+  var logSheet = keySS.getSheetByName('Log');
+  var allEntries = new Map();
+
+  var logRange  = logSheet.getRange('B:L');
+  var logValues = logRange.getValues();
+
+  for(var i = 1; i < logValues.length; i++){
+    var row = logValues[i];
+    if(row.length == 0 || row.length < 12) continue;
     var andrewID  = row[2];
     var lastName  = row[3];
     var firstName = row[4];
