@@ -1277,46 +1277,70 @@ function analysis(){
 
   //One month
   mainSheet.getRange("B8:B").clearContent()
-  var one        = mainSheet.getRange("B8:B")
+  mainSheet.getRange("C8:C").clearContent()
+  var one        = mainSheet.getRange("C8:C")
   var one_values = one.getValues()
-  mainSheet.getRange(7,2).setValue('1 Month')
+  mainSheet.getRange(7,3).setValue('1 Month')
   for(var i = 0; i < one_values.length; i++){
     if(i < andrew_one.length){
-      mainSheet.getRange(8+i,2).setValue(andrew_one[i].getAndrewID())
-    }
+      var keys = andrew_one[i].getKeys()
+      for(var j = 0; j < keys.length; j++){
+        mainSheet.getRange(8+i,2).setValue(keys[i].getId())
+        mainSheet.getRange(8+i,3).setValue(andrew_one[i].getAndrewID())
+      } 
+    } else{break;}
+
   }
 
   //1 week
-  mainSheet.getRange("C8:C").clearContent()
-  var week        = mainSheet.getRange("C8:C")
+  mainSheet.getRange("D8:D").clearContent()
+  mainSheet.getRange("E8:E").clearContent()
+  var week        = mainSheet.getRange("E8:E")
   var week_values = week.getValues()
-  mainSheet.getRange(7,3).setValue('1 Week')
-  for(var i = 0; i < week_values.lenght; i++){
+  mainSheet.getRange(7,5).setValue('1 Week')
+  for(var i = 0; i < week_values.length; i++){
     if(i < andrew_week.length){
-      mainSheet.getRange(8+i,3).setValue(andrew_week[i].getAndrewID())
-    }
+      var keys = andrew_week[i].getKeys()
+      for(var j = 0; j < keys.length; j++){
+        mainSheet.getRange(8+i,4).setValue(keys[i].getId())
+        mainSheet.getRange(8+i,5).setValue(andrew_week[i].getAndrewID())
+      } 
+    } else {break;}
+
   }
 
   //1 day
-  mainSheet.getRange("D8:D").clearContent()
-  var day        = mainSheet.getRange("D8:D")
+  mainSheet.getRange("F8:F").clearContent()
+  mainSheet.getRange("G8:G").clearContent()
+  var day        = mainSheet.getRange("G8:G")
   var day_values = day.getValues()
-  mainSheet.getRange(7,4).setValue('1 Day')
+  mainSheet.getRange(7,7).setValue('1 Day')
   for(var i = 0; i < day_values.length; i++){
-  if(i <andrew_day.length){
-    mainSheet.getRange(8+i,4).setValue(andrew_day[i].getAndrewID())
-  }
+    if(i <andrew_day.length){    
+      var keys = andrew_day[i]
+      for(var j = 0; j < keys.length; j++){
+        mainSheet.getRange(8+i,6).setValue(keys[i].getId())
+        mainSheet.getRange(8+i,7).setValue(andrew_day[i].getAndrewID())
+      }      
+    } else {break;}
+
  }
 
   //Expired
-  mainSheet.getRange("E8:E").clearContent()
-  var expired        = mainSheet.getRange("E8:E")
+  mainSheet.getRange("H8:H").clearContent()
+  mainSheet.getRange("I8:I").clearContent()
+  var expired        = mainSheet.getRange("I8:I")
   var expired_values = expired.getValues()
-  mainSheet.getRange(7,5).setValue('Expired')
+  mainSheet.getRange(7,9).setValue('Expired')
   for(var i = 0; i < expired_values.length; i++){
-    if(i < expired_list.length){
-      mainSheet.getRange(8+i,5).setValue(expired_list[i].getAndrewID())
-    }
+    if(i < expired_list.length){    
+      var keys = expired_list[i]
+      for(var j = 0; j < keys.length; j++){
+        mainSheet.getRange(8+i,8).setValue(keys[i].getId())
+        mainSheet.getRange(8+i,9).setValue(expired_list[i].getAndrewID())
+      }      
+    } else {break;}
+
   }
 
   //RMOVE LATER!!!!!
