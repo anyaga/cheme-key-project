@@ -76,15 +76,15 @@ class keyRecord {
     var list = []
     var keys = this.key
     for(var i = 0 ; i < keys.length; i++){
-      list.append(keys[i].getKey())
+      list.push(keys[i].getKey())
     }
     return list
   }
   listIds(){
     var list = []
     var iDs = this.key
-    for(var i = 0; i < keys.length; i++){
-      list.append(keys[i].getId())
+    for(var i = 0; i < iDs.length; i++){
+      list.push(iDs[i].getId())
     }
     return list
   }
@@ -680,51 +680,65 @@ function unverifiedValueCollection(){
   var unverifiedEntries = new Map();
 
   //if not in log or unverified in the log
-  for(const [andrewID,keyRecord] of allEntries){
+  for(const [andrewID,keyRecord1] of allEntries){
     //check if in log or if unverifed in log
     var arr = ["Unverified",andrewID]
 
     //In log sheet as unverified
     if(approvalAndAndrew.includes(arr)) {
-      unverifiedEntries.set(andrewID,keyRecord);
+      unverifiedEntries.set(andrewID,keyRecord1);
     } 
     //Not in log (add to unverified and add to log)
     else if(!logEntries.has(andrewID) && !andrewID.includes("no-andrewID")){
 
-      unverifiedEntries.set(andrewID,keyRecord)
-      addToLog(andrewID,keyRecord,logSheet,logEntries)
+      unverifiedEntries.set(andrewID,keyRecord1)
+      addToLog(andrewID,keyRecord1,logSheet,logEntries)
     }  
     else if (logEntries.has(andrewID)){
       var logKeyRecord = logEntries.get(andrewID)
       var logIDs = logKeyRecord.listIds()
-      var eIDs   = keyRecord.listIds()
+      var eIDs   = keyRecord1.listIds()
 
       //Elements in allEntries record that is not in log record
       var notShared = eIDs.filter(key=> !logIDs.includes(key))
 
+
+
+
+
+
       for(var k = 0; k < notShared.length; k++){
         var id = notShared[k]
-        var first = keyRecord.getFirstName()
-        var last  = keyRecord.getLastName()
-        var advisor = keyRecord.getAdvisor()
-        var dept   = keyRecord.getDepartment()
-        var keys_temp = keyRecord.getKeys()
+        var first = keyRecord1.getFirstName()
+        var last  = keyRecord1.getLastName()
+        var advisor = keyRecord1.getAdvisor()
+        var dept   = keyRecord1.getDepartment()
+        var keys_temp = keyRecord1.getKeys()
         for(var r = 0; r < keys_temp.length; r++){
           if(keys_temp[r].getId() == id){
-            var newKeyRec = new keyRecord(first,last,andrewID,advisor, dept,keys_temp[r].getKey(),keys_temp[r].getRoom(),keys_temp[r].getGivenDate(),keys_temp[r].getExpirationDate())
+            var newKeyRec = new keyRecord(first,last,andrewID,advisor, dept,keys_temp[r].getKey(),keys_temp[r].getRoom(),keys_temp[r].getGivenDate(),keys_temp[r].getExpirationDate()) 
+
+
+
+            //???  these entry rooms do not work proper;y???they put dates in the the rom!!!!!!!!!!!!!!!!
+
+
+
 
             unverifiedEntries.set(andrewID,newKeyRec)
             addToLog(andrewID,newKeyRec,logSheet,logEntries)
           }
         }
 
-
-
-
-
-
-
       }
+
+
+
+
+
+
+
+
 
     }
   }
