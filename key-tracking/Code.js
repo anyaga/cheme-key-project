@@ -159,26 +159,7 @@ function onFormSubmit(e){
   }
 
   if (sheetName == "Key Check-Out Form"){
-    var date_returned = data[0]
-    var email         = data[1]
-    var firstName     = data[2]
-    var lastName      = data[3]
-    var advisor       = data[4]
-    var andrewID      = data[5]
-    //figure out how to deal with 6
-    var key           = data[7]
-    var room          = data[8]
-    var givenDate     = data[9]
-    var expDate       = data[10]
-
-    Logger.log("Checkout a key!!!")
     entryToUnverifiedInput()
-
-    //add to log and add to unverifed!!!!!
-    //1. append to unverifeid
-    //2. append to add to log
-
-    //FIX LOG ENTRIES!!!!!
   }
 }
 
@@ -716,6 +697,9 @@ function unverifiedValueCollection(){
         var keys_temp = keyRecord1.getKeys()
         for(var r = 0; r < keys_temp.length; r++){
           if(keys_temp[r].getId() == id){
+
+
+
             var newKeyRec = new keyRecord(first,last,andrewID,advisor, dept,keys_temp[r].getKey(),keys_temp[r].getRoom(),keys_temp[r].getGivenDate(),keys_temp[r].getExpirationDate()) 
 
 
@@ -723,10 +707,10 @@ function unverifiedValueCollection(){
             //???  these entry rooms do not work proper;y???they put dates in the the rom!!!!!!!!!!!!!!!!
 
 
-
-
             unverifiedEntries.set(andrewID,newKeyRec)
             addToLog(andrewID,newKeyRec,logSheet,logEntries)
+
+            
           }
         }
 
