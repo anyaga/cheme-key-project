@@ -1377,26 +1377,37 @@ function expiration_month(){
 function expiration_week(){
   const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
   const mainSheet = dataSS.getSheetByName("Main")
-  const folder    = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
+  const folder    = DriveApp.getFoldersByName("Keys Project").next()
   const files     = folder.getFiles()
   var allEntries = verifiedEntries(dataSS)  
   
   var index = 0
+
   var andrew_week       = []
+  var id_list           = []
   var andrew_week_temp  = mainSheet.getRange("E8:E").getValues()
+  var id_list_temp      = mainSheet.getRange("D8:D").getValues()
   var week              = andrew_week_temp[index][0]
+  var id                = id_list_temp[index][0]
+
   while(week != ""){
     var week_value = allEntries.get(week)
-    andrew_week.push(week_value)
+    var keys       = week_value.key
+    for(var i = 0; i < keys.length; i++){
+      andrew_week.push(week_value)
+      id_list.push(keys[i].getId())
+    }
+
     index = index + 1
     week = andrew_week_temp[index][0]
+    id   = id_list_temp[index][0]
   }
 
   while(files.hasNext()){
     var file = files.next()
     if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Week Till Expiration")){
       var doc = DocumentApp.openById(file.getId())
-      expire_msg(-1,andrew_week,doc,file.getName()) 
+      expire_msg(id_list,andrew_week,doc,file.getName()) 
     }
   }
 }
@@ -1404,19 +1415,30 @@ function expiration_week(){
 function expiration_day(){
   const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
   const mainSheet = dataSS.getSheetByName("Main")
-  const folder    = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
+  const folder    = DriveApp.getFoldersByName("Keys Project").next()
   const files     = folder.getFiles()
-  var allEntries = verifiedEntries(dataSS) 
+  var allEntries  = verifiedEntries(dataSS) 
 
   var index = 0
+
   var andrew_day      = []
+  var id_list         = []
   var andrew_day_temp = mainSheet.getRange("G8:G").getValues()
+  var id_list_temp    = mainSheet.getRange("F8:F").getValues()
   var day             = andrew_day_temp[index][0]
+  var id              = id_list_temp[index][0]
+
   while(day != ""){
-    var day_value = allEntries.get(one)
-    andrew_day.push(day_value)
+    var day_value = allEntries.get(day)
+    var keys      = day_value.key
+    for(var i = 0; i < keys.length; i++){
+      andrew_day.push(day_value)
+      id_list.push(keys[i].getId())
+    }
+
     index = index + 1
-    day = andrew_day_temp[index][0]
+    day   = andrew_day_temp[index][0]
+    id    = id_list_temp[index][0]
   }
 
   while(files.hasNext()){
