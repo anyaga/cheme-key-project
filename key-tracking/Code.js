@@ -601,6 +601,8 @@ function unverifiedValueCollection(){
   var logSheet = keySS.getSheetByName('Log');
   var approvalAndAndrew = logSheet.getRange('C2:D').getValues();
   
+  Logger.log("in unverrifed log collection")
+
   var logEntries = logToEntries();
   var allEntries = new Map();
 
@@ -633,6 +635,9 @@ function unverifiedValueCollection(){
     } 
     //Not in log (add to unverified and add to log)
     else if(!logEntries.has(andrewID)){
+
+      Logger.log("Adding to log")
+
       unverifiedEntries.set(andrewID,keyRecord)
       addToLog(andrewID,keyRecord,logSheet,logEntries)
     }    
