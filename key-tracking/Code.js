@@ -130,6 +130,7 @@ function onFormSubmit(e){
   var data  = e.values
 
   if(sheetName === "Key Check-In Form"){
+    Logger.log("onFormSubmit recognnize checkin form")
     var date_returned = data[0];
     var email         = data[1];
     var firstName     = data[2];
