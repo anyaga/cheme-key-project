@@ -1148,9 +1148,6 @@ function scheduleReload(){
 }
 
 
-
-
-
 /**
  * Fill the sheets that represent each expiration sheet 
  * @param {*} dataSS - the active spreadsheet
@@ -1196,7 +1193,6 @@ function fillSheets(dataSS){
   years.push("Expired")
   years.reverse()//sort years array in descending order
   
-
   //Create sheets with the given years
   for(i = 0; i < years.length; i++ ){
     //Create new sheet
@@ -1226,7 +1222,6 @@ function fillSheets(dataSS){
         entryRecord.getAdvisor(),entryRecord.getDepartment(),
         key.getKey(),key.getRoom(),key.getGivenDate()
       ])
-    
     }
   });
   return allEntries
