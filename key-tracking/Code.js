@@ -1342,9 +1342,6 @@ function analysis(){
     } else {break;}
 
   }
-
-  //RMOVE LATER!!!!!
-  //expiration_check()
 }
 
 function expiration_month(){
@@ -1362,9 +1359,10 @@ function expiration_month(){
   var id_list_temp    = mainSheet.getRange("B8:B").getValues()
   var one             = andrew_one_temp[index][0]
   var id              = id_list_temp[index][0]
+
   while(one != ""){
     var one_value = allEntries.get(one) 
-    var keys = one_value.key
+    var keys      = one_value.key
     for(var i = 0; i < keys.length; i++){
       andrew_one.push(one_value)      
       id_list.push(keys[i].getId())
@@ -1379,7 +1377,7 @@ function expiration_month(){
     var file = files.next()
     if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Month Till Expiration")){
       var doc_month = DocumentApp.openById(file.getId())
-      expire_msg(-1,andrew_one,doc_month,file.getName()) 
+      expire_msg(id_list,andrew_one,doc_month,file.getName()) 
     }
   }
 }
