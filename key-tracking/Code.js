@@ -156,8 +156,6 @@ function onFormSubmit(e){
     var expDate       = data[10]
 
     Logger.log("Checkout a key!!!")
-
-    //unverifiedValueCollection()
     entryToUnverifiedInput()
 
     //add to log and add to unverifed!!!!!
@@ -542,7 +540,10 @@ function logToEntries(){
   for(var i = 1; i < logValues.length; i++){
     var row = logValues[i];
     var isEmpty =  (row.every(cell => (cell === "" || cell === null)))
-    if(row.length == 0 || row.length < 11 || isEmpty) continue;
+    if(isEmpty) {
+      break
+    }
+    else if(row.length == 0 || row.length < 11) continue;
     var andrewID  = row[2];
     var lastName  = row[3];
     var firstName = row[4];
@@ -556,8 +557,16 @@ function logToEntries(){
        (advisor == '') && (dept == '') && (key == '') && (room == '') &&
        (expDate == '') && (givenDate == '')){break;}
 
+
     var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
-    allEntries.set(andrewID,newKeyRec);
+    if(allEntries.has(andrewID)){
+      var entry = allEntries.get(andrewID)
+      allEntries.delete(andrewID)
+      entry.addKey(key,room,givenDate,expDate)
+      allEntries.set(andrewID,entry)
+    } else {
+      allEntries.set(andrewID,newKeyRec)
+    }
   }
   return allEntries;
 }
@@ -629,12 +638,10 @@ function updateLogApproval(id,andrewID,key,approval,status){
  * Take all new input values and add them to the unverifid sheet in 'Key Sheet Main;
  */
 function unverifiedValueCollection(){
-  var keySS    = SpreadsheetApp.getActiveSpreadsheet();
-  var logSheet = keySS.getSheetByName('Log');
+  var keySS             = SpreadsheetApp.getActiveSpreadsheet();
+  var logSheet          = keySS.getSheetByName('Log');
   var approvalAndAndrew = logSheet.getRange('C2:D').getValues();
   
-  Logger.log("in unverrifed log collection")
-
   var logEntries = logToEntries();
   var allEntries = new Map();
 
@@ -666,13 +673,20 @@ function unverifiedValueCollection(){
       unverifiedEntries.set(andrewID,keyRecord);
     } 
     //Not in log (add to unverified and add to log)
-    else if(!logEntries.has(andrewID)){
-
-      Logger.log("Adding to log")
+    else if(!logEntries.has(andrewID) && !andrewID.includes("no-andrewID")){
 
       unverifiedEntries.set(andrewID,keyRecord)
       addToLog(andrewID,keyRecord,logSheet,logEntries)
-    }    
+    }  else if (logEntries.has(andrewID)){
+      var logKeyRecord = logEntries.get(andrewID)
+      var logKeys = logKeyRecord.key
+      for(var i = 0; i < logKeys.length; i++){
+        log_key = logKeys[i]
+
+      }
+      //var notShared = (logKeyRecord.key).filter(keys =>)
+
+    }
   }
   return unverifiedEntries;
 }
