@@ -779,9 +779,6 @@ function submitUnverifedData(row,col,value){
 
 /**
  * Given what is in the approval tab, update what is in the unverifeid tab. Approve Selected - Button
- * 
- * EDIT DATA THAT YOU WANT TO APPROVE BUT HAS INVALID DATA
- * 
  */
 function submitSelectedData(){
   var keySS            = SpreadsheetApp.getActiveSpreadsheet();
@@ -939,7 +936,7 @@ function submitSelectedData(){
 
 /**
  * Approve all unverified input, regardless of what is in the approval tab. Approve All - Button ///////////////////////////////////update once other function is complete 
- */
+ 
 function approveAllData(){
   //clear all the data in the unverifeid
   var keySS            = SpreadsheetApp.getActiveSpreadsheet();
@@ -1071,7 +1068,7 @@ function approveAllData(){
     }
   });
 }
-
+*/
 
 
 
@@ -1106,7 +1103,6 @@ function manualCheckIn(andrewID,firstName,lastName,advisor,key,room){
       });
     }
     //2.Update the log to show key has been removed
-
     updateLogApproval(id,andrewID,key,"Approved","Inactive")
     analysis()
   }
@@ -1325,6 +1321,114 @@ function analysis(){
 
   //RMOVE LATER!!!!!
   //expiration_check()
+}
+
+function expiration_month(){
+  const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
+  const mainSheet = dataSS.getSheetByName("Main")
+  const folder    = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
+  const files     = folder.getFiles()
+  var allEntries = verifiedEntries(dataSS)  
+
+  var index = 0
+  var andrew_one          = []
+  var andrew_one_temp = mainSheet.getRange("B8:B").getValues()
+  var one             = andrew_one_temp[index][0]
+  while(one != ""){
+    var one_value = allEntries.get(one) 
+    andrew_one.push(one_value)
+    index = index + 1
+    one = andrew_one_temp[index][0]
+  }
+
+  while(files.hasNext()){
+    var file = files.next()
+    if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Month Till Expiration")){
+      var doc_month = DocumentApp.openById(file.getId())
+      expire_msg(andrew_one,doc_month,file.getName()) 
+    }
+  }
+}
+
+function expiration_week(){
+  const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
+  const mainSheet = dataSS.getSheetByName("Main")
+  const folder    = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
+  const files     = folder.getFiles()
+  var allEntries = verifiedEntries(dataSS)  
+  
+  var index = 0
+  var andrew_week       = []
+  var andrew_week_temp  = mainSheet.getRange("C8:C").getValues()
+  var week              = andrew_week_temp[index][0]
+  while(week != ""){
+    var week_value = allEntries.get(week)
+    andrew_week.push(week_value)
+    index = index + 1
+    week = andrew_week_temp[index][0]
+  }
+
+  while(files.hasNext()){
+    var file = files.next()
+    if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Week Till Expiration")){
+      var doc = DocumentApp.openById(file.getId())
+      expire_msg(andrew_week,doc,file.getName()) 
+    }
+  }
+}
+
+function expiration_day(){
+  const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
+  const mainSheet = dataSS.getSheetByName("Main")
+  const folder    = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
+  const files     = folder.getFiles()
+  var allEntries = verifiedEntries(dataSS) 
+
+  var index = 0
+  var andrew_day      = []
+  var andrew_day_temp = mainSheet.getRange("D8:D").getValues()
+  var day             = andrew_day_temp[index][0]
+  while(day != ""){
+    var day_value = allEntries.get(one)
+    andrew_day.push(day_value)
+    index = index + 1
+    day = andrew_day_temp[index][0]
+  }
+
+  while(files.hasNext()){
+    var file = files.next()
+    if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Day Till Expiration")){
+      var doc = DocumentApp.openById(file.getId())
+      expire_msg(andrew_day,doc,file.getName()) 
+    }
+  }
+}
+
+function expiration_exp(){
+  const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
+  const mainSheet = dataSS.getSheetByName("Main")
+  const folder    = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
+  const files     = folder.getFiles()
+  var allEntries = verifiedEntries(dataSS) 
+
+  var index = 0
+  var expired_list      = []
+  var expired_list_temp = mainSheet.getRange("E8:E").getValues()  
+  var exp               = expired_list_temp[index][0]
+  while(exp != ""){
+    var exp_value = allEntries.get(exp)
+    expired_list.push(exp_value)
+    index = index + 1
+    exp = expired_list_temp[index][0]
+  }
+
+  while(files.hasNext()){
+    var file = files.next()
+    if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Expired")){
+      var doc = DocumentApp.openById(file.getId())
+      expire_msg(expired_list,doc,file.getName()) 
+    }
+  }
 }
 
 /**
