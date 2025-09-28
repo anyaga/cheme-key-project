@@ -125,11 +125,9 @@ function onEdit(e) {
 }
 
 function onFormSubmit(e){
-  Logger.log("Form SUbmitted")
   var sheet = e.range.getSheet()
   var sheetName = sheet.getName()
   var data  = e.values
-
 
   if(sheetName === "Key Check-In Form"){
     var date_returned = data[0];
@@ -140,46 +138,8 @@ function onFormSubmit(e){
     var andrewID      = data[5];
     var key           = data[6];
     var room          = data[7];
-    
-    Logger.log("Sheet confirmed")
-    Logger.log(data)
-    /** 
-    for(var i = 0; i < data.length; i++ ){
-      var col = startCol + i
-      switch(col){
-        case 1:
-          var date_returned = data[i]
-          break
-        case 2:
-          var email = data[i]
-          break
-        case 3: 
-          var firstName = data[i]
-          break
-        case 4:
-          var lastName = data[i]
-          break
-        case 5:
-          var advisor = data[i]
-          break
-        case 6:
-          var andrewID = data[i]
-          break
-        case 7:
-          var key = data[i]
-          break
-        case 8:
-          var room = data[i]
-          break
-      }
-    }*/
     manualCheckIn(andrewID,firstName,lastName,advisor,key,room)
   }
-}
-
-
-function tuk(){
-  manualCheckIn("jackj","Jack","Johnson","Coty Jen","4501-108","DH B107")
 }
 
 
@@ -819,9 +779,6 @@ function submitUnverifedData(row,col,value){
 
 /**
  * Given what is in the approval tab, update what is in the unverifeid tab. Approve Selected - Button
- * 
- * EDIT DATA THAT YOU WANT TO APPROVE BUT HAS INVALID DATA
- * 
  */
 function submitSelectedData(){
   var keySS            = SpreadsheetApp.getActiveSpreadsheet();
@@ -979,7 +936,7 @@ function submitSelectedData(){
 
 /**
  * Approve all unverified input, regardless of what is in the approval tab. Approve All - Button ///////////////////////////////////update once other function is complete 
- */
+ 
 function approveAllData(){
   //clear all the data in the unverifeid
   var keySS            = SpreadsheetApp.getActiveSpreadsheet();
@@ -1111,7 +1068,7 @@ function approveAllData(){
     }
   });
 }
-
+*/
 
 
 
@@ -1146,7 +1103,6 @@ function manualCheckIn(andrewID,firstName,lastName,advisor,key,room){
       });
     }
     //2.Update the log to show key has been removed
-
     updateLogApproval(id,andrewID,key,"Approved","Inactive")
     analysis()
   }
@@ -1321,50 +1277,182 @@ function analysis(){
 
   //One month
   mainSheet.getRange("B8:B").clearContent()
-  var one        = mainSheet.getRange("B8:B")
+  mainSheet.getRange("C8:C").clearContent()
+  var one        = mainSheet.getRange("C8:C")
   var one_values = one.getValues()
-  mainSheet.getRange(7,2).setValue('1 Month')
+  mainSheet.getRange(7,3).setValue('1 Month')
   for(var i = 0; i < one_values.length; i++){
     if(i < andrew_one.length){
-      mainSheet.getRange(8+i,2).setValue(andrew_one[i].getAndrewID())
-    }
+      var keys = andrew_one[i].getKeys()
+      for(var j = 0; j < keys.length; j++){
+        mainSheet.getRange(8+i,2).setValue(keys[i].getId())
+        mainSheet.getRange(8+i,3).setValue(andrew_one[i].getAndrewID())
+      } 
+    } else{break;}
+
   }
 
   //1 week
-  mainSheet.getRange("C8:C").clearContent()
-  var week        = mainSheet.getRange("C8:C")
+  mainSheet.getRange("D8:D").clearContent()
+  mainSheet.getRange("E8:E").clearContent()
+  var week        = mainSheet.getRange("E8:E")
   var week_values = week.getValues()
-  mainSheet.getRange(7,3).setValue('1 Week')
-  for(var i = 0; i < week_values.lenght; i++){
+  mainSheet.getRange(7,5).setValue('1 Week')
+  for(var i = 0; i < week_values.length; i++){
     if(i < andrew_week.length){
-      mainSheet.getRange(8+i,3).setValue(andrew_week[i].getAndrewID())
-    }
+      var keys = andrew_week[i].getKeys()
+      for(var j = 0; j < keys.length; j++){
+        mainSheet.getRange(8+i,4).setValue(keys[i].getId())
+        mainSheet.getRange(8+i,5).setValue(andrew_week[i].getAndrewID())
+      } 
+    } else {break;}
+
   }
 
   //1 day
-  mainSheet.getRange("D8:D").clearContent()
-  var day        = mainSheet.getRange("D8:D")
+  mainSheet.getRange("F8:F").clearContent()
+  mainSheet.getRange("G8:G").clearContent()
+  var day        = mainSheet.getRange("G8:G")
   var day_values = day.getValues()
-  mainSheet.getRange(7,4).setValue('1 Day')
+  mainSheet.getRange(7,7).setValue('1 Day')
   for(var i = 0; i < day_values.length; i++){
-  if(i <andrew_day.length){
-    mainSheet.getRange(8+i,4).setValue(andrew_day[i].getAndrewID())
-  }
+    if(i <andrew_day.length){    
+      var keys = andrew_day[i]
+      for(var j = 0; j < keys.length; j++){
+        mainSheet.getRange(8+i,6).setValue(keys[i].getId())
+        mainSheet.getRange(8+i,7).setValue(andrew_day[i].getAndrewID())
+      }      
+    } else {break;}
+
  }
 
   //Expired
-  mainSheet.getRange("E8:E").clearContent()
-  var expired        = mainSheet.getRange("E8:E")
+  mainSheet.getRange("H8:H").clearContent()
+  mainSheet.getRange("I8:I").clearContent()
+  var expired        = mainSheet.getRange("I8:I")
   var expired_values = expired.getValues()
-  mainSheet.getRange(7,5).setValue('Expired')
+  mainSheet.getRange(7,9).setValue('Expired')
   for(var i = 0; i < expired_values.length; i++){
-    if(i < expired_list.length){
-      mainSheet.getRange(8+i,5).setValue(expired_list[i].getAndrewID())
-    }
+    if(i < expired_list.length){    
+      var keys = expired_list[i]
+      for(var j = 0; j < keys.length; j++){
+        mainSheet.getRange(8+i,8).setValue(keys[i].getId())
+        mainSheet.getRange(8+i,9).setValue(expired_list[i].getAndrewID())
+      }      
+    } else {break;}
+
   }
 
   //RMOVE LATER!!!!!
   //expiration_check()
+}
+
+function expiration_month(){
+  const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
+  const mainSheet = dataSS.getSheetByName("Main")
+  const folder    = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
+  const files     = folder.getFiles()
+  var allEntries = verifiedEntries(dataSS)  
+
+  var index = 0
+  var andrew_one          = []
+  var andrew_one_temp = mainSheet.getRange("B8:B").getValues()
+  var one             = andrew_one_temp[index][0]
+  while(one != ""){
+    var one_value = allEntries.get(one) 
+    andrew_one.push(one_value)
+    index = index + 1
+    one = andrew_one_temp[index][0]
+  }
+
+  while(files.hasNext()){
+    var file = files.next()
+    if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Month Till Expiration")){
+      var doc_month = DocumentApp.openById(file.getId())
+      expire_msg(andrew_one,doc_month,file.getName()) 
+    }
+  }
+}
+
+function expiration_week(){
+  const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
+  const mainSheet = dataSS.getSheetByName("Main")
+  const folder    = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
+  const files     = folder.getFiles()
+  var allEntries = verifiedEntries(dataSS)  
+  
+  var index = 0
+  var andrew_week       = []
+  var andrew_week_temp  = mainSheet.getRange("C8:C").getValues()
+  var week              = andrew_week_temp[index][0]
+  while(week != ""){
+    var week_value = allEntries.get(week)
+    andrew_week.push(week_value)
+    index = index + 1
+    week = andrew_week_temp[index][0]
+  }
+
+  while(files.hasNext()){
+    var file = files.next()
+    if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Week Till Expiration")){
+      var doc = DocumentApp.openById(file.getId())
+      expire_msg(andrew_week,doc,file.getName()) 
+    }
+  }
+}
+
+function expiration_day(){
+  const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
+  const mainSheet = dataSS.getSheetByName("Main")
+  const folder    = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
+  const files     = folder.getFiles()
+  var allEntries = verifiedEntries(dataSS) 
+
+  var index = 0
+  var andrew_day      = []
+  var andrew_day_temp = mainSheet.getRange("D8:D").getValues()
+  var day             = andrew_day_temp[index][0]
+  while(day != ""){
+    var day_value = allEntries.get(one)
+    andrew_day.push(day_value)
+    index = index + 1
+    day = andrew_day_temp[index][0]
+  }
+
+  while(files.hasNext()){
+    var file = files.next()
+    if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Day Till Expiration")){
+      var doc = DocumentApp.openById(file.getId())
+      expire_msg(andrew_day,doc,file.getName()) 
+    }
+  }
+}
+
+function expiration_exp(){
+  const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
+  const mainSheet = dataSS.getSheetByName("Main")
+  const folder    = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
+  const files     = folder.getFiles()
+  var allEntries = verifiedEntries(dataSS) 
+
+  var index = 0
+  var expired_list      = []
+  var expired_list_temp = mainSheet.getRange("E8:E").getValues()  
+  var exp               = expired_list_temp[index][0]
+  while(exp != ""){
+    var exp_value = allEntries.get(exp)
+    expired_list.push(exp_value)
+    index = index + 1
+    exp = expired_list_temp[index][0]
+  }
+
+  while(files.hasNext()){
+    var file = files.next()
+    if ((file.getMimeType() === MimeType.GOOGLE_DOCS) && (file.getName() == "Expired")){
+      var doc = DocumentApp.openById(file.getId())
+      expire_msg(expired_list,doc,file.getName()) 
+    }
+  }
 }
 
 /**
