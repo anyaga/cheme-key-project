@@ -156,8 +156,6 @@ function onFormSubmit(e){
     var expDate       = data[10]
 
     Logger.log("Checkout a key!!!")
-
-    //unverifiedValueCollection()
     entryToUnverifiedInput()
 
     //add to log and add to unverifed!!!!!
@@ -640,12 +638,10 @@ function updateLogApproval(id,andrewID,key,approval,status){
  * Take all new input values and add them to the unverifid sheet in 'Key Sheet Main;
  */
 function unverifiedValueCollection(){
-  var keySS    = SpreadsheetApp.getActiveSpreadsheet();
-  var logSheet = keySS.getSheetByName('Log');
+  var keySS             = SpreadsheetApp.getActiveSpreadsheet();
+  var logSheet          = keySS.getSheetByName('Log');
   var approvalAndAndrew = logSheet.getRange('C2:D').getValues();
   
-  Logger.log("in unverrifed log collection")
-
   var logEntries = logToEntries();
   var allEntries = new Map();
 
@@ -677,10 +673,7 @@ function unverifiedValueCollection(){
       unverifiedEntries.set(andrewID,keyRecord);
     } 
     //Not in log (add to unverified and add to log)
-    else if(!logEntries.has(andrewID)){
-
-      Logger.log("Adding to log")
-
+    else if(!logEntries.has(andrewID) && !andrewID.includes("no-andrewID")){
       unverifiedEntries.set(andrewID,keyRecord)
       addToLog(andrewID,keyRecord,logSheet,logEntries)
     }    
