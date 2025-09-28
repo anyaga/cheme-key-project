@@ -975,6 +975,7 @@ function submitSelectedData(){
        ])
     }
   });
+  analysis();
 }
 
 /**
@@ -1477,51 +1478,5 @@ function isExpired(curr,date){
   if(date == null || date == undefined) return false
   return curr.getTime() > date.getTime()
 }
-
-
-
-
-
-/** 
-function onOpen() {
-  SpreadsheetApp.getUi()
-      .createMenu('Key Menu')  
-      .addItem('Show sidebar', 'sidebarHome') //        
-      .addToUi();
-}
-
-function sidebarHome() {
-  var html = HtmlService.createHtmlOutputFromFile('home_sidebar').setTitle('Keys Project Home');
-  SpreadsheetApp.getUi().showSidebar(html);
-}
-
-function sidebarModify(andrewID){
-  var temp = HtmlService.createTemplateFromFile('modify_sidebar')
-  var entry = setEntry(andrewID)
-  temp.firstName = entry.getFirstName()
-  var html = temp.evaluate().setTitle('Modify Sidebar');
-  SpreadsheetApp.getUi().showSidebar(html);
-}
-
-function setEntry(andrewID){
-  //find a way to pass in all entries
-  if(E.has(andrewID)){
-    return E.get(andrewID)
-  } 
-  else {return null}
-}
-
-function processInputs(fname, lname, advisor, andrewID, 
-                      keyNum, roomNum, givenDate, loseDate) {
-  // Process the inputs here
-  Logger.log('Input 1: ' + fname);
-  Logger.log('Input 2: ' + lname);
-  Logger.log('Input 3: ' + advisor);
-  Logger.log('Input 4: ' + andrewID);
-  Logger.log('Input 5: ' + keyNum);
-  Logger.log('Input 6: ' + roomNum);
-  Logger.log('Input 7: ' + givenDate);
-  Logger.log('Input 8: ' + loseDate);
-}*/
 
 
