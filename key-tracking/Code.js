@@ -140,6 +140,23 @@ function onFormSubmit(e){
     var room          = data[7];
     manualCheckIn(andrewID,firstName,lastName,advisor,key,room)
   }
+
+  if (sheetName == " Key Check-Out Form"){
+    var date_returned = data[0]
+    var email         = data[1]
+    var firstName     = data[2]
+    var lastName      = data[3]
+    var advisor       = data[4]
+    var andrewID      = data[5]
+    //figure out how to deal with 6
+    var key           = data[7]
+    var room          = data[8]
+    var givenDate     = data[9]
+    var expDate       = data[10]
+
+
+    //add to log and add to unverifed!!!!!
+  }
 }
 
 
@@ -480,7 +497,7 @@ function logToEntries(){
   var logSheet = keySS.getSheetByName('Log');
   var allEntries = new Map();
 
-  var logRange = logSheet.getRange('B:L');
+  var logRange  = logSheet.getRange('B:L');
   var logValues = logRange.getValues();
 
   for(var i = 1; i < logValues.length; i++){
@@ -594,9 +611,7 @@ function unverifiedValueCollection(){
     var file = inputFiles.next()
     allEntries = parseKeySheet(allEntries,file.getId()) 
   }
-
   allEntries = checkoutFormToEntries(allEntries);
-
   var unverifiedEntries = new Map();
 
   //if not in log or unverified in the log
@@ -775,7 +790,6 @@ function submitUnverifedData(row,col,value){
       break
   }
 }
-
 
 /**
  * Given what is in the approval tab, update what is in the unverifeid tab. Approve Selected - Button
@@ -1072,7 +1086,6 @@ function approveAllData(){
 
 
 
-
 /************ Check in values in the sheets********/
 /**
  * 
@@ -1109,7 +1122,7 @@ function manualCheckIn(andrewID,firstName,lastName,advisor,key,room){
 }
 
 /**
- * 
+ * Return a key and rerun analysis(populate sheets and main sheet)
  * @param {*} allEntries 
  * @returns 
  */
@@ -1141,11 +1154,19 @@ function checkInForm(){
   }
 }
 
+
+
+
+
+
 function scheduleReload(){
 ////////////////////////////
 
 //Check status ofvalues.remove them if checked in. Email or add to list if expired/near expiration (notification to return the values)
 }
+
+
+
 
 
 /**
@@ -1209,12 +1230,11 @@ function fillSheets(dataSS){
     for(i = 0; i < keys.length; i++){
       var key = keys[i]
       var date = new Date(key.getExpirationDate())
-      
-      if( date <= today)
-        {var yr1 = "Expired"}
-      else
-        {var yr1  = date.getFullYear()}
-      
+      if( date <= today){
+        var yr1 = "Expired"
+      } else {
+        var yr1  = date.getFullYear()
+      }
       var new_sheet = dataSS.getSheetByName(yr1)
       new_sheet.appendRow([
         key.getExpirationDate(),entryRecord.getAndrewID(),
