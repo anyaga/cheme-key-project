@@ -541,8 +541,8 @@ function logToEntries(){
 
   for(var i = 1; i < logValues.length; i++){
     var row = logValues[i];
-    var isEmpty =  (entry.every(cell => (cell === "" || cell === null)))
-    if(row.length == 0 || row.length < 12 || isEmpty) continue;
+    var isEmpty =  (row.every(cell => (cell === "" || cell === null)))
+    if(row.length == 0 || row.length < 11 || isEmpty) continue;
     var andrewID  = row[2];
     var lastName  = row[3];
     var firstName = row[4];
