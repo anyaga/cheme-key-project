@@ -80,6 +80,14 @@ class keyRecord {
     }
     return list
   }
+  listIds(){
+    var list = []
+    var iDs = this.key
+    for(var i = 0; i < keys.length; i++){
+      list.append(keys[i].getId())
+    }
+    return list
+  }
   addKey(andrewID,key,room,givenDate,expDate) {
     var newKey = new keyInfo(andrewID,key,room,givenDate,expDate)
     var keys = this.key
@@ -688,11 +696,16 @@ function unverifiedValueCollection(){
     }  
     else if (logEntries.has(andrewID)){
       var logKeyRecord = logEntries.get(andrewID)
-      var logKeys = logKeyRecord.listKeys()
-      var eKeys   = keyRecord.listKeys()
+      var logIDs = logKeyRecord.listIds()
+      var eIDs   = keyRecord.listIds()
 
       //Elements in allEntries record that is not in log record
-      var notShared = eKeys.filter(key=> !logKeys.includes(key))
+      var notShared = eIDs.filter(key=> !logIDs.includes(key))
+
+      for(var k = 0; k < notShared.length; k++){
+        var id = notShared[k]
+        ///////////////////////
+      }
 
     }
   }
