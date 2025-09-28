@@ -704,7 +704,26 @@ function unverifiedValueCollection(){
 
       for(var k = 0; k < notShared.length; k++){
         var id = notShared[k]
-        ///////////////////////
+        var first = keyRecord.getFirstName()
+        var last  = keyRecord.getLastName()
+        var advisor = keyRecord.getAdvisor()
+        var dept   = keyRecord.getDepartment()
+        var keys_temp = keyRecord.getKeys()
+        for(var r = 0; r < keys_temp.length; r++){
+          if(keys_temp[r].getId() == id){
+            var newKeyRec = new keyRecord(first,last,andrewID,advisor, dept,keys_temp[r].getKey(),keys_temp[r].getRoom(),keys_temp[r].getGivenDate(),keys_temp[r].getExpirationDate())
+
+            unverifiedEntries.set(andrewID,newKeyRec)
+            addToLog(andrewID,newKeyRec,logSheet,logEntries)
+          }
+        }
+
+
+
+
+
+
+
       }
 
     }
