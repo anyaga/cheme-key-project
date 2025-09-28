@@ -128,13 +128,24 @@ function onFormSubmit(e){
   var sheet = e.range.getSheet()
   var sheetName = sheet.getName()
   var data  = e.values
+
   var keySS = SpreadsheetApp.getActiveSpreadsheet()
   var startCol = e.range.getColumn()
+  
   var ui = SpreadsheetApp.getUi(); // Get the spreadsheet UI
   ui.alert('This is an alert!');
   if(sheetName === "Key Check-In Form"){
+    var date_returned = data[0];
+    var email         = data[1];
+    var firstName     = data[2];
+    var lastName      = data[3];
+    var advisor       = data[4];
+    var andrewID      = data[5];
+    var key           = data[6];
+    var room          = data[7];
 
-    for(var i = 0; 0 < data.length; i++ ){
+    /** 
+    for(var i = 0; i < data.length; i++ ){
       var col = startCol + i
       switch(col){
         case 1:
@@ -162,11 +173,9 @@ function onFormSubmit(e){
           var room = data[i]
           break
       }
-    }
+    }*/
     manualCheckIn(andrewID,firstName,lastName,advisor,key,room)
   }
-
-  //update
 }
 
 
@@ -966,6 +975,7 @@ function submitSelectedData(){
        ])
     }
   });
+  analysis();
 }
 
 /**
@@ -1470,47 +1480,3 @@ function isExpired(curr,date){
 }
 
 
-
-
-
-/** 
-function onOpen() {
-  SpreadsheetApp.getUi()
-      .createMenu('Key Menu')  
-      .addItem('Show sidebar', 'sidebarHome') //        
-      .addToUi();
-}
-
-function sidebarHome() {
-  var html = HtmlService.createHtmlOutputFromFile('home_sidebar').setTitle('Keys Project Home');
-  SpreadsheetApp.getUi().showSidebar(html);
-}
-
-function sidebarModify(andrewID){
-  var temp = HtmlService.createTemplateFromFile('modify_sidebar')
-  var entry = setEntry(andrewID)
-  temp.firstName = entry.getFirstName()
-  var html = temp.evaluate().setTitle('Modify Sidebar');
-  SpreadsheetApp.getUi().showSidebar(html);
-}
-
-function setEntry(andrewID){
-  //find a way to pass in all entries
-  if(E.has(andrewID)){
-    return E.get(andrewID)
-  } 
-  else {return null}
-}
-
-function processInputs(fname, lname, advisor, andrewID, 
-                      keyNum, roomNum, givenDate, loseDate) {
-  // Process the inputs here
-  Logger.log('Input 1: ' + fname);
-  Logger.log('Input 2: ' + lname);
-  Logger.log('Input 3: ' + advisor);
-  Logger.log('Input 4: ' + andrewID);
-  Logger.log('Input 5: ' + keyNum);
-  Logger.log('Input 6: ' + roomNum);
-  Logger.log('Input 7: ' + givenDate);
-  Logger.log('Input 8: ' + loseDate);
-}*/
