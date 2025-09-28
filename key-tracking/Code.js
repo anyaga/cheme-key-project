@@ -65,13 +65,29 @@ class keyRecord {
   getDepartment(){
     return this.dept
   }
+
   getKeys(){
     return this.key
   }
   setKey(newKeySet){
     this.key = newKeySet
   }
- 
+  listKeys(){
+    var list = []
+    var keys = this.key
+    for(var i = 0 ; i < keys.length; i++){
+      list.append(keys[i].getKey())
+    }
+    return list
+  }
+  listIds(){
+    var list = []
+    var iDs = this.key
+    for(var i = 0; i < keys.length; i++){
+      list.append(keys[i].getId())
+    }
+    return list
+  }
   addKey(andrewID,key,room,givenDate,expDate) {
     var newKey = new keyInfo(andrewID,key,room,givenDate,expDate)
     var keys = this.key
@@ -677,14 +693,38 @@ function unverifiedValueCollection(){
 
       unverifiedEntries.set(andrewID,keyRecord)
       addToLog(andrewID,keyRecord,logSheet,logEntries)
-    }  else if (logEntries.has(andrewID)){
+    }  
+    else if (logEntries.has(andrewID)){
       var logKeyRecord = logEntries.get(andrewID)
-      var logKeys = logKeyRecord.key
-      for(var i = 0; i < logKeys.length; i++){
-        log_key = logKeys[i]
+      var logIDs = logKeyRecord.listIds()
+      var eIDs   = keyRecord.listIds()
+
+      //Elements in allEntries record that is not in log record
+      var notShared = eIDs.filter(key=> !logIDs.includes(key))
+
+      for(var k = 0; k < notShared.length; k++){
+        var id = notShared[k]
+        var first = keyRecord.getFirstName()
+        var last  = keyRecord.getLastName()
+        var advisor = keyRecord.getAdvisor()
+        var dept   = keyRecord.getDepartment()
+        var keys_temp = keyRecord.getKeys()
+        for(var r = 0; r < keys_temp.length; r++){
+          if(keys_temp[r].getId() == id){
+            var newKeyRec = new keyRecord(first,last,andrewID,advisor, dept,keys_temp[r].getKey(),keys_temp[r].getRoom(),keys_temp[r].getGivenDate(),keys_temp[r].getExpirationDate())
+
+            unverifiedEntries.set(andrewID,newKeyRec)
+            addToLog(andrewID,newKeyRec,logSheet,logEntries)
+          }
+        }
+
+
+
+
+
+
 
       }
-      //var notShared = (logKeyRecord.key).filter(keys =>)
 
     }
   }
