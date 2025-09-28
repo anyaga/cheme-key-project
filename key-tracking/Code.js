@@ -125,11 +125,9 @@ function onEdit(e) {
 }
 
 function onFormSubmit(e){
-  Logger.log("Form SUbmitted")
   var sheet = e.range.getSheet()
   var sheetName = sheet.getName()
   var data  = e.values
-
 
   if(sheetName === "Key Check-In Form"){
     var date_returned = data[0];
@@ -140,46 +138,8 @@ function onFormSubmit(e){
     var andrewID      = data[5];
     var key           = data[6];
     var room          = data[7];
-    
-    Logger.log("Sheet confirmed")
-    Logger.log(data)
-    /** 
-    for(var i = 0; i < data.length; i++ ){
-      var col = startCol + i
-      switch(col){
-        case 1:
-          var date_returned = data[i]
-          break
-        case 2:
-          var email = data[i]
-          break
-        case 3: 
-          var firstName = data[i]
-          break
-        case 4:
-          var lastName = data[i]
-          break
-        case 5:
-          var advisor = data[i]
-          break
-        case 6:
-          var andrewID = data[i]
-          break
-        case 7:
-          var key = data[i]
-          break
-        case 8:
-          var room = data[i]
-          break
-      }
-    }*/
     manualCheckIn(andrewID,firstName,lastName,advisor,key,room)
   }
-}
-
-
-function tuk(){
-  manualCheckIn("jackj","Jack","Johnson","Coty Jen","4501-108","DH B107")
 }
 
 
