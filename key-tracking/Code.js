@@ -156,8 +156,8 @@ function onFormSubmit(e){
 
     Logger.log("Checkout a key!!!")
 
-    unverifiedValueCollection()
-
+    //unverifiedValueCollection()
+    entryToUnverifiedInput()
 
     //add to log and add to unverifed!!!!!
     //1. append to unverifeid
