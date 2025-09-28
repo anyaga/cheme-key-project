@@ -130,7 +130,7 @@ function onFormSubmit(e){
   var data  = e.values
 
   if(sheetName === "Key Check-In Form"){
-    Logger.log("onFormSubmit recognnize checkin form")
+    Logger.log("onFormSubmit recognnize checkin")
     var date_returned = data[0];
     var email         = data[1];
     var firstName     = data[2];
@@ -541,7 +541,8 @@ function logToEntries(){
 
   for(var i = 1; i < logValues.length; i++){
     var row = logValues[i];
-    if(row.length == 0 || row.length < 12) continue;
+    var isEmpty =  (entry.every(cell => (cell === "" || cell === null)))
+    if(row.length == 0 || row.length < 12 || isEmpty) continue;
     var andrewID  = row[2];
     var lastName  = row[3];
     var firstName = row[4];
