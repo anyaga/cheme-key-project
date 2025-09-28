@@ -556,8 +556,16 @@ function logToEntries(){
        (advisor == '') && (dept == '') && (key == '') && (room == '') &&
        (expDate == '') && (givenDate == '')){break;}
 
+
     var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
-    allEntries.set(andrewID,newKeyRec);
+    if(allEntries.has(andrewID)){
+      var entry = allEntries.get(andrewID)
+      allEntries.delete(andrewID)
+      entry.addKey(key,room,givenDate,expDate)
+      allEntries.set(andrewID,entry)
+    } else {
+      allEntries.set(andrewID,newKeyRec)
+    }
   }
   return allEntries;
 }
