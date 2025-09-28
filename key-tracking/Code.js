@@ -170,7 +170,9 @@ function onFormSubmit(e){
 }
 
 
-
+function tuk(){
+  manualCheckIn("jackj","Jack","Johnson","Coty Jen","4501-108","DH B107")
+}
 
 
 /**
@@ -515,7 +517,7 @@ function logToEntries(){
 
   for(var i = 1; i < logValues.length; i++){
     var row = logValues[i];
-    if(row.length == 0 || row.length < 11 || row[0] == "Inactive") break;
+    if(row.length == 0 || row.length < 11 || row[0] == "Inactive" || row[0] == "" || row[0] == NaN) continue;
     var andrewID  = row[2];
     var lastName  = row[3];
     var firstName = row[4];
@@ -1121,25 +1123,23 @@ function manualCheckIn(andrewID,firstName,lastName,advisor,key,room){
   var logEntries = logToEntries()
   if(logEntries.has(andrewID)){      
     var entry     = logEntries.get(andrewID)
-    var confirmed = confirmUser(firstName,lastName,advisor,andrewID,key,room,entry) 
+    //var confirmed = confirmUser(firstName,lastName,advisor,andrewID,key,room,entry) 
     var id = -1
-    if(confirmed){
-      var key_count = entry.getKeys().length
-      //1.Remove specific key
-      if(key_count == 1){
-        id = entry.key.id
-      } else{
-        entry.key.forEach((keyDetails) => {
-          if(keyDetails.getKey() == key){
-            id = keyDetails.id
-          } 
-        });
-      }
-      //2.Update the log to show key has been removed
-
-      updateLogApproval(id,andrewID,key,"Approved","Inactive")
-      analysis()
+    var key_count = entry.getKeys().length
+    //1.Remove specific key
+    if(key_count == 1){
+      id = entry.key[0].id
+    } else{
+      entry.key.forEach((keyDetails) => {
+        if(keyDetails.getKey() == key){
+          id = keyDetails.id
+        } 
+      });
     }
+    //2.Update the log to show key has been removed
+
+    updateLogApproval(id,andrewID,key,"Approved","Inactive")
+    analysis()
   }
 }
 
