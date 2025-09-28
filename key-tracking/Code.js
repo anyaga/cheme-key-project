@@ -685,14 +685,14 @@ function unverifiedValueCollection(){
 
       unverifiedEntries.set(andrewID,keyRecord)
       addToLog(andrewID,keyRecord,logSheet,logEntries)
-    }  else if (logEntries.has(andrewID)){
+    }  
+    else if (logEntries.has(andrewID)){
       var logKeyRecord = logEntries.get(andrewID)
-      var logKeys = logKeyRecord.key
-      for(var i = 0; i < logKeys.length; i++){
-        log_key = logKeys[i]
+      var logKeys = logKeyRecord.listKeys()
+      var eKeys   = keyRecord.listKeys()
 
-      }
-      //var notShared = (logKeyRecord.key).filter(keys =>)
+      //Elements in allEntries record that is not in log record
+      var notShared = eKeys.filter(key=> !logKeys.includes(key))
 
     }
   }
