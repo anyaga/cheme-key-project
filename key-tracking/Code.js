@@ -1473,7 +1473,16 @@ function expire_msg(list,doc,subj){
   }
 }
 
+function isDateInFrame(start, end,date){
+  if(date == null || date == undefined) return false
+  return start.getTime() <= date.getTime() 
+      && date.getTime()  <= end.getTime()
+}
 
+function isExpired(curr,date){
+  if(date == null || date == undefined) return false
+  return curr.getTime() > date.getTime()
+}
 
 
 
@@ -1524,13 +1533,3 @@ function processInputs(fname, lname, advisor, andrewID,
   Logger.log('Input 8: ' + loseDate);
 }
 
-function isDateInFrame(start, end,date){
-  if(date == null || date == undefined) return false
-  return start.getTime() <= date.getTime() 
-      && date.getTime()  <= end.getTime()
-}
-
-function isExpired(curr,date){
-  if(date == null || date == undefined) return false
-  return curr.getTime() > date.getTime()
-}
