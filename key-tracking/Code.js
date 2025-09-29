@@ -140,7 +140,7 @@ function onFormSubmit(e){
   if(sheetName === "Key Check-In Form"){
     Logger.log("onFormSubmit recognnize checkin")
     var return_date = data[0];
-    var email         = data[1];
+    //var email         = data[1]; //Email of person who check in the key. may be useful in log
     var firstName     = data[2];
     var lastName      = data[3];
     var advisor       = data[4];
@@ -148,7 +148,7 @@ function onFormSubmit(e){
     var key           = data[6];
     var room          = data[7];
     manualCheckIn(andrewID,firstName,lastName,advisor,key,room)
-    checkInConfirmMsg(return_date,email,andrewID,firstName,lastName,key,room)
+    checkInConfirmMsg(return_date,andrewID,firstName,lastName,key,room)
   }
 
   //If a new person gets a key (key is checked out), add to unverified sheet and log
@@ -158,8 +158,16 @@ function onFormSubmit(e){
   }
 }
 
-function checkInConfirmMsg(return_date,email,andrewID,firstName,lastName,key,room){
-
+function checkInConfirmMsg(return_date,andrewID,firstName,lastName,key,room){
+  var recipient = andrewID + "@andrew.cmu.edu"
+  var doc;
+  var doc_string = doc.getBody().getText()
+  var doc_string_replace = doc_string.replace("[First]",firstName)
+                                     .replace("[Last]",lastName)
+                                     .replace("[Key]",key)
+                                     .replace("[Room]",room)
+                                     .replace("[returnDate]",return_date)
+  MailApp.sendEmail(recipient,"Confirmation of Key Returned",doc_string_replace)
 }
 
 
