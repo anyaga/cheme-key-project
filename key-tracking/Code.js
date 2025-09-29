@@ -1005,7 +1005,7 @@ function submitSelectedData(){
       updateLogApproval(key.getId(),entryRecord.getAndrewID(),key.getKey(),"Approved","Active")
     }
   });
-
+  
   deletedEntires.forEach((entryRecord) => {
     var keys = entryRecord.key
     for(var i = 0; i < keys.length; i++){
@@ -1013,7 +1013,7 @@ function submitSelectedData(){
       updateLogApproval(key.getId(),entryRecord.getAndrewID(),key.getKey(),"Denied","Inactive")
     }
   });
-  
+
   //first value is undefined
   remainingEntries.forEach((entryRecord) => {
     var keys = entryRecord.key
@@ -1133,14 +1133,13 @@ function fillSheets(dataSS){
   today.setHours(0,0,0,0)
 
   //Get the years from all the entries (map) in an array
-  const years = []//"Expired"]
+  const years = []
   allEntries.forEach((entryRecord) => {
     var keys = entryRecord.getKeys()
     for(i = 0; i < keys.length; i++){
       var key = keys[i]
       var date = new Date(key.getExpirationDate())
       var entry_yr = date.getFullYear()
-
       //Year not added and current day is after today
       if(!years.includes(entry_yr) && date > today){
         years.push(entry_yr)
@@ -1150,7 +1149,7 @@ function fillSheets(dataSS){
 
   years.sort()
   years.push("Expired")
-  years.reverse()//sort years array in descending order
+  years.reverse()//sorted years array in descending order
   
   //Create sheets with the given years
   for(i = 0; i < years.length; i++ ){
@@ -1242,7 +1241,6 @@ function analysis(){
         mainSheet.getRange(8+i,3).setValue(andrew_one[i].getAndrewID())
       } 
     } else{break;}
-
   }
 
   //1 week
@@ -1259,7 +1257,6 @@ function analysis(){
         mainSheet.getRange(8+i,5).setValue(andrew_week[i].getAndrewID())
       } 
     } else {break;}
-
   }
 
   //1 day
@@ -1276,7 +1273,6 @@ function analysis(){
         mainSheet.getRange(8+i,7).setValue(andrew_day[i].getAndrewID())
       }      
     } else {break;}
-
  }
 
   //Expired
@@ -1293,7 +1289,6 @@ function analysis(){
         mainSheet.getRange(8+i,9).setValue(expired_list[i].getAndrewID())
       }      
     } else {break;}
-
   }
 }
 
