@@ -1,13 +1,3 @@
-/*
-Object Oriented Design
-Goals:
--Alumni/Peoples who have reached expiration date
--Renew key?
--Edit currentFormToClass to deal with wrong dates
--Edit currentFormToClass to deal with no advisor
--1st Year PhD  advisor is Heather
-*/
-
 class keyInfo{
   constructor(andrewID,keyNumber,roomNumber,givenDate,expDate){
     this.id         = hash_id(keyNumber+andrewID)
@@ -113,8 +103,9 @@ function scheduleReload(){
 
 
 
-/**(
+/**
  * Capture changes to active spreadsheet (Key Main Sheet)
+ * If there is is a change in unverified sheet data, update the matching value in the log
  * @param {*} e - event object
  */
 function onEdit(e) {
@@ -145,10 +136,11 @@ function onFormSubmit(e){
   var sheetName = sheet.getName()
   var data  = e.values
 
+  //If a person returns a key. Remove from verified list and update the log
   if(sheetName === "Key Check-In Form"){
     Logger.log("onFormSubmit recognnize checkin")
-    var date_returned = data[0];
-    var email         = data[1];
+    var return_date = data[0];
+    //var email         = data[1]; //Email of person who check in the key. may be useful in log
     var firstName     = data[2];
     var lastName      = data[3];
     var advisor       = data[4];
@@ -156,12 +148,26 @@ function onFormSubmit(e){
     var key           = data[6];
     var room          = data[7];
     manualCheckIn(andrewID,firstName,lastName,advisor,key,room)
+    checkInConfirmMsg(return_date,andrewID,firstName,lastName,key,room)
   }
 
+  //If a new person gets a key (key is checked out), add to unverified sheet and log
   if (sheetName == "Key Check-Out Form"){
     Logger.log("Checking one more time")
     entryToUnverifiedInput()
   }
+}
+
+function checkInConfirmMsg(return_date,andrewID,firstName,lastName,key,room){
+  var recipient = andrewID + "@andrew.cmu.edu"
+  var doc;
+  var doc_string = doc.getBody().getText()
+  var doc_string_replace = doc_string.replace("[First]",firstName)
+                                     .replace("[Last]",lastName)
+                                     .replace("[Key]",key)
+                                     .replace("[Room]",room)
+                                     .replace("[returnDate]",return_date)
+  MailApp.sendEmail(recipient,"Confirmation of Key Returned",doc_string_replace)
 }
 
 
@@ -1040,144 +1046,6 @@ function submitSelectedData(){
   });
   analysis();
 }
-
-/**
- * Approve all unverified input, regardless of what is in the approval tab. Approve All - Button ///////////////////////////////////update once other function is complete 
- 
-function approveAllData(){
-  //clear all the data in the unverifeid
-  var keySS            = SpreadsheetApp.getActiveSpreadsheet();
-  var unverfiedSheet   = keySS.getSheetByName('Unverified Input');
-  var allEntries       = new Map(); 
-  var remainingEntries = new Map()
-
-  var val = true // this needs to be updated!!!!!!!!!!!!!!!!!1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  var i = 0;
-  var entry_raw = unverfiedSheet.getRange(2+i,1,1,12); //one row
-  var entry     = entry_raw.getValues()[0] //check this!!!!! [0]  
-  while(val){
-    var approval  = entry[0]
-    var id        = entry[1]
-    var andrewID  = entry[2]
-    var lastName  = entry[3]
-    var firstName = entry[4]
-    var advisor   = entry[5]
-    var dept      = entry[6]
-    var key       = entry[7]
-    var room      = entry[8]
-    var expDate   = entry[9]
-    var givenDate = entry[10]
-    
-    var msg = ""
-    var key_msg = ""
-    var room_msg = ""
-    var given_date_msg = ""
-    var exp_date_msg  = ""
-    //Add to note if there are invalid values (conjoin message values)
-
-    //Keys
-    if(key == 'invalid key' || key == ""){
-      key_msg = "invalid key"
-    }
-    msg = msg + key_msg
-    
-    //Rooms
-    if(room == 'invalid room' || room == ""){
-      if(msg == ""){room_msg = "invalid room"}
-      else{room_msg = ", "+"invalid room"}
-    }
-    msg = msg + room_msg
-    
-    //Given Date
-    if(givenDate == "invalid date"||givenDate ==""){
-      if(msg == ""){given_date_msg = "invalid date"}
-      else {given_date_msg = ", " + "invalid date"}
-    }
-    msg = msg + given_date_msg
-
-    //Expiration Date
-    if(expDate == "invalid date" || expDate == ""){
-      if(msg == ""){exp_date_msg = "invalid date"}
-      else{exp_date_msg = ", " + "invalid date"}    
-    }
-    msg = msg + exp_date_msg
-
-    var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
-    if((key != 'invalid key') && (room != 'invalid room') && (expDate != 'invalid date') && (givenDate != 'invalid date')){
-      //All 'Approve'. All can be added to the map for entries      
-      if(allEntries.has(andrewID)){
-        var entry = allEntries.get(andrewID)
-        allEntries.delete(andrewID)
-        entry.addKey(key,room,givenDate,expDate)
-        allEntries.set(andrewID,entry)
-      } else {
-        allEntries.set(andrewID,keyRec)
-      }
-
-    }
-    else {
-
-      if(remainingEntries.has(andrewID)){
-        var entry = remainingEntries.get(andrewID)
-        remainingEntries.delete(andrewID)
-        entry.addKey(key,room,givenDate,expDate)
-        remainingEntries.set(andrewID,entry)
-      } else{
-        remainingEntries.set(andrewID,keyRec)
-      }      
-    }
-    entry_raw.clear()
-    //Uppdate loop conditions
-    i = i + 1
-    entry_raw = unverfiedSheet.getRange(2+i,1,1,12)
-    entry     = entry_raw.getValues()[0]
-    //Check if next row is empty
-    val = !(entry.every(cell => (cell === "" || cell === null)))
-  }
-  //Update the log
-  var logSheet       = keySS.getSheetByName('Log');
-  var logEntries     = logSheet.getRange("A2:K").getValues();
-  
-  for(var i = 0; i < logEntries.length; i++){
-    var entry_row  = logEntries[i]
-    var andrewID1  = entry_row[3]
-    var key1       = entry_row[8]
-    var id1        = entry_row[0]
-
-    var found_entry = allEntries.get(andrewID1) //undefined if not there
-    if(found_entry != undefined){
-      var keys = found_entry.key
-      for(var i = 0; i  < keys.length; i++){
-        var k1 = keys[i]
-        if(k1.keyNumber == key1){
-          updateLogApproval(id1,andrewID1,key1,"Approved","Active")
-        }
-      }
-    }
-  }
-  remainingEntries.forEach((entryRecord) => {
-    var keys = entryRecord.key
-    for(var i = 0; i < keys.length; i++){
-      unverfiedSheet.appendRow([
-        'Select',
-        keys[i].getId(),
-        entryRecord.getAndrewID(),
-        entryRecord.getLastName(),
-        entryRecord.getFirstName(),
-        entryRecord.getAdvisor(),
-        entryRecord.getDepartment(),
-        keys[i].getKey(),
-        keys[i].getRoom(),
-        keys[i].getExpirationDate(),
-        keys[i].getGivenDate(),
-        msg
-      ])
-    }
-  });
-}
-*/
-
-
 
 /************ Check in values in the sheets********/
 /**
