@@ -155,7 +155,6 @@ function onFormSubmit(e){
 
   //If a new person gets a key (key is checked out), add to unverified sheet and log
   if (sheetName == "Key Check-Out Form"){
-    Logger.log("Checking one more time")
     entryToUnverifiedInput()
   }
 }
@@ -313,7 +312,6 @@ function verifiedEntries(keySS){
   }
   return verifiedEntries
 }
-
 
 /*********************Helper Functions used for safety checks*************/
 
@@ -489,7 +487,7 @@ function parseKeySheet(allEntries,id){
         allEntries.set(andrewID,newEntry);
       } 
       //Adding a key to existing record
-      else {//<---Overwriting old values
+      else {
         var entry = allEntries.get(andrewID); 
         var key_list = entry.listKeys()
         if(!key_list.includes(keys)){
@@ -558,7 +556,6 @@ function checkoutFormToEntries(allEntries){
           Entry.addKey(key,room,givenDate,expDate);
           allEntries.set(andrewID,Entry);          
         }
-
     }
   }
   return allEntries
@@ -606,7 +603,6 @@ function logToEntries(){
         entry.addKey(key,room,givenDate,expDate)
         allEntries.set(andrewID,entry)
       }
-
     } else {
       allEntries.set(andrewID,newKeyRec)
     }
@@ -646,11 +642,11 @@ function addToLog(andrewID,keyRecord,logSheet,logEntries,activity){
 function updateLogApproval(id,andrewID,key,approval,status){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
   const logSheet = keySS.getSheetByName('Log')
-
-  //Find all instances of the andrewID and the key value in the spreadsheet
   if (id != -1){
+    //Look up value on 'Log' sheet based on id. Id should be unique
     var found = logSheet.createTextFinder(id).findAll()[0].getRow()
   } else {
+    //Find all instances of the andrewID and the key value in the spreadsheet
     var andrew_found = logSheet.createTextFinder(andrewID).findAll()
     var key_found    = logSheet.createTextFinder(key).findAll()  
     //Key and andrewid both exist somewhere in the sheet
@@ -663,11 +659,11 @@ function updateLogApproval(id,andrewID,key,approval,status){
       for(var j = 0; j < key_found.length; j++){
         key_rows.push(key_found[j].getRow())
       }
-      //1.Now that the value is found, get the full range
-      //  matching column value is found (andrewid and key are on the same column)  
       var found   = andrew_rows.find(a => key_rows.includes(a)) 
     }
   } 
+
+  //1.Now that the value is found, get the full range matching column value with found (andrewid and key are on the same column)    
   var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
   var row1    = fullRow.getValues()[0]
   row1[1] = status
