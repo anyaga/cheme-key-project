@@ -662,7 +662,6 @@ function updateLogApproval(id,andrewID,key,approval,status){
       var found   = andrew_rows.find(a => key_rows.includes(a)) 
     }
   } 
-
   //1.Now that the value is found, get the full range matching column value with found (andrewid and key are on the same column)    
   var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
   var row1    = fullRow.getValues()[0]
@@ -681,8 +680,12 @@ function unverifiedValueCollection(){
   var logSheet          = keySS.getSheetByName('Log');
   var approvalAndAndrew = logSheet.getRange('C2:D').getValues();
   
-  var logEntries = logToEntries();
+  //Log entries represents all values in the log
+  var logEntries = activeEntries()//logToEntries();
+  //All entries represent all the data from the different data sources
   var allEntries = new Map();
+  //Unverified entires represents data that is not in the log
+  var unverifiedEntries = new Map();
 
   //Read spreasheets with data. Should be in 'Key Inputs' folder
   var inputFolder = null
@@ -700,33 +703,31 @@ function unverifiedValueCollection(){
     allEntries = parseKeySheet(allEntries,file.getId()) 
   }
   allEntries = checkoutFormToEntries(allEntries);
-  var unverifiedEntries = new Map();
 
   //if not in log or unverified in the log
   for(const [andrewID,keyRecord1] of allEntries){
     //check if in log or if unverifed in log
     var arr = ["Unverified",andrewID]
 
-    //In log sheet as unverified
+    //AndrewID in log sheet as unverified
     if(approvalAndAndrew.includes(arr)) {
       unverifiedEntries.set(andrewID,keyRecord1);
     } 
-    //Not in log (add to unverified and add to log)
+    //AndrewID not in log. Add to unverified and log //?????????????????????????????
     else if(!logEntries.has(andrewID) && !andrewID.includes("no-andrewID")){
 
       unverifiedEntries.set(andrewID,keyRecord1)
       addToLog(andrewID,keyRecord1,logSheet,logEntries)
     }  
+    //AndrewID is in the log but with a different key.
     else if (logEntries.has(andrewID)){
       var logKeyRecord = logEntries.get(andrewID)
+
       var logIDs = logKeyRecord.listIds()
       var eIDs   = keyRecord1.listIds()
 
       //Elements in allEntries record that is not in log record
       var notShared = eIDs.filter(key=> !logIDs.includes(key))
-
-
-
 
 
 
@@ -1100,7 +1101,8 @@ function submitSelectedData(){
  * @returns 
  */
 function manualCheckIn(andrewID,firstName,lastName,advisor,key,room){
-  var logEntries = logToEntries()
+  //var logEntries = logToEntries()
+  var logEntries = activeEntries()
   if(logEntries.has(andrewID)){      
     var entry     = logEntries.get(andrewID)
     //var confirmed = confirmUser(firstName,lastName,advisor,andrewID,key,room,entry) 
