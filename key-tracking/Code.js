@@ -731,46 +731,6 @@ function unverifiedValueCollection(){
 }
 
 /**
- * Create dropdown that determines status of unverified values
- */
-function createApprovalDropdown() { 
-  var keySS = SpreadsheetApp.getActiveSpreadsheet();
-  var unverifiedSheet = keySS.getSheetByName('Unverified Input');
-  var rule = SpreadsheetApp.newDataValidation()
-              .requireValueInList(['Select','Approved', 'Denied'],true)
-              .setHelpText("Select an option")
-              .build();  
-
-  var goalRange = unverifiedSheet.getRange(1,2,rowTotal,1); //check if i need to switch the 1st and 2nd value
-  goalRange.setDataValidation(rule);
-
-  for (var i = 0; i < rowTotal; i++) {
-    var cell = unverifiedSheet.getRange(i + 2, 1); // A2, A3, ...
-    cell.setValue('Select');
-  }
-
-  var currRules = unverifiedSheet.getConditionalFormatRules();
-  var newRules = currRules.filter(function(rule) {
-    var ranges = rule.getRanges();
-    return !ranges.some(r => r.getA1Notation().startsWith("B"));
-  });
-
-  newRules.push(
-    SpreadsheetApp.newConditionalFormatRule()
-      .whenTextEqualTo('Approved')
-      .setBackground('#b7e1cd') // light green
-      .setRanges([goalRange])
-      .build(),
-    SpreadsheetApp.newConditionalFormatRule()
-      .whenTextEqualTo('Denied')
-      .setBackground('#e06666') // light red
-      .setRanges([goalRange])
-      .build()
-  );
-  unverifiedSheet.setConditionalFormatRules(newRules);
-}
-
-/**
  * Format unverified sheet to have input entries and the dropdown values
  */
 function entryToUnverifiedInput(){
