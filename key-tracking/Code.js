@@ -833,8 +833,8 @@ function entryToUnverifiedInput(){
  */
 function submitUnverifedData(row,col,value){
   const unverfiedSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Unverified Input')
-  const id_loc             = unverfiedSheet.getRange(row,2)
-  const id = id_loc.getValue()
+  const id_loc         = unverfiedSheet.getRange(row,2)
+  const id            = id_loc.getValue()
 
   const logSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Log')
   var log_found  = logSheet.createTextFinder(id).findAll()[0]
@@ -951,52 +951,43 @@ function submitSelectedData(){
     }
     msg = msg + exp_date_msg
     var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
-    if(msg == "" || approval == "Denied"){  
-      //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
-      if(approval == "Approved"){
-        if(approveEntries.has(andrewID)){
-          var entry = approveEntries.get(andrewID)
-          approveEntries.delete(andrewID)
-          entry.addKey(key,room,givenDate,expDate)
-          approveEntries.set(andrewID,entry)
-        } else{
-          approveEntries.set(andrewID,keyRec)
-        }
-        entry_raw.clear()
-      } 
-      else if(approval == "Denied"){
-        if(deletedEntires.has(andrewID)){
-          var entry = deletedEntires.get(andrewID)
-          deletedEntires.delete(andrewID)
-          entry.addKey(key,room,givenDate,expDate)
-          deletedEntires.set(andrewID.entry)
-        } else{
-          deletedEntires.set(andrewID,keyRec)
-        }
-        entry_raw.clear()
+
+    //If denied automatically deny
+    if(approval == "Denied"){
+      if(deletedEntires.has(andrewID)){
+        var entry = deletedEntires.get(andrewID)
+        deletedEntires.delete(andrewID)
+        entry.addKey(key,room,givenDate,expDate)
+        deletedEntires.set(andrewID.entry)
+      } else{
+        deletedEntires.set(andrewID,keyRec)
       }
-      else{
-        if(remainingEntries.has(andrewID)){
-          var entry = remainingEntries.get(andrewID)
-          remainingEntries.delete((andrewID))
-          entry.addKey(key,room,givenDate,expDate)
-          remainingEntries.set(andrewID,entry)
-        } else{
-          remainingEntries.set(andrewID,keyRec)
-        }
-        entry_raw.clear()
+      entry_raw.clear()      
+    }
+    //If no missing data (msg empty) and approved
+    else if((msg == "") && (approval == "Approved")){  
+    //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
+      if(approveEntries.has(andrewID)){
+        var entry = approveEntries.get(andrewID)
+        approveEntries.delete(andrewID)
+        entry.addKey(key,room,givenDate,expDate)
+        approveEntries.set(andrewID,entry)
+      } else{
+        approveEntries.set(andrewID,keyRec)
       }
+      entry_raw.clear()
     } 
+    //Missing data or 'Select' in approved tab is left on unverified
     else{
-        if(remainingEntries.has(andrewID)){
-          var entry = remainingEntries.get(andrewID)
-          remainingEntries.delete((andrewID))
-          entry.addKey(key,room,givenDate,expDate)
-          remainingEntries.set(andrewID,entry)
-        } else{
-          remainingEntries.set(andrewID,keyRec)
-        }      
-        entry_raw.clear()
+      if(remainingEntries.has(andrewID)){
+        var entry = remainingEntries.get(andrewID)
+        remainingEntries.delete((andrewID))
+        entry.addKey(key,room,givenDate,expDate)
+        remainingEntries.set(andrewID,entry)
+      } else{
+        remainingEntries.set(andrewID,keyRec)
+      }      
+      entry_raw.clear()
     }
     //Update loop conditions 
     i = i + 1
@@ -1014,7 +1005,7 @@ function submitSelectedData(){
       updateLogApproval(key.getId(),entryRecord.getAndrewID(),key.getKey(),"Approved","Active")
     }
   });
-
+  
   deletedEntires.forEach((entryRecord) => {
     var keys = entryRecord.key
     for(var i = 0; i < keys.length; i++){
@@ -1022,7 +1013,7 @@ function submitSelectedData(){
       updateLogApproval(key.getId(),entryRecord.getAndrewID(),key.getKey(),"Denied","Inactive")
     }
   });
-  
+
   //first value is undefined
   remainingEntries.forEach((entryRecord) => {
     var keys = entryRecord.key
@@ -1142,14 +1133,13 @@ function fillSheets(dataSS){
   today.setHours(0,0,0,0)
 
   //Get the years from all the entries (map) in an array
-  const years = []//"Expired"]
+  const years = []
   allEntries.forEach((entryRecord) => {
     var keys = entryRecord.getKeys()
     for(i = 0; i < keys.length; i++){
       var key = keys[i]
       var date = new Date(key.getExpirationDate())
       var entry_yr = date.getFullYear()
-
       //Year not added and current day is after today
       if(!years.includes(entry_yr) && date > today){
         years.push(entry_yr)
@@ -1159,7 +1149,7 @@ function fillSheets(dataSS){
 
   years.sort()
   years.push("Expired")
-  years.reverse()//sort years array in descending order
+  years.reverse()//sorted years array in descending order
   
   //Create sheets with the given years
   for(i = 0; i < years.length; i++ ){
@@ -1251,7 +1241,6 @@ function analysis(){
         mainSheet.getRange(8+i,3).setValue(andrew_one[i].getAndrewID())
       } 
     } else{break;}
-
   }
 
   //1 week
@@ -1268,7 +1257,6 @@ function analysis(){
         mainSheet.getRange(8+i,5).setValue(andrew_week[i].getAndrewID())
       } 
     } else {break;}
-
   }
 
   //1 day
@@ -1285,7 +1273,6 @@ function analysis(){
         mainSheet.getRange(8+i,7).setValue(andrew_day[i].getAndrewID())
       }      
     } else {break;}
-
  }
 
   //Expired
@@ -1302,7 +1289,6 @@ function analysis(){
         mainSheet.getRange(8+i,9).setValue(expired_list[i].getAndrewID())
       }      
     } else {break;}
-
   }
 }
 
