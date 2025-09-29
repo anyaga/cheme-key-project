@@ -1438,6 +1438,8 @@ function analysis(){
   }
 }
 
+/************ Messages for approaching expiration or reached expiration ************/
+
 function expiration_month(){
   const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
   const mainSheet = dataSS.getSheetByName("Main")
