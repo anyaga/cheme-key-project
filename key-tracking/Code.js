@@ -273,7 +273,7 @@ function verifiedEntries(keySS){
   return verifiedEntries
 }
 
-/***************Helper Functions used for safety checks********/
+/*********************Helper Functions used for safety checks*************/
 
 
 function validKey(key) {
@@ -405,7 +405,7 @@ function isExpired(curr,date){
 }
 
 
-/*****************Parsing entry data***********************/
+/**************************Parsing entry data***********************/
 /**
  * Parsing the sheets for entries 
  * */
@@ -517,7 +517,7 @@ function checkoutFormToEntries(allEntries){
   return allEntries
 }
 
-/*****************Manipulating the log sheet*************/
+/*******************************Using the log sheet***************************/
 /**
  * Read log data and turn ACTIVE values into entries
  */
@@ -1247,6 +1247,7 @@ function checkInForm(){
   }
 }
 
+/*********Displaying the verified data on Main Sheet and the expiration year sheet ***************/
 /**
  * Fill the sheets that represent each expiration sheet 
  * @param {*} dataSS - the active spreadsheet
