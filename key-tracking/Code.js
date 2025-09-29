@@ -1,3 +1,5 @@
+/**************Objects that define a key record************/
+
 class keyInfo{
   constructor(andrewID,keyNumber,roomNumber,givenDate,expDate){
     this.id         = hash_id(keyNumber+andrewID)
@@ -93,7 +95,7 @@ class keyRecord {
   }
 }
 
-
+/******************Triggers and their helper functions *********/
 
 function scheduleReload(){
 ////////////////////////////
@@ -313,9 +315,6 @@ function verifiedEntries(keySS){
 }
 
 
-
-
-
 /*********************Helper Functions used for safety checks*************/
 
 function validKey(key) {
@@ -492,9 +491,12 @@ function parseKeySheet(allEntries,id){
       //Adding a key to existing record
       else {//<---Overwriting old values
         var entry = allEntries.get(andrewID); 
-        allEntries.delete(andrewID); 
-        entry.addKey(keys,room,given0,exp0);
-        allEntries.set(andrewID,entry); 
+        var key_list = entry.listKeys()
+        if(!key_list.includes(keys)){
+          allEntries.delete(andrewID); 
+          entry.addKey(keys,room,given0,exp0);
+          allEntries.set(andrewID,entry);           
+        }
       }
     }
   }
@@ -550,9 +552,13 @@ function checkoutFormToEntries(allEntries){
       allEntries.set(andrewID,newEntry);
     } else {
         var Entry = allEntries.get(andrewID);
-        allEntries.delete(andrewID);
-        Entry.addKey(key,room,givenDate,expDate);
-        allEntries.set(andrewID,Entry);
+        var key_list = Entry.listKeys()
+        if(!key_list.includes(key)){
+          allEntries.delete(andrewID);
+          Entry.addKey(key,room,givenDate,expDate);
+          allEntries.set(andrewID,Entry);          
+        }
+
     }
   }
   return allEntries
@@ -594,9 +600,13 @@ function logToEntries(){
     var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
     if(allEntries.has(andrewID)){
       var entry = allEntries.get(andrewID)
-      allEntries.delete(andrewID)
-      entry.addKey(key,room,givenDate,expDate)
-      allEntries.set(andrewID,entry)
+      var key_list = entry.listKeys()
+      if(!key_list.includes(key)){
+        allEntries.delete(andrewID)
+        entry.addKey(key,room,givenDate,expDate)
+        allEntries.set(andrewID,entry)
+      }
+
     } else {
       allEntries.set(andrewID,newKeyRec)
     }
