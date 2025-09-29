@@ -57,7 +57,6 @@ class keyRecord {
   getDepartment(){
     return this.dept
   }
-
   getKeys(){
     return this.key
   }
@@ -155,7 +154,6 @@ function onFormSubmit(e){
 
   //If a new person gets a key (key is checked out), add to unverified sheet and log
   if (sheetName == "Key Check-Out Form"){
-    Logger.log("Checking one more time")
     entryToUnverifiedInput()
   }
 }
@@ -174,7 +172,7 @@ function checkInConfirmMsg(return_date,andrewID,firstName,lastName,key,room){
 
 
 /**
- * Returns all active entries from the log     //////////////////////////////////////////////////////NOT IN USE
+ * Returns all active entries from the log
  */
 function activeEntries(){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
@@ -214,7 +212,7 @@ function activeEntries(){
 }
 
 /**
- * Returns all inactive entries from the log         /////////////////////////////////////////NOT IN USE
+ * Returns all inactive entries from the log 
  */
 function inactiveEntries(){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
@@ -252,26 +250,6 @@ function inactiveEntries(){
   }
   return inactive_entries
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /**
  * Returns all active entries that are verified as valid inputs
@@ -313,7 +291,6 @@ function verifiedEntries(keySS){
   }
   return verifiedEntries
 }
-
 
 /*********************Helper Functions used for safety checks*************/
 
@@ -489,7 +466,7 @@ function parseKeySheet(allEntries,id){
         allEntries.set(andrewID,newEntry);
       } 
       //Adding a key to existing record
-      else {//<---Overwriting old values
+      else {
         var entry = allEntries.get(andrewID); 
         var key_list = entry.listKeys()
         if(!key_list.includes(keys)){
@@ -558,7 +535,6 @@ function checkoutFormToEntries(allEntries){
           Entry.addKey(key,room,givenDate,expDate);
           allEntries.set(andrewID,Entry);          
         }
-
     }
   }
   return allEntries
@@ -606,7 +582,6 @@ function logToEntries(){
         entry.addKey(key,room,givenDate,expDate)
         allEntries.set(andrewID,entry)
       }
-
     } else {
       allEntries.set(andrewID,newKeyRec)
     }
@@ -646,11 +621,11 @@ function addToLog(andrewID,keyRecord,logSheet,logEntries,activity){
 function updateLogApproval(id,andrewID,key,approval,status){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
   const logSheet = keySS.getSheetByName('Log')
-
-  //Find all instances of the andrewID and the key value in the spreadsheet
   if (id != -1){
+    //Look up value on 'Log' sheet based on id. Id should be unique
     var found = logSheet.createTextFinder(id).findAll()[0].getRow()
   } else {
+    //Find all instances of the andrewID and the key value in the spreadsheet
     var andrew_found = logSheet.createTextFinder(andrewID).findAll()
     var key_found    = logSheet.createTextFinder(key).findAll()  
     //Key and andrewid both exist somewhere in the sheet
@@ -663,11 +638,10 @@ function updateLogApproval(id,andrewID,key,approval,status){
       for(var j = 0; j < key_found.length; j++){
         key_rows.push(key_found[j].getRow())
       }
-      //1.Now that the value is found, get the full range
-      //  matching column value is found (andrewid and key are on the same column)  
       var found   = andrew_rows.find(a => key_rows.includes(a)) 
     }
   } 
+  //1.Now that the value is found, get the full range matching column value with found (andrewid and key are on the same column)    
   var fullRow = logSheet.getRange(found,1,1,logSheet.getLastColumn())
   var row1    = fullRow.getValues()[0]
   row1[1] = status
@@ -683,10 +657,14 @@ function updateLogApproval(id,andrewID,key,approval,status){
 function unverifiedValueCollection(){
   var keySS             = SpreadsheetApp.getActiveSpreadsheet();
   var logSheet          = keySS.getSheetByName('Log');
-  var approvalAndAndrew = logSheet.getRange('C2:D').getValues();
+  var statusApprovalAndrew = logSheet.getRange('B2:D').getValues();
   
-  var logEntries = logToEntries();
+  //Log entries represents all values in the log
+  var logEntries = activeEntries()//logToEntries();
+  //All entries represent all the data from the different data sources
   var allEntries = new Map();
+  //Unverified entires represents data that is not in the log
+  var unverifiedEntries = new Map();
 
   //Read spreasheets with data. Should be in 'Key Inputs' folder
   var inputFolder = null
@@ -704,23 +682,22 @@ function unverifiedValueCollection(){
     allEntries = parseKeySheet(allEntries,file.getId()) 
   }
   allEntries = checkoutFormToEntries(allEntries);
-  var unverifiedEntries = new Map();
 
   //if not in log or unverified in the log
   for(const [andrewID,keyRecord1] of allEntries){
     //check if in log or if unverifed in log
-    var arr = ["Unverified",andrewID]
+    var arr = ["Active","Unverified",andrewID]
 
-    //In log sheet as unverified
-    if(approvalAndAndrew.includes(arr)) {
+    //AndrewID is in log sheet as active and unverified.Add to unverified set
+    if(statusApprovalAndrew.includes(arr)) {
       unverifiedEntries.set(andrewID,keyRecord1);
     } 
-    //Not in log (add to unverified and add to log)
+    //AndrewID not in log sheet and not an active entry. Add to unverified set and log 
     else if(!logEntries.has(andrewID) && !andrewID.includes("no-andrewID")){
-
       unverifiedEntries.set(andrewID,keyRecord1)
       addToLog(andrewID,keyRecord1,logSheet,logEntries)
     }  
+    //AndrewID not in log sheet but is in active entry with a different key.
     else if (logEntries.has(andrewID)){
       var logKeyRecord = logEntries.get(andrewID)
       var logIDs = logKeyRecord.listIds()
@@ -728,48 +705,26 @@ function unverifiedValueCollection(){
 
       //Elements in allEntries record that is not in log record
       var notShared = eIDs.filter(key=> !logIDs.includes(key))
-
-
-
-
-
-
       for(var k = 0; k < notShared.length; k++){
         var id = notShared[k]
         var first = keyRecord1.getFirstName()
         var last  = keyRecord1.getLastName()
         var advisor = keyRecord1.getAdvisor()
         var dept   = keyRecord1.getDepartment()
-        var keys_temp = keyRecord1.getKeys()
-        for(var r = 0; r < keys_temp.length; r++){
-          if(keys_temp[r].getId() == id){
+        var keys = keyRecord1.getKeys()
+        for(var r = 0; r < keys.length; r++){
+          if(keys[r].getId() == id){
+            var key  = keys[r].getKey()
+            var room = keys[r].getRoom()
+            var gDay = keys[r].getGivenDate()
+            var eDay = keys[r].getExpirationDate()
 
-
-
-            var newKeyRec = new keyRecord(first,last,andrewID,advisor, dept,keys_temp[r].getKey(),keys_temp[r].getRoom(),keys_temp[r].getGivenDate(),keys_temp[r].getExpirationDate()) 
-
-
-
-            //???  these entry rooms do not work proper;y???they put dates in the the rom!!!!!!!!!!!!!!!!
-
-
+            var newKeyRec = new keyRecord(first,last,andrewID,advisor, dept,key,room,gDay,eDay) 
             unverifiedEntries.set(andrewID,newKeyRec)
             addToLog(andrewID,newKeyRec,logSheet,logEntries)
-
-            
           }
         }
-
       }
-
-
-
-
-
-
-
-
-
     }
   }
   return unverifiedEntries;
@@ -1104,7 +1059,8 @@ function submitSelectedData(){
  * @returns 
  */
 function manualCheckIn(andrewID,firstName,lastName,advisor,key,room){
-  var logEntries = logToEntries()
+  //var logEntries = logToEntries()
+  var logEntries = activeEntries()
   if(logEntries.has(andrewID)){      
     var entry     = logEntries.get(andrewID)
     //var confirmed = confirmUser(firstName,lastName,advisor,andrewID,key,room,entry) 
