@@ -57,7 +57,6 @@ class keyRecord {
   getDepartment(){
     return this.dept
   }
-
   getKeys(){
     return this.key
   }
@@ -173,7 +172,7 @@ function checkInConfirmMsg(return_date,andrewID,firstName,lastName,key,room){
 
 
 /**
- * Returns all active entries from the log     //////////////////////////////////////////////////////NOT IN USE
+ * Returns all active entries from the log
  */
 function activeEntries(){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
@@ -213,7 +212,7 @@ function activeEntries(){
 }
 
 /**
- * Returns all inactive entries from the log         /////////////////////////////////////////NOT IN USE
+ * Returns all inactive entries from the log 
  */
 function inactiveEntries(){
   const keySS    = SpreadsheetApp.getActiveSpreadsheet()
@@ -251,26 +250,6 @@ function inactiveEntries(){
   }
   return inactive_entries
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /**
  * Returns all active entries that are verified as valid inputs
@@ -678,7 +657,7 @@ function updateLogApproval(id,andrewID,key,approval,status){
 function unverifiedValueCollection(){
   var keySS             = SpreadsheetApp.getActiveSpreadsheet();
   var logSheet          = keySS.getSheetByName('Log');
-  var approvalAndAndrew = logSheet.getRange('C2:D').getValues();
+  var statusApprovalAndrew = logSheet.getRange('B2:D').getValues();
   
   //Log entries represents all values in the log
   var logEntries = activeEntries()//logToEntries();
@@ -707,28 +686,25 @@ function unverifiedValueCollection(){
   //if not in log or unverified in the log
   for(const [andrewID,keyRecord1] of allEntries){
     //check if in log or if unverifed in log
-    var arr = ["Unverified",andrewID]
+    var arr = ["Active","Unverified",andrewID]
 
-    //AndrewID in log sheet as unverified
-    if(approvalAndAndrew.includes(arr)) {
+    //AndrewID is in log sheet as active and unverified.Add to unverified set
+    if(statusApprovalAndrew.includes(arr)) {
       unverifiedEntries.set(andrewID,keyRecord1);
     } 
-    //AndrewID not in log. Add to unverified and log //?????????????????????????????
+    //AndrewID not in log sheet and not an active entry. Add to unverified set and log 
     else if(!logEntries.has(andrewID) && !andrewID.includes("no-andrewID")){
-
       unverifiedEntries.set(andrewID,keyRecord1)
       addToLog(andrewID,keyRecord1,logSheet,logEntries)
     }  
-    //AndrewID is in the log but with a different key.
+    //AndrewID not in log sheet but is in active entry with a different key.
     else if (logEntries.has(andrewID)){
       var logKeyRecord = logEntries.get(andrewID)
-
       var logIDs = logKeyRecord.listIds()
       var eIDs   = keyRecord1.listIds()
 
       //Elements in allEntries record that is not in log record
       var notShared = eIDs.filter(key=> !logIDs.includes(key))
-
 
 
       for(var k = 0; k < notShared.length; k++){
