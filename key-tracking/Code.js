@@ -193,8 +193,19 @@ function activeEntries(){
     var expDate   = log_row[9]
     var givenDate = log_row[10]
     if(status == "Active"){
-      var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
-      active_entries.set(andrewID,newKeyRec)
+
+      if(!activeEntries.has(andrewID)){
+        var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
+        active_entries.set(andrewID,newKeyRec)        
+      } else{
+        var entry = activeEntries.get(andrewID)
+        var key_list = entry.listKeys()
+        if(!key_list.includes(key)){
+          activeEntries.delete(andrewID)
+          entry.addKey(key,room,givenDate,expDate)
+          activeEntries.set(andrewID,entry)
+        }
+      }
     }
   }
   return active_entries
