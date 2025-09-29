@@ -222,8 +222,19 @@ function inactiveEntries(){
     var expDate   = log_row[9]
     var givenDate = log_row[10]
     if(status == "Inactive"){
-      var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
-      inactive_entries.set(andrewID,newKeyRec)
+
+      if(!inactiveEntries.has(andrewID)){
+        var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
+        inactive_entries.set(andrewID,newKeyRec)
+      } else {
+        var entry    = inactiveEntries.get(andrewID)
+        var key_list = entry.listKeys()
+        if(!key_list.includes(key)){
+          inactiveEntries.delete(andrewID)
+          entry.addKey(key,room,givenDate,expDate)
+          inactiveEntries.set(andrewID,entry)
+        }
+      }
     }
   }
   return inactive_entries
@@ -284,7 +295,6 @@ function verifiedEntries(keySS){
           entry.addKey(key,room,givenDate,expDate)
           verifiedEntries.set(andrewID,entry)          
         }
-
       }
     }
   }
