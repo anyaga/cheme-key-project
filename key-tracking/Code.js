@@ -103,15 +103,15 @@ class keyRecord {
   }
 }
 
-//Murmer Hash3 function set up
-function hash_id(str){
-  var hash =  0x811c9dc5 // FNV offset basis
-  for(var i = 0; i < str.length; i++){
-    hash ^= str.charCodeAt(i)
-    hash  = (hash * 0x01000193) >>> 0
-  }
-  return hash >>> 0
+
+
+function scheduleReload(){
+////////////////////////////
+
+//Check status ofvalues.remove them if checked in. Email or add to list if expired/near expiration (notification to return the values)
 }
+
+
 
 /**(
  * Capture changes to active spreadsheet (Key Main Sheet)
@@ -274,6 +274,8 @@ function verifiedEntries(keySS){
 }
 
 /***************Helper Functions used for safety checks********/
+
+
 function validKey(key) {
   //Some error with Key formating
   if(!key.includes("4501-")){
@@ -379,6 +381,16 @@ function confirmUser(first,last,advisor,andrew,key,room,entry){
     && key_room_status) {
       return true
     } return false
+}
+
+//Murmer Hash3 function set up
+function hash_id(str){
+  var hash =  0x811c9dc5 // FNV offset basis
+  for(var i = 0; i < str.length; i++){
+    hash ^= str.charCodeAt(i)
+    hash  = (hash * 0x01000193) >>> 0
+  }
+  return hash >>> 0
 }
 
 /*****************Parsing entry data***********************/
@@ -1223,21 +1235,6 @@ function checkInForm(){
   }
 }
 
-
-
-
-
-
-function scheduleReload(){
-////////////////////////////
-
-//Check status ofvalues.remove them if checked in. Email or add to list if expired/near expiration (notification to return the values)
-}
-
-
-
-
-
 /**
  * Fill the sheets that represent each expiration sheet 
  * @param {*} dataSS - the active spreadsheet
@@ -1690,7 +1687,7 @@ function expire_msg(id,list,doc,subj){
   }
 }
 
-function isDateInFrame(start, end,date){
+function isDateInFrame(start,end,date){
   if(date == null || date == undefined) return false
   return start.getTime() <= date.getTime() 
       && date.getTime()  <= end.getTime()
