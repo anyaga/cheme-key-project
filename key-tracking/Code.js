@@ -103,8 +103,9 @@ function scheduleReload(){
 
 
 
-/**(
+/**
  * Capture changes to active spreadsheet (Key Main Sheet)
+ * If there is is a change in unverified sheet data, update the matching value in the log
  * @param {*} e - event object
  */
 function onEdit(e) {
