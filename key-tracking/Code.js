@@ -833,8 +833,8 @@ function entryToUnverifiedInput(){
  */
 function submitUnverifedData(row,col,value){
   const unverfiedSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Unverified Input')
-  const id_loc             = unverfiedSheet.getRange(row,2)
-  const id = id_loc.getValue()
+  const id_loc         = unverfiedSheet.getRange(row,2)
+  const id            = id_loc.getValue()
 
   const logSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Log')
   var log_found  = logSheet.createTextFinder(id).findAll()[0]
@@ -951,7 +951,20 @@ function submitSelectedData(){
     }
     msg = msg + exp_date_msg
     var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
-    if(msg == "" || approval == "Denied"){  
+
+    if(approval == "Denied"){
+      if(deletedEntires.has(andrewID)){
+        var entry = deletedEntires.get(andrewID)
+        deletedEntires.delete(andrewID)
+        entry.addKey(key,room,givenDate,expDate)
+        deletedEntires.set(andrewID.entry)
+      } else{
+        deletedEntires.set(andrewID,keyRec)
+      }
+      entry_raw.clear()      
+    }
+
+    else if(msg == ""){  
       //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
       if(approval == "Approved"){
         if(approveEntries.has(andrewID)){
@@ -964,17 +977,6 @@ function submitSelectedData(){
         }
         entry_raw.clear()
       } 
-      else if(approval == "Denied"){
-        if(deletedEntires.has(andrewID)){
-          var entry = deletedEntires.get(andrewID)
-          deletedEntires.delete(andrewID)
-          entry.addKey(key,room,givenDate,expDate)
-          deletedEntires.set(andrewID.entry)
-        } else{
-          deletedEntires.set(andrewID,keyRec)
-        }
-        entry_raw.clear()
-      }
       else{
         if(remainingEntries.has(andrewID)){
           var entry = remainingEntries.get(andrewID)
