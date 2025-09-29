@@ -393,6 +393,18 @@ function hash_id(str){
   return hash >>> 0
 }
 
+function isDateInFrame(start,end,date){
+  if(date == null || date == undefined) return false
+  return start.getTime() <= date.getTime() 
+      && date.getTime()  <= end.getTime()
+}
+
+function isExpired(curr,date){
+  if(date == null || date == undefined) return false
+  return curr.getTime() > date.getTime()
+}
+
+
 /*****************Parsing entry data***********************/
 /**
  * Parsing the sheets for entries 
@@ -1686,16 +1698,4 @@ function expire_msg(id,list,doc,subj){
 
   }
 }
-
-function isDateInFrame(start,end,date){
-  if(date == null || date == undefined) return false
-  return start.getTime() <= date.getTime() 
-      && date.getTime()  <= end.getTime()
-}
-
-function isExpired(curr,date){
-  if(date == null || date == undefined) return false
-  return curr.getTime() > date.getTime()
-}
-
 
