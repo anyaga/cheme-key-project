@@ -158,6 +158,14 @@ function onFormSubmit(e){
   }
 }
 
+function hourlyTrigger() {
+  ScriptApp.newTrigger('analysis')
+           .timeBased()
+           .everyHours(1)
+           .create();
+}
+
+
 function checkInConfirmMsg(return_date,andrewID,firstName,lastName,key,room){
   var recipient = andrewID + "@andrew.cmu.edu"
   var doc;
