@@ -1,3 +1,5 @@
+/**************Objects that define a key record************/
+
 class keyInfo{
   constructor(andrewID,keyNumber,roomNumber,givenDate,expDate){
     this.id         = hash_id(keyNumber+andrewID)
@@ -93,7 +95,7 @@ class keyRecord {
   }
 }
 
-
+/******************Triggers and their helper functions *********/
 
 function scheduleReload(){
 ////////////////////////////
@@ -193,8 +195,19 @@ function activeEntries(){
     var expDate   = log_row[9]
     var givenDate = log_row[10]
     if(status == "Active"){
-      var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
-      active_entries.set(andrewID,newKeyRec)
+
+      if(!activeEntries.has(andrewID)){
+        var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
+        active_entries.set(andrewID,newKeyRec)        
+      } else{
+        var entry = activeEntries.get(andrewID)
+        var key_list = entry.listKeys()
+        if(!key_list.includes(key)){
+          activeEntries.delete(andrewID)
+          entry.addKey(key,room,givenDate,expDate)
+          activeEntries.set(andrewID,entry)
+        }
+      }
     }
   }
   return active_entries
@@ -222,8 +235,19 @@ function inactiveEntries(){
     var expDate   = log_row[9]
     var givenDate = log_row[10]
     if(status == "Inactive"){
-      var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
-      inactive_entries.set(andrewID,newKeyRec)
+
+      if(!inactiveEntries.has(andrewID)){
+        var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
+        inactive_entries.set(andrewID,newKeyRec)
+      } else {
+        var entry    = inactiveEntries.get(andrewID)
+        var key_list = entry.listKeys()
+        if(!key_list.includes(key)){
+          inactiveEntries.delete(andrewID)
+          entry.addKey(key,room,givenDate,expDate)
+          inactiveEntries.set(andrewID,entry)
+        }
+      }
     }
   }
   return inactive_entries
@@ -272,15 +296,26 @@ function verifiedEntries(keySS){
     const expDate   = log_row[10]
     const givenDate = log_row[11]
     if((status == "Active") && (approval == "Approved")){
-      var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
-      verifiedEntries.set(andrewID,newKeyRec)
+      if(!verifiedEntries.has(andrewID)){
+        var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
+        verifiedEntries.set(andrewID,newKeyRec)        
+      } else{
+        var entry = verifiedEntries.get(andrewID)
+        var key_list = entry.listKeys()
+        //Make sure key is not already in the entry
+        if(!key_list.includes(key)){
+          verifiedEntries.delete(andrewID)
+          entry.addKey(key,room,givenDate,expDate)
+          verifiedEntries.set(andrewID,entry)          
+        }
+      }
     }
   }
   return verifiedEntries
 }
 
-/*********************Helper Functions used for safety checks*************/
 
+/*********************Helper Functions used for safety checks*************/
 
 function validKey(key) {
   //Some error with Key formating
@@ -410,7 +445,6 @@ function isExpired(curr,date){
   return curr.getTime() > date.getTime()
 }
 
-
 /**************************Parsing entry data***********************/
 /**
  * Parsing the sheets for entries 
@@ -457,9 +491,12 @@ function parseKeySheet(allEntries,id){
       //Adding a key to existing record
       else {//<---Overwriting old values
         var entry = allEntries.get(andrewID); 
-        allEntries.delete(andrewID); 
-        entry.addKey(keys,room,given0,exp0);
-        allEntries.set(andrewID,entry); 
+        var key_list = entry.listKeys()
+        if(!key_list.includes(keys)){
+          allEntries.delete(andrewID); 
+          entry.addKey(keys,room,given0,exp0);
+          allEntries.set(andrewID,entry);           
+        }
       }
     }
   }
@@ -515,9 +552,13 @@ function checkoutFormToEntries(allEntries){
       allEntries.set(andrewID,newEntry);
     } else {
         var Entry = allEntries.get(andrewID);
-        allEntries.delete(andrewID);
-        Entry.addKey(key,room,givenDate,expDate);
-        allEntries.set(andrewID,Entry);
+        var key_list = Entry.listKeys()
+        if(!key_list.includes(key)){
+          allEntries.delete(andrewID);
+          Entry.addKey(key,room,givenDate,expDate);
+          allEntries.set(andrewID,Entry);          
+        }
+
     }
   }
   return allEntries
@@ -527,7 +568,6 @@ function checkoutFormToEntries(allEntries){
 /**
  * Read log data and turn ACTIVE values into entries
  */
-
 function logToEntries(){
   var keySS = SpreadsheetApp.getActiveSpreadsheet();
   var logSheet = keySS.getSheetByName('Log');
@@ -560,9 +600,13 @@ function logToEntries(){
     var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
     if(allEntries.has(andrewID)){
       var entry = allEntries.get(andrewID)
-      allEntries.delete(andrewID)
-      entry.addKey(key,room,givenDate,expDate)
-      allEntries.set(andrewID,entry)
+      var key_list = entry.listKeys()
+      if(!key_list.includes(key)){
+        allEntries.delete(andrewID)
+        entry.addKey(key,room,givenDate,expDate)
+        allEntries.set(andrewID,entry)
+      }
+
     } else {
       allEntries.set(andrewID,newKeyRec)
     }
@@ -1310,7 +1354,6 @@ function analysis(){
 /**
  * Send emails to individuals in the expiration range using templates in 
  * the Keys Project folder 
- 
 function expiration_check(){
   const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
   const mainSheet = dataSS.getSheetByName("Main")
