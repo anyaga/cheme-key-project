@@ -136,9 +136,10 @@ function onFormSubmit(e){
   var sheetName = sheet.getName()
   var data  = e.values
 
+  //If a person returns a key. Remove from verified list and update the log
   if(sheetName === "Key Check-In Form"){
     Logger.log("onFormSubmit recognnize checkin")
-    var date_returned = data[0];
+    var return_date = data[0];
     var email         = data[1];
     var firstName     = data[2];
     var lastName      = data[3];
@@ -147,12 +148,18 @@ function onFormSubmit(e){
     var key           = data[6];
     var room          = data[7];
     manualCheckIn(andrewID,firstName,lastName,advisor,key,room)
+    checkInConfirmMsg(return_date,email,andrewID,firstName,lastName,key,room)
   }
 
+  //If a new person gets a key (key is checked out), add to unverified sheet and log
   if (sheetName == "Key Check-Out Form"){
     Logger.log("Checking one more time")
     entryToUnverifiedInput()
   }
+}
+
+function checkInConfirmMsg(return_date,email,andrewID,firstName,lastName,key,room){
+
 }
 
 
