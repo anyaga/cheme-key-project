@@ -272,15 +272,21 @@ function verifiedEntries(keySS){
     const expDate   = log_row[10]
     const givenDate = log_row[11]
     if((status == "Active") && (approval == "Approved")){
-      var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
-      verifiedEntries.set(andrewID,newKeyRec)
+      if(!verifiedEntries.has(andrewID)){
+        var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate)
+        verifiedEntries.set(andrewID,newKeyRec)        
+      } else{
+        var entry = verifiedEntries.get(andrewID)
+        verifiedEntries.delete(andrewID)
+        entry.addKey(key,room,givenDate,expDate)
+        verifiedEntries.set(andrewID,entry)
+      }
     }
   }
   return verifiedEntries
 }
 
 /*********************Helper Functions used for safety checks*************/
-
 
 function validKey(key) {
   //Some error with Key formating
@@ -410,7 +416,6 @@ function isExpired(curr,date){
   return curr.getTime() > date.getTime()
 }
 
-
 /**************************Parsing entry data***********************/
 /**
  * Parsing the sheets for entries 
@@ -527,7 +532,6 @@ function checkoutFormToEntries(allEntries){
 /**
  * Read log data and turn ACTIVE values into entries
  */
-
 function logToEntries(){
   var keySS = SpreadsheetApp.getActiveSpreadsheet();
   var logSheet = keySS.getSheetByName('Log');
@@ -1310,7 +1314,6 @@ function analysis(){
 /**
  * Send emails to individuals in the expiration range using templates in 
  * the Keys Project folder 
- 
 function expiration_check(){
   const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
   const mainSheet = dataSS.getSheetByName("Main")
