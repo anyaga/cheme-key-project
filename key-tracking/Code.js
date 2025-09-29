@@ -103,15 +103,15 @@ class keyRecord {
   }
 }
 
-//Murmer Hash3 function set up
-function hash_id(str){
-  var hash =  0x811c9dc5 // FNV offset basis
-  for(var i = 0; i < str.length; i++){
-    hash ^= str.charCodeAt(i)
-    hash  = (hash * 0x01000193) >>> 0
-  }
-  return hash >>> 0
+
+
+function scheduleReload(){
+////////////////////////////
+
+//Check status ofvalues.remove them if checked in. Email or add to list if expired/near expiration (notification to return the values)
 }
+
+
 
 /**(
  * Capture changes to active spreadsheet (Key Main Sheet)
@@ -159,26 +159,8 @@ function onFormSubmit(e){
   }
 
   if (sheetName == "Key Check-Out Form"){
-    var date_returned = data[0]
-    var email         = data[1]
-    var firstName     = data[2]
-    var lastName      = data[3]
-    var advisor       = data[4]
-    var andrewID      = data[5]
-    //figure out how to deal with 6
-    var key           = data[7]
-    var room          = data[8]
-    var givenDate     = data[9]
-    var expDate       = data[10]
-
-    Logger.log("Checkout a key!!!")
+    Logger.log("Checking one more time")
     entryToUnverifiedInput()
-
-    //add to log and add to unverifed!!!!!
-    //1. append to unverifeid
-    //2. append to add to log
-
-    //FIX LOG ENTRIES!!!!!
   }
 }
 
@@ -292,6 +274,8 @@ function verifiedEntries(keySS){
 }
 
 /***************Helper Functions used for safety checks********/
+
+
 function validKey(key) {
   //Some error with Key formating
   if(!key.includes("4501-")){
@@ -397,6 +381,16 @@ function confirmUser(first,last,advisor,andrew,key,room,entry){
     && key_room_status) {
       return true
     } return false
+}
+
+//Murmer Hash3 function set up
+function hash_id(str){
+  var hash =  0x811c9dc5 // FNV offset basis
+  for(var i = 0; i < str.length; i++){
+    hash ^= str.charCodeAt(i)
+    hash  = (hash * 0x01000193) >>> 0
+  }
+  return hash >>> 0
 }
 
 /*****************Parsing entry data***********************/
@@ -515,35 +509,6 @@ function checkoutFormToEntries(allEntries){
 /**
  * Read log data and turn ACTIVE values into entries
  */
-function logToEntries_11(){
-  var keySS = SpreadsheetApp.getActiveSpreadsheet();
-  var logSheet = keySS.getSheetByName('Log');
-  var allEntries = new Map();
-
-  var logRange  = logSheet.getRange('B:L');
-  var logValues = logRange.getValues();
-
-  for(var i = 1; i < logValues.length; i++){
-    var row = logValues[i];
-    if(row.length == 0 || row.length < 11 || row[0] == "Inactive" || row[0] == "" || row[0] == NaN) continue;
-    var andrewID  = row[2];
-    var lastName  = row[3];
-    var firstName = row[4];
-    var advisor   = row[5];
-    var dept      = row[6];
-    var key       = row[7];
-    var room      = row[8];
-    var expDate   = row[9];
-    var givenDate = row[10];
-    if((andrewID == '') && (lastName =='') && (firstName == '') && 
-       (advisor == '') && (dept == '') && (key == '') && (room == '') &&
-       (expDate == '') && (givenDate == '')){break;}
-
-    var newKeyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
-    allEntries.set(andrewID,newKeyRec);
-  }
-  return allEntries;
-}
 
 function logToEntries(){
   var keySS = SpreadsheetApp.getActiveSpreadsheet();
@@ -716,6 +681,9 @@ function unverifiedValueCollection(){
         var keys_temp = keyRecord1.getKeys()
         for(var r = 0; r < keys_temp.length; r++){
           if(keys_temp[r].getId() == id){
+
+
+
             var newKeyRec = new keyRecord(first,last,andrewID,advisor, dept,keys_temp[r].getKey(),keys_temp[r].getRoom(),keys_temp[r].getGivenDate(),keys_temp[r].getExpirationDate()) 
 
 
@@ -723,10 +691,10 @@ function unverifiedValueCollection(){
             //???  these entry rooms do not work proper;y???they put dates in the the rom!!!!!!!!!!!!!!!!
 
 
-
-
             unverifiedEntries.set(andrewID,newKeyRec)
             addToLog(andrewID,newKeyRec,logSheet,logEntries)
+
+            
           }
         }
 
@@ -1267,21 +1235,6 @@ function checkInForm(){
   }
 }
 
-
-
-
-
-
-function scheduleReload(){
-////////////////////////////
-
-//Check status ofvalues.remove them if checked in. Email or add to list if expired/near expiration (notification to return the values)
-}
-
-
-
-
-
 /**
  * Fill the sheets that represent each expiration sheet 
  * @param {*} dataSS - the active spreadsheet
@@ -1734,7 +1687,7 @@ function expire_msg(id,list,doc,subj){
   }
 }
 
-function isDateInFrame(start, end,date){
+function isDateInFrame(start,end,date){
   if(date == null || date == undefined) return false
   return start.getTime() <= date.getTime() 
       && date.getTime()  <= end.getTime()
