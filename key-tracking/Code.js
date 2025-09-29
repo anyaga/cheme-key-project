@@ -592,11 +592,11 @@ function logToEntries(){
 /**
  * Adds any value to the log based on the input to the function
  */
-function addToLog(andrewID,keyRecord,logSheet,logEntries,activity){
+function addToLog(andrewID,keyRecord,logSheet,activeEntries,activity){
   var keys = keyRecord.getKeys()
   for(var i = 0; i < keys.length; i++){
     var key = keys[i]
-    if(!logEntries.has(andrewID)){
+    if(!activeEntries.has(andrewID)){
       logSheet.appendRow([
         key.getId(),
         activity,
