@@ -277,14 +277,23 @@ function verifiedEntries(keySS){
         verifiedEntries.set(andrewID,newKeyRec)        
       } else{
         var entry = verifiedEntries.get(andrewID)
-        verifiedEntries.delete(andrewID)
-        entry.addKey(key,room,givenDate,expDate)
-        verifiedEntries.set(andrewID,entry)
+        var key_list = entry.listKeys()
+        //Make sure key is not already in the entry
+        if(!key_list.includes(key)){
+          verifiedEntries.delete(andrewID)
+          entry.addKey(key,room,givenDate,expDate)
+          verifiedEntries.set(andrewID,entry)          
+        }
+
       }
     }
   }
   return verifiedEntries
 }
+
+
+
+
 
 /*********************Helper Functions used for safety checks*************/
 
