@@ -96,14 +96,6 @@ class keyRecord {
 
 /******************Triggers and their helper functions *********/
 
-function scheduleReload(){
-////////////////////////////
-
-//Check status ofvalues.remove them if checked in. Email or add to list if expired/near expiration (notification to return the values)
-}
-
-
-
 /**
  * Capture changes to active spreadsheet (Key Main Sheet)
  * If there is is a change in unverified sheet data, update the matching value in the log
@@ -1301,85 +1293,6 @@ function analysis(){
 }
 
 /**************** Messages for approaching expiration or reached expiration ***************/
-/**
- * Send emails to individuals in the expiration range using templates in 
- * the Keys Project folder 
-function expiration_check(){
-  const dataSS    = SpreadsheetApp.getActiveSpreadsheet()
-  const mainSheet = dataSS.getSheetByName("Main")
-  const folder    = DriveApp.getFoldersByName("Keys Project").next() //original is a iterator. need next
-  const files     = folder.getFiles()
-  
-  var allEntries = verifiedEntries(dataSS)  
-
-  var index = 0
-  var andrew_one          = []
-  var andrew_one_temp = mainSheet.getRange("B8:B").getValues()
-  var one             = andrew_one_temp[index][0]
-  while(one != ""){
-    var one_value = allEntries.get(one) 
-    andrew_one.push(one_value)
-    index = index + 1
-    one = andrew_one_temp[index][0]
-  }
-
-  index = 0
-  var andrew_week           = []
-  var andrew_week_temp  = mainSheet.getRange("C8:C").getValues()
-  var week              = andrew_week_temp[index][0]
-  while(week != ""){
-    var week_value = allEntries.get(week)
-    andrew_week.push(week_value)
-    index = index + 1
-    week = andrew_week_temp[index][0]
-  }
-
-  index = 0
-  var andrew_day          = []
-  var andrew_day_temp = mainSheet.getRange("D8:D").getValues()
-  var day             = andrew_day_temp[index][0]
-  while(day != ""){
-    var day_value = allEntries.get(one)
-    andrew_day.push(day_value)
-    index = index + 1
-    day = andrew_day_temp[index][0]
-  }
-  index = 0
-  var expired_list          = []
-  var expired_list_temp = mainSheet.getRange("E8:E").getValues()  
-  var exp               = expired_list_temp[index][0]
-  while(exp != ""){
-    var exp_value = allEntries.get(exp)
-    expired_list.push(exp_value)
-    index = index + 1
-    exp = expired_list_temp[index][0]
-  }
-  
-  while(files.hasNext()){
-    var file = files.next()
-    if (file.getMimeType() === MimeType.GOOGLE_DOCS) {
-      switch (file.getName()){
-        case "Month Till Expiration":
-          var doc_month = DocumentApp.openById(file.getId())
-          expire_msg(-1,andrew_one,doc_month,file.getName()) 
-          break
-        case "Week Till Expiration":
-          var doc_week = DocumentApp.openById(file.getId())
-          expire_msg(-1,andrew_week,doc_week,file.getName()) 
-          break
-        case "Day Till Expiration":
-          var doc_day  = DocumentApp.openById(file.getId())
-          expire_msg(-1,andrew_day,doc_day,file.getName()) 
-          break
-        case "Expired":
-          var doc_exp  = DocumentApp.openById(file.getId())
-          expire_msg(-1,expired_list,doc_exp,file.getName()) 
-          break
-      }
-    }
-  }
-}*/
-
 /**
  * 
  */
