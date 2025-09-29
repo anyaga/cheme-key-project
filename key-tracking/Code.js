@@ -952,6 +952,7 @@ function submitSelectedData(){
     msg = msg + exp_date_msg
     var keyRec = new keyRecord(firstName,lastName,andrewID,advisor,dept,key,room,givenDate,expDate);
 
+    //If denied automatically deny
     if(approval == "Denied"){
       if(deletedEntires.has(andrewID)){
         var entry = deletedEntires.get(andrewID)
@@ -963,7 +964,7 @@ function submitSelectedData(){
       }
       entry_raw.clear()      
     }
-
+    //If no missing data (msg empty) and approved
     else if((msg == "") && (approval == "Approved")){  
     //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
       if(approveEntries.has(andrewID)){
@@ -976,16 +977,17 @@ function submitSelectedData(){
       }
       entry_raw.clear()
     } 
+    //Missing data or 'Select' in approved tab is left on unverified
     else{
-        if(remainingEntries.has(andrewID)){
-          var entry = remainingEntries.get(andrewID)
-          remainingEntries.delete((andrewID))
-          entry.addKey(key,room,givenDate,expDate)
-          remainingEntries.set(andrewID,entry)
-        } else{
-          remainingEntries.set(andrewID,keyRec)
-        }      
-        entry_raw.clear()
+      if(remainingEntries.has(andrewID)){
+        var entry = remainingEntries.get(andrewID)
+        remainingEntries.delete((andrewID))
+        entry.addKey(key,room,givenDate,expDate)
+        remainingEntries.set(andrewID,entry)
+      } else{
+        remainingEntries.set(andrewID,keyRec)
+      }      
+      entry_raw.clear()
     }
     //Update loop conditions 
     i = i + 1
