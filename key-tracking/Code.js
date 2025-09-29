@@ -964,30 +964,17 @@ function submitSelectedData(){
       entry_raw.clear()      
     }
 
-    else if(msg == ""){  
-      //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
-      if(approval == "Approved"){
-        if(approveEntries.has(andrewID)){
-          var entry = approveEntries.get(andrewID)
-          approveEntries.delete(andrewID)
-          entry.addKey(key,room,givenDate,expDate)
-          approveEntries.set(andrewID,entry)
-        } else{
-          approveEntries.set(andrewID,keyRec)
-        }
-        entry_raw.clear()
-      } 
-      else{
-        if(remainingEntries.has(andrewID)){
-          var entry = remainingEntries.get(andrewID)
-          remainingEntries.delete((andrewID))
-          entry.addKey(key,room,givenDate,expDate)
-          remainingEntries.set(andrewID,entry)
-        } else{
-          remainingEntries.set(andrewID,keyRec)
-        }
-        entry_raw.clear()
+    else if((msg == "") && (approval == "Approved")){  
+    //Add 'Approve' or 'Denied' to own set. ignore 'Selected'
+      if(approveEntries.has(andrewID)){
+        var entry = approveEntries.get(andrewID)
+        approveEntries.delete(andrewID)
+        entry.addKey(key,room,givenDate,expDate)
+        approveEntries.set(andrewID,entry)
+      } else{
+        approveEntries.set(andrewID,keyRec)
       }
+      entry_raw.clear()
     } 
     else{
         if(remainingEntries.has(andrewID)){
