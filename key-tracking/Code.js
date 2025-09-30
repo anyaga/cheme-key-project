@@ -143,7 +143,6 @@ function onFormSubmit(e){
     manualCheckIn(andrewID,firstName,lastName,advisor,key,room)
     checkInConfirmMsg(return_date,andrewID,firstName,lastName,key,room)
   }
-
   //If a new person gets a key (key is checked out), add to unverified sheet and log
   if (sheetName == "Key Check-Out Form"){
     entryToUnverifiedInput()
@@ -151,6 +150,14 @@ function onFormSubmit(e){
 }
 
 function hourlyTrigger() {
+  const trig = ScriptApp.getProjectTriggers()
+  for(var i = 0; i < trig.length;i++){
+    var t = trig[i]
+    if(t.getHandlerFunction() === 'analysis'){
+      ScriptApp.deleteTrigger(t)
+    }
+  } 
+
   ScriptApp.newTrigger('analysis')
            .timeBased()
            .everyHours(1)
