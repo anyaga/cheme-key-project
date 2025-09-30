@@ -7,7 +7,6 @@ class keyInfo{
     this.roomNumber = roomNumber         //String to designate building name
     this.givenDate  = givenDate;
     this.expDate    = expDate;
-    this.status     = true
   }
   getId(){
     return this.id
@@ -23,9 +22,6 @@ class keyInfo{
   }
   getExpirationDate(){
     return this.expDate
-  }
-  getStatus(){
-    return this.status
   }
 }
 
